@@ -1,0 +1,5 @@
+#!/usr/bin/guile
+!#
+
+(import (sph) (sph-info swp))
+(sph-info-libdoc-update (q sph-lib) "content/computer/software/sph-lib/doc")

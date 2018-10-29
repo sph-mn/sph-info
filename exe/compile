@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./exe/sph-web-publish compile --directory=content

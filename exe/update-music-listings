@@ -1,0 +1,9 @@
+#!/usr/bin/guile
+!#
+
+(import (sph-info swp))
+
+(sph-info-music-listings-update
+  "/home/nonroot/sdb/audio/music"
+  "other/music-listings-descriptions"
+  "content/foreign/music-listings")

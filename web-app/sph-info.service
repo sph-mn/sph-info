@@ -1,0 +1,14 @@
+[Unit]
+Description=sph-info scgi application
+
+[Service]
+Environment="GUILE_LOAD_PATH=/usr/share/guile/2.2:/usr/share/guile/site"
+WorkingDirectory=/opt/sph-info
+ExecStart=/opt/sph-info/exe/start-web-app
+Type=simple
+Restart=on-failure
+Nice=-2
+User=sph-info
+
+[Install]
+WantedBy=multi-user.target

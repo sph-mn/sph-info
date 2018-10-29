@@ -1,0 +1,27 @@
+#!/usr/bin/guile
+!#
+
+(import (sph) (sph web publish) (sph web publish shtml) (ice-9 sandbox) (sph alist))
+
+#;(swp-file-handler-new "sjs" ".sjs"
+  #t (l (env target-path) (string-append (string-drop-suffix ".sjs" target-path) ".js"))
+  (l (env path target-path)
+    (let (data (file->datums path))
+      (call-with-output-file target-path (l (port) (sescript->ecmascript data port))))))
+
+(define sph-info-md-scm-env
+  (make-sandbox-module
+    (append core-bindings string-bindings
+      symbol-bindings list-bindings
+      number-bindings
+      (list-q ((sph web publish markdown scm-env) link-files include-files)
+        ( (sph-info markdown-scm-env) sph-info-audio-playlist sph-info-software-list
+          sph-info-test-io sph-info-software-list-grouped)))))
+
+(define (sph-info-shtml-layout a . b) (apply shtml-layout a #:css (list "/css/sph.css") b))
+
+(define sph-info-swp-cli
+  (swp-cli-new (alist-q shtml-layout sph-info-shtml-layout md-scm-env sph-info-md-scm-env)))
+
+(let (arguments (append (tail (program-arguments)) (list (string-append "--directory=content"))))
+  (sph-info-swp-cli arguments))

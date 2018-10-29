@@ -1,0 +1,3 @@
+mode production
+server
+  parallelism #t

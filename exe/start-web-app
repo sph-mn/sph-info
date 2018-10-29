@@ -1,0 +1,8 @@
+#!/usr/bin/guile
+!#
+
+(import (sph web app) (sph-info))
+
+(add-to-load-path (string-append (getcwd) "/web-app/modules"))
+
+(swa-start swa-app "production" swa-server-scgi #:parse-query #t)

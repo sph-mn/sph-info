@@ -1,0 +1,36 @@
+.ascii {
+text-align:left;
+display:inline;
+}
+
+.ascii:not(:first-of-type) {
+margin-left:2rem;
+}
+
+.ascii td,th {
+padding-left:0.5rem;
+padding-right:0.5rem;
+}
+
+.ascii th {
+font-weight:700;
+}
+
+.ascii td {
+font-style:italic;
+}
+
+.ascii td:first-child {
+font-weight:700;
+font-style:normal;
+}
+
+.ascii tr {
+border-bottom-style:solid;
+border-color:gray;
+border-width:1px;
+}
+
+.ascii tr:first-child {
+border-top-style:solid;
+}

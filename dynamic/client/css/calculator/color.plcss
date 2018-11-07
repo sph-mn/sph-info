@@ -1,0 +1,17 @@
+((".modification" ".alternatives") ("input" width "6rem" ("&[type=number]" width "3rem"))
+  (".preview  .area" width "75px" height "75px"))
+
+(".modification" ("> .control" display inline-block ("&:not(:first-child)" margin-left "1rem")))
+(".preview .area" transition "background-color 0.25s ease")
+((".conversion" ".modification > .preview") (".preview .area" width "503px" height "75px"))
+
+(".alternatives" ("> *" display inline-block ("&:not(:first-child)" margin-left "1rem"))
+  ;((".complement" ".greyscale") display inline-block)
+  (".greyscale" margin-left "1rem") (".hbox > *" ("&:not(:first-child)" margin-left "1rem")))
+
+("#text_display_area" width "15rem" height "35rem")
+
+(".conversion" ("label" display "inline-block" ("&:not(:first-child)" margin-left "1rem"))
+  ("input" width "9rem"))
+
+(("label .title" ".preview .title") font-weight bold)

@@ -123,7 +123,7 @@
                   (shtml
                     (shtml-layout shtml #:css
                       (list "/css/sph.css") #:title
-                      (string-append "music listing " (debug-log (string-trim-right (basename source) #\/))))))
+                      (string-append "music listing " (string-trim-right (basename source) #\/)))))
                 (call-with-output-file target (l (port) (write shtml port)))))
             source-and-target)))))
 

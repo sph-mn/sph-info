@@ -1,0 +1,31 @@
+"/*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}"
+("html" font-size "11px" line-height "16px" font-family "ocra, monospace")
+("body" background-color "#f6f6f6" color "#222" padding-left "1px")
+("h1,h2,h3,h4,h5,h6" font-weight bold)
+("h1~:not(h1),h2~:not(h2),h3~:not(h3),h4~:not(h4),h5~:not(h5),h6~:not(h6)" margin-left "2ch")
+("section"  margin-top "18px" ("> div > section:first-child" margin-top 0))
+("p,pre" max-width "120ch")
+("p" line-height "12px" margin-top "4px" ("&:first-child" margin-top "2px"))
+
+("a" color "#048"
+  text-decoration none
+  ("&:hover" color "#37b" text-decoration underline) ("&.external" font-style italic))
+
+("pre" background-color "#e0e4e8"
+  color "#202428"
+  border-radius "3px"
+  padding-left "4px" padding-top "4px" padding-bottom "4px" margin-top "8px" margin-bottom "8px")
+
+("input,textarea,select" background-color "#fff"
+  padding-left "1px"
+  padding-right "1px"
+  padding-top "2px"
+  padding-bottom "2px"
+  border-radius "2px" margin-top "4px" margin-bottom "4px" border "1px solid #048" color "#2b2b2b")
+
+("textarea" width "500px" height "250px")
+("select,a,button" cursor pointer)
+("ul" list-style-type none)
+
+("@media screen and (max-device-width: 700px) and (max-device-height: 700px)"
+  ("a" font-size "150%" padding "0.25rem" display "inline-block"))

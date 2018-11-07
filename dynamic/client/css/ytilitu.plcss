@@ -1,0 +1,16 @@
+("html" font-size "16px" line-height normal)
+("body.start" (".middle > h1 ~ section" margin-left 0))
+(".hbox > *" display inline-block)
+(".small-font" font-size "12px")
+(".very-small-font" font-size "8px")
+("input[readonly]" (("&:hover" "&:focus") background-color "inherit"))
+(".footer" text-align "center" position fixed bottom 0 right 0)
+(".middle section:last-child" margin-bottom 0)
+(".subdued" color "#999")
+
+("#footer" position fixed
+  bottom 0
+  left 0
+  ("a" font-weight normal text-decoration underline)
+  (".left" text-align left ("*" display inline-block))
+  (".right" text-align right right 0 ("*" display inline-block)))

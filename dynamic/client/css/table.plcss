@@ -1,0 +1,7 @@
+(".ascii" text-align left
+  display inline
+  ("&:not(:first-of-type)" margin-left "2rem") ("td, th" padding-left "0.5rem" padding-right "0.5rem")
+  ("th" font-weight bold) ("td" font-style italic)
+  ("td:first-child" font-weight bold font-style normal)
+  ("tr" border-width "1px"
+    border-color "gray" border-bottom-style solid ("&:first-child" border-top-style solid)))

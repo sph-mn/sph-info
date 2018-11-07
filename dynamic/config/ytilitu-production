@@ -1,0 +1,10 @@
+public-app-name "ytilitu"
+mode production
+client-file-when newer
+basename "/dynamic/ytilitu/"
+server
+  socket-name "ytilitu"
+  socket-permissions 504
+  socket-group "http"
+  exception-key none
+  parallelism #t

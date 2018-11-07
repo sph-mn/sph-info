@@ -1,0 +1,6 @@
+#!/bin/sh
+webroot=/srv/http
+mkdir -p $webroot/sph-info/static
+ln -sf $PWD/dynamic/root $webroot/sph-info/dynamic
+mkdir -p $webroot/sph-info/temp/dynamic
+ln -sf $PWD/dynamic/temp $webroot/sph-info/temp/dynamic/ytilitu

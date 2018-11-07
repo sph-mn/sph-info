@@ -1,0 +1,50 @@
+.middle section > div {
+text-align:center;
+margin:2rem;
+}
+
+.month {
+vertical-align:top;
+margin-bottom:0.5rem;
+font-size:0.75rem;
+margin-right:0.5rem;
+display:inline-block;
+}
+
+.month th {
+padding-top:0.125rem;
+text-align:center;
+font-weight:700;
+font-size:1rem;
+}
+
+.month td {
+padding-left:0.25rem;
+padding-right:0.25rem;
+}
+
+.month td.today {
+background-color:#ccc;
+}
+
+.month .week-n {
+font-weight:700;
+}
+
+#year-n {
+font-weight:700;
+font-size:1rem;
+width:6rem;
+}
+
+#days-n {
+font-size:0.75rem;
+}
+
+.day-h {
+text-decoration:underline;
+}
+
+.day-h td {
+padding-bottom:0.25rem;
+}

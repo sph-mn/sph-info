@@ -1,0 +1,1 @@
+"use strict";module.define("ytilitu.converter","ytilitu.lib.file-processor",function(){return["sc-c","documents","json-xml","xml-json","sxml-xml","xml-sxml","sescript-javascript","coffeescript-javascript"].forEach(function(i){return ytilitu.lib.file_processor.initialise_form("converter-"+i)})});

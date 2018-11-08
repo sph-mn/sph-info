@@ -1,5 +1,5 @@
 #!/bin/sh
-sudo pacman -S python-sqlparse libxml2 astyle go units coffee-script perl-tidy pandoc
+sudo pacman -S python-sqlparse libxml2 astyle go units coffee-script perl-tidy pandoc srm
 aurget -S php-cs-fixer csstidy minify rhyme
 sudo npm install -g json uglify-js
 chmod 755 -R /usr/lib/node_modules

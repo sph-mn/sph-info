@@ -1,7 +1,10 @@
 #!/usr/bin/guile
 !#
 
-(add-to-load-path (string-append (getcwd) "/dynamic/modules"))
-(import (sph web app) (sph-info))
-(swa-start swa-app (string-append (getcwd) "/dynamic")
-  "production" swa-server-scgi #:parse-query #t)
+(add-to-load-path (string-append (getcwd) "/modules"))
+(import (sph) (sph web app) (sph-info))
+
+(apply
+  (l* (#:optional (config "production"))
+    (swa-start swa-app (string-append (getcwd) "/dynamic") config swa-server-scgi #:parse-query #t))
+  (tail (program-arguments)))

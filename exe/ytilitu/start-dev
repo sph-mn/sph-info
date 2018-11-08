@@ -1,6 +1,0 @@
-#!/usr/bin/guile
-!#
-
-(add-to-load-path (string-append (getcwd) "/dynamic/modules"))
-(import (sph web app) (ytilitu))
-(swa-start swa-app (string-append (getcwd) "/dynamic") "ytilitu" swa-server-scgi #:parse-query #t)

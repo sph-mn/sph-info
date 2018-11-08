@@ -1,0 +1,5 @@
+client-output-path "webroot/dynamic/"
+processed-path "webroot/temp/processed/"
+server
+  socket-name "sph-info"
+  socket-group "http"

@@ -1,6 +1,0 @@
-#!/bin/sh
-
-if test -f modules/ytilitu.scm
-then
-  find temp -xdev -type f -mmin +3 | xargs srm --doe
-fi

@@ -1,3 +1,0 @@
-server
-  socket-name "sph-info"
-  socket-group "http"

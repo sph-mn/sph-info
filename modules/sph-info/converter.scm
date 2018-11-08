@@ -1,4 +1,4 @@
-(library (ytilitu http converter)
+(library (sph-info converter)
   (export
     converter-routes)
   (import

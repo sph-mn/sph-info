@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p webroot/dynamic webroot/temp
+mkdir -p webroot/dynamic/temp
 
 rm -f webroot/static
 ln -s $PWD/content/.swp/compiled webroot/static

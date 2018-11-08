@@ -6,5 +6,5 @@
 
 (apply
   (l* (#:optional (config "production"))
-    (swa-start swa-app (string-append (getcwd) "/dynamic") config swa-server-scgi #:parse-query #t))
+    (swa-start swa-app (getcwd) config swa-server-scgi #:parse-query #t))
   (tail (program-arguments)))

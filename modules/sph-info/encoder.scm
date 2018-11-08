@@ -1,4 +1,4 @@
-(library (ytilitu http encoder)
+(library (sph-info encoder)
   (export
     encoder-routes)
   (import

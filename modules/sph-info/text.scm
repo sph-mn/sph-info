@@ -1,4 +1,4 @@
-(library (ytilitu http text)
+(library (sph-info text)
   (export
     text-routes)
   (import

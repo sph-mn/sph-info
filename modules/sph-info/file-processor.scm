@@ -1,4 +1,4 @@
-(library (ytilitu file-processor)
+(library (sph-info file-processor)
   (export
     file-processor-create-path
     file-processor-create-routes
@@ -28,13 +28,14 @@
     (sph web app client)
     (sph web app http)
     (sph web html)
-    (sph web shtml)
-    (ytilitu helper))
+    (sph web shtml))
 
   (define file-processor-description
     "select and upload a file or enter text into the text box and press run. uploaded files on the server are automatically and securely deleted (3 US DoE compliant passes) after 240 seconds.")
 
-  (define (file-processor-path-processed swa-root) (string-append swa-root "temp/processed/"))
+  (define (file-processor-path-processed swa-env)
+    (string-append (swa-env-root swa-env)
+      (or (ht-ref-q (swa-env-config swa-env) processed-path) "webroot/temp/processed/")))
 
   (define (file-processor-name->processor-proc create-table dependencies)
     "procedure:{hashtable:program-name->path}"
@@ -57,8 +58,8 @@
   (define (file-processor-create-session-id headers time-start)
     (number->string (process-unique-number) 32))
 
-  (define (file-processor-create-path swa-root session-id name file-name)
-    (string-append (file-processor-path-processed swa-root) name "." session-id))
+  (define (file-processor-create-path swa-env session-id name file-name)
+    (string-append (file-processor-path-processed swa-env) name "." session-id))
 
   (define (file-processor-get-data swa-env client alt-file-name)
     (let*
@@ -96,13 +97,11 @@
         (and data
           (let*
             ( (swa-root (swa-env-root swa-env))
+              (web-base-path (or (ht-ref-q (swa-env-config swa-env) web-base-path) ""))
               (session-id (file-processor-create-session-id request-headers time-start))
-              (path (file-processor-create-path swa-root session-id name (vector-second data)))
+              (path (file-processor-create-path swa-env session-id name (vector-second data)))
               (path-source (string-append path ".source"))
-              (path-public
-                (string-append web-basename
-                  (string-drop-prefix (string-append swa-root "temp") path)))
-              (input-field (vector-ref data 3))
+              (path-public (string-append web-base-path path)) (input-field (vector-ref data 3))
               (status
                 (begin
                   (call-with-output-file path-source (l (port) (display (vector-first data) port))
@@ -111,7 +110,8 @@
                     (false-if-exception (proc path-source path (vector-third data)))
                     (proc path-source path (vector-third data))))))
             (if (file-exists? path-source) (delete-file path-source))
-            (debug-log (and status
+            (debug-log
+              (and status
                 (if (or display-if-field-text? display?)
                   (nginx-respond-file path-public "text/plain")
                   (nginx-respond-file-download path-public
@@ -131,7 +131,7 @@
       ( (path-dirname-relative (string-drop path-dirname 1))
         (name (string-append (string-replace-char path-dirname-relative #\/ #\-) "-" path-basename)))
       (l (request)
-        (ytilitu-request-bind request (swa-env data time-start route routes)
+        (sph-info-request-bind request (swa-env data time-start route routes)
           (let (method (swa-http-request-method request))
             (if (equal? (q post) method)
               (apply file-processor-respond-form swa-env

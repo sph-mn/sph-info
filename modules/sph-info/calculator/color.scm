@@ -1,4 +1,4 @@
-(library (ytilitu http calculator color)
+(library (sph-info calculator color)
   (export
     calculator-color-respond)
   (import

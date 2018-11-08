@@ -1,4 +1,4 @@
-(library (ytilitu http table)
+(library (sph-info table)
   (export
     table-ascii-respond)
   (import

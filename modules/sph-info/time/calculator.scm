@@ -1,4 +1,4 @@
-(library (ytilitu http time calculator)
+(library (sph-info time calculator)
   (export
     ses-utc-leap-second-table
     time-calculator-respond)
@@ -14,7 +14,6 @@
     (sph web app client)
     (sph web app http)
     (sph web shtml)
-    (ytilitu helper)
     (only (guile) exact->inexact))
 
   (define* (shtml-input id title #:key (attributes (list)) no-title? (content-after (list)))
@@ -111,10 +110,10 @@
       (map (l (a) (qq (array (unquote (first a)) (unquote (tail a))))) leap-second-table)))
 
   (define (time-calculator-respond request)
-    (ytilitu-request-bind request (swa-env data routes)
+    (sph-info-request-bind request (swa-env data routes)
       (respond-shtml
         (shtml-layout (shtml-calculator) #:title
           title-calculator #:js
           (client-static swa-env (q js) (list-q default time-calculator)) #:css
           (client-static swa-env (q css) (list-q default time-calculator)) #:links
-          (top-bar-links routes "/time" "/calculator"))))))
+          (top-bar-links routes "/time" "/calculator" (swa-env-web-base-path swa-env)))))))

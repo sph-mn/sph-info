@@ -1,4 +1,4 @@
-(library (ytilitu http minifier)
+(library (sph-info minifier)
   (export
     minifier-routes)
   (import

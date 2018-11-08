@@ -14,8 +14,10 @@
     (sph web app)
     (sph web app client)
     (sph web app http)
-    (sph web html)
-    (ytilitu helper))
+    (sph web html))
+
+  (define css (list "/css/sph.css"))
+  (define trollface-image "/other/images/trollface.png")
 
   (define svn-respond
     (let*
@@ -87,7 +89,7 @@
                 (div (@ (class "svn")) (h1 "shitty variable name generator")
                   (h2 (unquote (next-slogan)))
                   (object
-                    (@ (data "/other/images/trollface.png") (width 122.5)
+                    (@ (data (unquote trollface-image)) (width 122.5)
                       (height 100)
                       (title
                         (unquote
@@ -107,4 +109,4 @@
             (results (and words (svn-multiple (or count 5) words))))
           (respond-shtml
             (shtml-layout (shtml-ui words results) #:body-class
-              "svn" #:css (list "/css/sph.css") #:title "variable name generator")))))))
+              "svn" #:css css #:title "variable name generator")))))))

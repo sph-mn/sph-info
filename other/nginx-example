@@ -1,0 +1,22 @@
+server {
+  server_name sph-info.localhost;
+  listen [::1]:80;
+  rewrite ^/o/bs$ /dynamic/bs permanent;
+  rewrite ^/o/svn$ /dynamic/svn permanent;
+  rewrite ^/o/german-names$ /dynamic/german-names permanent;
+  rewrite ^/c/ / permanent;
+  include params/scgi;
+  root /srv/http/sph-info;
+  location /dynamic/assets {
+  }
+  location /dynamic/processed {
+    internal;
+    default_type application/octet-stream;
+  }
+  location /dynamic {
+    scgi_pass unix:/tmp/1000/sph-info;
+  }
+  location / {
+    root /srv/http/sph-info/static;
+  }
+}

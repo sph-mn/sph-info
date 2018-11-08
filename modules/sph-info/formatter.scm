@@ -1,4 +1,4 @@
-(library (ytilitu http formatter)
+(library (sph-info formatter)
   (export
     formatter-routes)
   (import

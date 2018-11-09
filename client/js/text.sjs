@@ -1,4 +1,4 @@
-(module.define "ytilitu.other.operations"
+(module.define "sph-info.other.operations"
   (nullary
     (define descriptions
       (object remove-hash-commment-lines "removes all lines that start with a \"#\" character"

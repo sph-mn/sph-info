@@ -1,21 +1,21 @@
-(module.define "ytilitu.converter.units"
+(module.define "sph-info.units"
   (nullary
-    (define select2-options
+    (define web-base-path "/dynamic/"
+      suggest-path "json/units/suggest"
+      convert-path "json/units/convert"
+      select2-options
       (object language (object searching (nullary "searching..."))
         placeholder "unit here"
         ajax
         (object url
-          (l (params)
-            (+ "/dynamic/ytilitu/json/converter/units/suggest-names/"
-              (if* params.term params.term "")))
-          data (l (params) #f)
-          processResults (l (data) (object results (data.map (l (a) (object text a id a)))))
-          dataType "json" delay 250 minimumInputLength 1)))
-    (define selects (chain select2 ($ "#unit-from,#unit-to") select2-options))
-    (define inputs ($ "#value-from,#value-to"))
+          (l (params) (+ web-base-path suggest-path "/" (if* params.term params.term ""))) data
+          (l (params) #f) processResults
+          (l (data) (object results (data.map (l (a) (object text a id a))))) dataType
+          "json" delay 250 minimumInputLength 1))
+      selects (chain select2 ($ "#unit-from,#unit-to") select2-options)
+      inputs ($ "#value-from,#value-to"))
     (define (unit-convert& from to value c) (define xhr (new XMLHttpRequest))
-      (xhr.open "get"
-        (encodeURI (+ "/dynamic/ytilitu/json/converter/units/convert/" from "/" to "/" value)))
+      (xhr.open "get" (encodeURI (+ web-base-path convert-path "/" from "/" to "/" value)))
       (set xhr.onload (nullary (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
     (chain on (selects.add inputs)
       "change"

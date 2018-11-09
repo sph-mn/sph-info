@@ -1,4 +1,4 @@
-(module.define "ytilitu.lib.file_processor"
+(module.define "sph-info.lib.file_processor"
   (l (exportx)
     (define (xhr-form-result& form text c) (define xhr (new XMLHttpRequest))
       (xhr.open "post" (encodeURI form.action))

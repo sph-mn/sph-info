@@ -37,22 +37,28 @@
     (string-append (swa-env-root swa-env)
       (or (ht-ref-q (swa-env-config swa-env) processed-path) "webroot/temp/processed/")))
 
+  (define (file-processor-dependencies->paths-program a)
+    (let (r (ht-create)) (each (l (a) (ht-set! r (second a) (first a))) a) r))
+
   (define (file-processor-name->processor-proc create-table dependencies)
     "procedure:{hashtable:program-name->path}"
     (let (table (create-table (file-processor-dependencies->paths-program dependencies)))
       (letrec ((r (l (a) (let (b (ht-ref table a)) (if (string? b) (r b) b))))) r)))
 
-  (define* (file-processor-shtml-section route title #:key description (form-options (list)))
+  (define*
+    (file-processor-shtml-section web-base-path route title #:key description (form-options (list)))
     (let (id (string-replace-char (string-drop (route-path route) 1) #\/ #\-))
       (shtml-section 0 title
         (qq
           ( (unquote
               (if description (qq (div (@ (class "small-font")) (unquote description) (br) (br)))
                 ""))
-            (unquote (apply shtml-text-file-form (route-path route) form-options))))
+            (unquote
+              (apply shtml-text-file-form (string-append web-base-path (route-path route))
+                form-options))))
         (list (q id) id))))
 
-  (define (file-processor-dependencies config)
+  (define (file-processor-dependencies config) "((string:program-name ))"
     (map (l (a) (pair (let (a (first a)) (if (string? a) (search-env-path-one a) #t)) a)) config))
 
   (define (file-processor-create-session-id headers time-start)
@@ -128,11 +134,13 @@
       (shtml-section-options (list))
       (respond-form-options (list)))
     (let*
-      ( (path-dirname-relative (string-drop path-dirname 1))
+      ( (path-dirname-relative path-dirname)
         (name (string-append (string-replace-char path-dirname-relative #\/ #\-) "-" path-basename)))
       (l (request)
         (sph-info-request-bind request (swa-env data time-start route routes)
-          (let (method (swa-http-request-method request))
+          (let
+            ( (method (swa-http-request-method request))
+              (web-base-path (ht-ref-q data web-base-path)))
             (if (equal? (q post) method)
               (apply file-processor-respond-form swa-env
                 name (swa-http-request-headers request)
@@ -141,8 +149,10 @@
               (let (title (title-map (route-title route)))
                 (respond-shtml
                   (shtml-layout
-                    (apply file-processor-shtml-section route title shtml-section-options) #:title
-                    title #:css
+                    (apply file-processor-shtml-section web-base-path
+                      route title shtml-section-options)
+                    #:title title
+                    #:css
                     (append (client-static swa-env (q css) (list-q default file-processor))
                       (if (null? add-css) (list) (list (client-file swa-env (q css) #f add-css))))
                     #:js
@@ -150,12 +160,8 @@
                       (list
                         (client-file swa-env (q js)
                           #f (pair (string-append path-dirname-relative ".sjs") add-js))))
-                    #:body-class name
-                    #:links (top-bar-links routes path-dirname (string-append "/" path-basename)))
+                    #:body-class name #:links default-links)
                   (cache-headers time-start)))))))))
-
-  (define (file-processor-dependencies->paths-program a)
-    (let (r (ht-create)) (each (l (a) (ht-set! r (second a) (first a))) a) r))
 
   (define*
     (file-processor-create-routes path-prefix alt-file-name name->proc dependencies #:key

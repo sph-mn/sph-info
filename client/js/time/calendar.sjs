@@ -1,4 +1,4 @@
-(module.define "ytilitu.time.calendar"
+(module.define "sph-info.time.calendar"
   (nullary (define web-base-path "/dynamic/")
     (define year-n-input (document.getElementById "year-n"))
     (define (year-change-event-handler)

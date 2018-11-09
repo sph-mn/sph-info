@@ -1,8 +1,0 @@
-("html" font-size "16px")
-(".small-font" font-size "12px")
-(".very-small-font" font-size "8px")
-("input[readonly]" (("&:hover" "&:focus") background-color "inherit"))
-(".footer" text-align "center" position fixed bottom 0 right 0)
-(".middle section:last-child" margin-bottom 0)
-(".hbox > *" display inline-block)
-(".subdued" color "#999")

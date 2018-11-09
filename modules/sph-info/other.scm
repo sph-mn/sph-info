@@ -35,7 +35,7 @@
     (shtml-section 0 (route-title route)
       (list (q div) (qq (@ (class "yes-or-no-result"))) (if (= 1 (random 2)) "yes" "no"))))
 
-  (define (other-rhymes-suggest word)
+  (define (rhymes-suggest word)
     (let
       (result
         (string-split (execute->string (ht-ref paths-program "rhyme") "--merged" word) #\newline))
@@ -58,7 +58,7 @@
           (input (@ (placeholder "word here") (id "word"))) (button (@ (id get)) "get rhyming words")
           (br) (br) (div (@ (id result)))))))
 
-  (define other-ip-route
+  (define ip-route
     (route-new "/ip" "what is my ip?"
       (l (request)
         (sph-info-request-bind request (swa-env data route routes)
@@ -69,7 +69,7 @@
                 (route-title route) #:css
                 (client-static swa-env (q css) (list-q default)) #:links default-links)))))))
 
-  (define other-dice-route
+  (define dice-route
     (route-new "/dice" "custom dice"
       (l (request)
         (sph-info-request-bind request (swa-env data route time-start routes)
@@ -77,11 +77,11 @@
             (shtml-layout (shtml-dice route) #:body-class
               "dice" #:title
               (route-title route) #:css
-              (client-static swa-env (q css) (list-q default other-dice)) #:js
-              (client-static swa-env (q js) (list-q default other-dice)) #:links default-links)
+              (client-static swa-env (q css) (list-q default dice)) #:js
+              (client-static swa-env (q js) (list-q default dice)) #:links default-links)
             (cache-headers time-start))))))
 
-  (define other-yes-or-no-route
+  (define yes-or-no-route
     (route-new "/yes-or-no" "yes or no?"
       (l (request)
         (sph-info-request-bind request (swa-env data time-start route routes)
@@ -89,7 +89,7 @@
             (shtml-layout (shtml-yes-or-no route) #:body-class
               "yes-or-no" #:title
               (route-title route) #:css
-              (client-static swa-env (q css) (list-q default other-yes-or-no)) #:links default-links)
+              (client-static swa-env (q css) (list-q default yes-or-no)) #:links default-links)
             (cache-headers time-start))))))
 
   (define paths-program
@@ -102,7 +102,7 @@
         (list "rhyme"))
       r))
 
-  (define other-rhymes-suggest-route
+  (define rhymes-suggest-route
     (route-new "/json/rhymes/suggest" #f
       (l (request)
         (respond-type (q json)
@@ -115,9 +115,9 @@
                       "/")
                     path)))
               (debug-log word)
-              (if (string-match "^[a-zA-Z]{1,30}$" word) (other-rhymes-suggest word) (list))))))))
+              (if (string-match "^[a-zA-Z]{1,30}$" word) (rhymes-suggest word) (list))))))))
 
-  (define other-rhymes-route
+  (define rhymes-route
     (route-new "/rhymes" "rhyming words"
       (l (request)
         (sph-info-request-bind request (swa-env data routes route time-start)
@@ -125,8 +125,8 @@
             (shtml-layout (shtml-rhymes route) #:body-class
               "rhymes" #:title
               (route-title route) #:css
-              (client-static swa-env (q css) (list-q default other-rhymes)) #:js
-              (client-static swa-env (q js) (list-q default other-rhymes)) #:links default-links)
+              (client-static swa-env (q css) (list-q default rhymes)) #:js
+              (client-static swa-env (q js) (list-q default rhymes)) #:links default-links)
             (cache-headers time-start))))))
 
   (define other-routes
@@ -134,5 +134,5 @@
       (filter-map
         (l (a) "include only routes whose helper programs are available"
           (if (list? a) (and (every (l (b) (ht-ref paths-program b)) (tail a)) (first a)) (list a)))
-        (list other-ip-route (list (list other-rhymes-route other-rhymes-suggest-route) "rhyme")
-          other-dice-route other-yes-or-no-route)))))
+        (list ip-route (list (list rhymes-route rhymes-suggest-route) "rhyme")
+          dice-route yes-or-no-route)))))

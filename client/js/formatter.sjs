@@ -1,4 +1,4 @@
-(module.define "ytilitu.formatter" (unquote "ytilitu.lib.file-processor")
+(module.define "sph-info.formatter" (unquote "sph-info.lib.file-processor")
   (nullary
     (define (initialise)
       (chain forEach
@@ -6,5 +6,5 @@
           "html" "json"
           "c" "go"
           "sql" "xml" "cpp" "php" "css" "java" "html" "perl" "sxml" "csharp" "scheme" "objective-c")
-        (l (a) (ytilitu.lib.file-processor.initialise-form (+ "formatter-" a)))))
+        (l (a) (sph-info.lib.file-processor.initialise-form (+ "formatter-" a)))))
     (initialise)))

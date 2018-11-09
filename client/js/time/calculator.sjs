@@ -1,4 +1,4 @@
-(module.define "ytilitu.time.calculator"
+(module.define "sph-info.time.calculator"
   (nullary (ses-comment "internal time format is a moment object")
     (define seconds-day 86400 utc-leap-second-table (unquote utc-leap-second-table))
     (define (truncate-to-decimal-places a n) (if (not n) (return (Math.trunc a)))

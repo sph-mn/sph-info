@@ -3,67 +3,43 @@
     encoder-routes)
   (import
     (guile)
-    (rnrs io ports)
     (sph)
-    (sph base64)
+    (sph-info helper)
+    (sph-info processor)
     (sph base91)
     (sph hashtable)
     (sph io)
-    (sph list)
-    (sph string)
-    (ytilitu file-processor))
+    (sph web app client)
+    (sph web app http))
 
-  (define dependencies
-    (file-processor-dependencies
-      (list-q (#t "encode-base64") (#t "decode-base64")
-        (#t "encode-base91") (#t "decode-base91") (#t "string-escape") (#t "string-unescape"))))
+  #;(ht-create "encode-base64"
+    (l (path-input path-output options)
+      (file->file path-input path-output
+        #:copy base64-encode-port #:input-binary #t #:output-binary #f))
+    "decode-base64"
+    (l (path-input path-output options)
+      (file->file path-input path-output
+        #:copy base64-decode-port #:input-binary #t #:output-binary #f))
+    "encode-base91" "decode-base91"
+    (l (path-input path-output options)
+      (call-with-output-file path-output
+        (l (out) (bytevector->file (base91-decode (file->string path-input)) path-output)))))
 
-  (define name->proc
-    (file-processor-name->processor-proc
-      (l (paths-program)
-        (ht-create "encode-base64"
-          (l (path-input path-output options)
-            (file->file path-input path-output
-              #:copy base64-encode-port #:input-binary #t #:output-binary #f))
-          "decode-base64"
-          (l (path-input path-output options)
-            (file->file path-input path-output
-              #:copy base64-decode-port #:input-binary #t #:output-binary #f))
-          "string-escape"
-          (l (path-input path-output options)
-            (call-with-output-file path-output (l (out) (write (file->string path-input) out))))
-          "string-unescape"
-          (l (path-input path-output options)
-            (call-with-output-file path-output
-              (l (out) (display (read (file->string path-input)) out))))
-          "encode-base91"
-          (l (path-input path-output options)
-            (call-with-output-file path-output
-              (l (out) (display (base91-encode (file->bytevector path-input)) out)) #:binary #t))
-          "decode-base91"
-          (l (path-input path-output options)
-            (call-with-output-file path-output
-              (l (out) (bytevector->file (base91-decode (file->string path-input)) path-output))))))
-      dependencies))
+  (define (encode-base91-respond request)
+    (case (swa-http-request-method request)
+      ( (get)
+        (let (swa-env (swa-http-request-swa-env request))
+          (respond-shtml
+            (shtml-layout (file->download-form) #:title
+              (route-title (ht-ref-q (swa-http-request-data request) route)) #:css
+              (client-static swa-env (q css) (list-q default processor)) #:js
+              (client-static swa-env (q js) (list-q default processor)) #:body-class "encode-base91"))))
+      ( (post)
+        (file->download request
+          (l (source-path target-path options)
+            (call-with-output-file target-path
+              (l (port) (display (base91-encode (file->bytevector source-path)) port)) #:binary #t))
+          (l (file-name options) (string-append file-name ".base91"))))
+      (else (respond 405))))
 
-  (define (title-map a) (string-append "online " (string-join (reverse (string-split a #\-)) " ")))
-
-  (define (name->options a)
-    (let
-      (default
-        (list #:respond-form-options
-          (list #:file-name-map
-            (l (input-file-name options input-field)
-              (string-case a ("encode-base64" (string-append input-file-name ".base64"))
-                ("encode-base91" (string-append input-file-name ".base91"))
-                ("decode-base64" (string-drop-suffix-if-exists ".base64" input-file-name))
-                ("decode-base91" (string-drop-suffix-if-exists ".base91" input-file-name))
-                (else input-file-name))))
-          #:title-map title-map
-          #:shtml-section-options
-          (list #:description file-processor-description #:form-options (list #:input-text? #t))))
-      default))
-
-  (define encoder-routes
-    (file-processor-create-routes "/encoder" "converted"
-      name->proc dependencies #:name->options name->options)))
+  (define encoder-routes (list (route-new "/base91-encode" "base91 encode" encode-base91-respond))))

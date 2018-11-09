@@ -1,4 +1,4 @@
-(module.define "ytilitu.other.dice"
+(module.define "sph-info.other.dice"
   (nullary
     (define (div a css-class)
       (let (b (document.createElement "div")) (b.setAttribute "class" css-class)

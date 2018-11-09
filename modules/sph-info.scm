@@ -6,13 +6,13 @@
     (rnrs eval)
     (sph)
     (sph-info color)
-    (sph-info file-processor)
     (sph-info helper)
     (sph-info other)
     (sph-info svn)
     (sph-info table)
     (sph-info time calculator)
     (sph-info time calendar)
+    (sph-info units)
     (sph alist)
     (sph filesystem)
     (sph fun german-names)
@@ -24,29 +24,28 @@
     (sph vector)
     (sph web app)
     (sph web app client)
-    (sph web app http))
+    (sph web app http)
+    (sph-info encoder)
+    )
 
   (define css (list "/css/sph.css"))
 
   (define-as client-static-config client-static-config-create
-    (default js ("lib/foreign/module") css ("sph" "ytilitu"))
+    (default js ("foreign/module") css ("sph"))
     (time-calculator js
-      ( (unquote (alist-q utc-leap-second-table ses-utc-leap-second-table)) "lib/foreign/underscore"
-        "lib/foreign/moment" "time/calculator")
+      ( (unquote (alist-q utc-leap-second-table ses-utc-leap-second-table)) "foreign/underscore"
+        "foreign/moment" "time/calculator")
       css ("time/calculator"))
-    (converter-units js (#f "lib/foreign/jquery" "lib/foreign/select2" "converter/units")
-      css (#f "foreign/select2" "converter/units"))
+    (units js (#f "foreign/jquery" "foreign/select2" "units") css (#f "foreign/select2" "units"))
     (table-ascii css ("table")) (time-calendar css ("time/calendar") js ("time/calendar"))
-    (color css (#f "color") js (#f "lib/foreign/underscore" "lib/foreign/tinycolor" "color"))
-    (text-operations css (#f "text/operations") js (#f "text/operations"))
-    (file-processor css (#f "file-processor") js (#f "lib/file-processor"))
-    (other-dice css (#f "other/dice") js (#f "lib/foreign/underscore" "other/dice"))
-    (other-yes-or-no css (#f "other/yes-or-no"))
-    (other-rhymes css (#f "other/rhymes") js (#f "other/rhymes")))
+    (color css (#f "color") js (#f "foreign/underscore" "foreign/tinycolor" "color"))
+    (text css (#f "text") js (#f "text")) (processor css (#f "processor") js (#f "processor"))
+    (dice css (#f "dice") js (#f "foreign/underscore" "dice")) (yes-or-no css (#f "yes-or-no"))
+    (rhymes css (#f "rhymes") js (#f "rhymes")))
 
   (define (app-init swa-env)
     ;(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))
-    (ensure-directory-structure (file-processor-path-processed swa-env))
+    ;(ensure-directory-structure (file-processor-path-processed swa-env))
     (client-static-compile swa-env client-static-config))
 
   (define (phrase-generator-responder title url-path generate)
@@ -77,9 +76,9 @@
       (append
         ;minifier-routes
         ;formatter-routes text-routes
-        ;encoder-routes
+        encoder-routes
         ;converter-routes
-        other-routes
+        units-routes other-routes
         table-routes time-calculator-routes time-calendar-routes color-routes)))
 
   (define paths (map vector-first routes))

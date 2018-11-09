@@ -50,7 +50,8 @@
       (if (null? links) null (pair (q nav) links))))
 
   (define*
-    (shtml-layout content #:key (title "") (css null) (js null) head body-class top bottom links
+    (shtml-layout content #:key (title "") (css null) (js null) head body-class top bottom
+      (links default-links)
       mtime)
     (let
       ( (top-bar (and links (shtml-top-bar links)))

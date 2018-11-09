@@ -1,6 +1,6 @@
 (library (sph-info table)
   (export
-    table-ascii-respond)
+    table-routes)
   (import
     (sph)
     (sph-info helper)
@@ -11,7 +11,6 @@
     (sph web app client)
     (sph web app http)
     (sph web shtml)
-    (ytilitu helper)
     (only (guile) string-drop))
 
   (define (shtml-ascii-table start end header?)
@@ -28,7 +27,7 @@
 
   (define (shtml-table-ascii route)
     (shtml-section 0 (route-title route)
-      (list (list (q p) "name/decimal/hexadecimal") (list-q br)
+      (list (list (q p) "name, decimal, hexadecimal") (list-q br)
         (let ((step 32) (end 127))
           (let loop ((index 0))
             (if (<= index end)
@@ -36,11 +35,12 @@
               (list)))))))
 
   (define (table-ascii-respond request)
-    (ytilitu-request-bind request (swa-env data route time-start routes)
+    (sph-info-request-bind request (swa-env data route time-start routes)
       (respond-shtml
         (shtml-layout (shtml-table-ascii route) #:title
           (route-title route) #:body-class
           (route->body-class route) #:css
-          (client-static swa-env (q css) (list-q default table-ascii)) #:links
-          (top-bar-links routes "/table" "/ascii"))
-        (cache-headers time-start)))))
+          (client-static swa-env (q css) (list-q default table-ascii)) #:links default-links)
+        (cache-headers time-start))))
+
+  (define table-routes (list (route-new "/ascii" "ascii table" table-ascii-respond))))

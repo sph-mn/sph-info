@@ -1,1 +1,1 @@
-"use strict";module.define("ytilitu.time.calendar",function(){var e=document.getElementById("year-n");return e.addEventListener("change",function(){return window.location.assign("/dynamic/ytilitu/time/calendar/"+e.value)})});
+"use strict";module.define("ytilitu.time.calendar",function(){var e=document.getElementById("year-n");return e.addEventListener("change",function(){return window.location.assign("/dynamic/time/calendar/"+e.value)})});

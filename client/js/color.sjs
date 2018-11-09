@@ -1,4 +1,4 @@
-(module.define "ytilitu.calculator.color"
+(module.define "ytilitu.color"
   (nullary (define (string-space->comma a) (a.replace (make-regexp "\\s+" "g") ","))
     (define inputs
       (object input-rgb

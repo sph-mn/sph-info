@@ -1,4 +1,4 @@
-client-file-when always
+client-file-when newer
 server
   parallelism 1
   exception-key none

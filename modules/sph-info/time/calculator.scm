@@ -1,7 +1,7 @@
 (library (sph-info time calculator)
   (export
     ses-utc-leap-second-table
-    time-calculator-respond)
+    time-calculator-routes)
   (import
     (sph)
     (sph-info helper)
@@ -115,5 +115,7 @@
         (shtml-layout (shtml-calculator) #:title
           title-calculator #:js
           (client-static swa-env (q js) (list-q default time-calculator)) #:css
-          (client-static swa-env (q css) (list-q default time-calculator)) #:links
-          (top-bar-links routes "/time" "/calculator" (swa-env-web-base-path swa-env)))))))
+          (client-static swa-env (q css) (list-q default time-calculator)) #:links default-links))))
+
+  (define time-calculator-routes
+    (list (route-new "/time/calculator" "time calculator" time-calculator-respond))))

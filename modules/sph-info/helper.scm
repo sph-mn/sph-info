@@ -1,6 +1,7 @@
 (library (sph-info helper)
   (export
     cache-headers
+    default-links
     path-processed
     process-unique-number
     respond-shtml
@@ -30,6 +31,7 @@
     (sph web shtml)
     (sxml simple))
 
+  (define default-links (list (list "/" "start") (list "/other/utilities.html" "utilities")))
   (define (swa-env-web-base-path a) (or (ht-ref-q (swa-env-config a) web-base-path)))
 
   (define* (respond-shtml shtml #:optional (headers null))

@@ -5,11 +5,14 @@
     (guile)
     (rnrs eval)
     (sph)
+    (sph-info color)
     (sph-info file-processor)
     (sph-info helper)
     (sph-info other)
     (sph-info svn)
+    (sph-info table)
     (sph-info time calculator)
+    (sph-info time calendar)
     (sph alist)
     (sph filesystem)
     (sph fun german-names)
@@ -34,11 +37,10 @@
     (converter-units js (#f "lib/foreign/jquery" "lib/foreign/select2" "converter/units")
       css (#f "foreign/select2" "converter/units"))
     (table-ascii css ("table")) (time-calendar css ("time/calendar") js ("time/calendar"))
-    (calculator-color css (#f "calculator/color")
-      js (#f "lib/foreign/underscore" "lib/foreign/tinycolor" "calculator/color"))
+    (color css (#f "color") js (#f "lib/foreign/underscore" "lib/foreign/tinycolor" "color"))
     (text-operations css (#f "text/operations") js (#f "text/operations"))
     (file-processor css (#f "file-processor") js (#f "lib/file-processor"))
-    (other-dice css (#f "other/dice") js (#f "other/dice"))
+    (other-dice css (#f "other/dice") js (#f "lib/foreign/underscore" "other/dice"))
     (other-yes-or-no css (#f "other/yes-or-no"))
     (other-rhymes css (#f "other/rhymes") js (#f "other/rhymes")))
 
@@ -73,41 +75,30 @@
   (define routes
     (debug-log
       (append
-        ;minifier-routes formatter-routes text-routes
+        ;minifier-routes
+        ;formatter-routes text-routes
         ;encoder-routes
         ;converter-routes
         other-routes
-        #;(list (route-new "/calculator/color" "web color calculator" calculator-color-respond)
-        (route-new "/time/calendar" "gregorian calendar" time-calendar-respond)
-        (route-new "/time/calculator" "time calculator" time-calculator-respond)
-        (route-new "/table/ascii" "ascii table" table-ascii-respond) (route-new "/" "start" overview)))))
+        table-routes time-calculator-routes time-calendar-routes color-routes)))
 
   (define paths (map vector-first routes))
-
-  (define (app-respond request)
-    (let*
-      ( (path (ensure-trailing-slash (swa-http-request-path request)))
-        (route (any (l (a) (and (string-prefix? (route-path a) path) a)) routes)))
-      (if route
-        (begin
-          (swa-http-request-data-set! request
-            (ht-create-symbol-q route route time-start (utc-current) routes routes))
-          ((route-handler route) request))
-        (respond 404))))
 
   (define (app-respond request)
     (let*
       ( (full-path (swa-http-request-path request))
         (web-base-path (ht-ref-q (swa-env-config (swa-http-request-swa-env request)) web-base-path))
         (path (string-append "/" (string-drop-prefix web-base-path full-path))))
-      (debug-log path)
       (string-case path ("/svn" (svn-respond request))
         ("/bs" (respond-marketing-bs)) ("/german-names" (respond-german-names))
         ("/utc-day-kiloseconds" (respond (utc-elapsed-day-string (utc-current))))
         (else
-          (and-let* ((route (any (l (a) (and (string-prefix? (route-path a) path) a)) routes)))
-            (swa-http-request-data-set! request
-              (ht-create-symbol-q route route time-start (utc-current) routes routes))
-            ((route-handler route) request))))))
+          (or
+            (and-let* ((route (any (l (a) (and (string-prefix? (route-path a) path) a)) routes)))
+              (swa-http-request-data-set! request
+                (ht-create-symbol-q web-base-path web-base-path
+                  route route full-path full-path path path time-start (utc-current) routes routes))
+              ((route-handler route) request))
+            (respond 404))))))
 
   (define swa-app (swa-app-new app-respond #:init app-init)))

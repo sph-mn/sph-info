@@ -22,7 +22,7 @@
 
   (define (shtml-ip route ip)
     (shtml-section 0 (route-title route)
-      (if ip (qq ("your ip is: " (unquote ip))) (qq ("your ip could not be determined")))))
+      (if ip (qq ("your ip is " (unquote ip))) (qq ("your ip could not be determined")))))
 
   (define (shtml-dice route)
     (shtml-section 0 (route-title route)
@@ -54,12 +54,12 @@
   (define (shtml-rhymes route)
     (shtml-section 0 (route-title route)
       (qq
-        ( (div (@ (class small-font)) "an online rhyming dictionary.") (br)
+        ( (div (@ (class small-font)) "online rhyming dictionary") (br)
           (input (@ (placeholder "word here") (id "word"))) (button (@ (id get)) "get rhyming words")
           (br) (br) (div (@ (id result)))))))
 
   (define other-ip-route
-    (route-new "/other/ip" "what is my ip?"
+    (route-new "/ip" "what is my ip?"
       (l (request)
         (sph-info-request-bind request (swa-env data route routes)
           (let (ip (alist-ref (swa-http-request-headers request) "remote_addr"))
@@ -67,11 +67,10 @@
               (shtml-layout (shtml-ip route ip) #:body-class
                 "ip" #:title
                 (route-title route) #:css
-                (client-static swa-env (q css) (list-q default)) #:links
-                (top-bar-links routes "/other" "ip" (swa-env-web-base-path swa-env)))))))))
+                (client-static swa-env (q css) (list-q default)) #:links default-links)))))))
 
   (define other-dice-route
-    (route-new "/other/dice" "custom dice"
+    (route-new "/dice" "custom dice"
       (l (request)
         (sph-info-request-bind request (swa-env data route time-start routes)
           (respond-shtml
@@ -79,20 +78,18 @@
               "dice" #:title
               (route-title route) #:css
               (client-static swa-env (q css) (list-q default other-dice)) #:js
-              (client-static swa-env (q js) (list-q default other-dice)) #:links
-              (top-bar-links routes "/other" "dice" (swa-env-web-base-path swa-env)))
+              (client-static swa-env (q js) (list-q default other-dice)) #:links default-links)
             (cache-headers time-start))))))
 
   (define other-yes-or-no-route
-    (route-new "/other/yes-or-no" "yes or no?"
+    (route-new "/yes-or-no" "yes or no?"
       (l (request)
         (sph-info-request-bind request (swa-env data time-start route routes)
           (respond-shtml
             (shtml-layout (shtml-yes-or-no route) #:body-class
               "yes-or-no" #:title
               (route-title route) #:css
-              (client-static swa-env (q css) (list-q default other-yes-or-no)) #:links
-              (top-bar-links routes "/other" "yes-or-no" (swa-env-web-base-path swa-env)))
+              (client-static swa-env (q css) (list-q default other-yes-or-no)) #:links default-links)
             (cache-headers time-start))))))
 
   (define paths-program
@@ -106,19 +103,22 @@
       r))
 
   (define other-rhymes-suggest-route
-    (route-new "/json/other/rhymes/suggest" #f
+    (route-new "/json/rhymes/suggest" #f
       (l (request)
         (respond-type (q json)
           (scm->json-string
-            (let
-              (word
-                (string-drop-prefix
-                  (string-append (route-path (ht-ref-q (swa-http-request-data request) route)) "/")
-                  (swa-http-request-path request)))
+            (let*
+              ( (path (ht-ref-q (swa-http-request-data request) path))
+                (word
+                  (string-drop-prefix
+                    (string-append (route-path (ht-ref-q (swa-http-request-data request) route))
+                      "/")
+                    path)))
+              (debug-log word)
               (if (string-match "^[a-zA-Z]{1,30}$" word) (other-rhymes-suggest word) (list))))))))
 
   (define other-rhymes-route
-    (route-new "/other/rhymes" "rhyming words"
+    (route-new "/rhymes" "rhyming words"
       (l (request)
         (sph-info-request-bind request (swa-env data routes route time-start)
           (respond-shtml
@@ -126,8 +126,7 @@
               "rhymes" #:title
               (route-title route) #:css
               (client-static swa-env (q css) (list-q default other-rhymes)) #:js
-              (client-static swa-env (q js) (list-q default other-rhymes)) #:links
-              (top-bar-links routes "/other" "rhymes" (swa-env-web-base-path swa-env)))
+              (client-static swa-env (q js) (list-q default other-rhymes)) #:links default-links)
             (cache-headers time-start))))))
 
   (define other-routes

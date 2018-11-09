@@ -1,6 +1,6 @@
-(library (sph-info calculator color)
+(library (sph-info color)
   (export
-    calculator-color-respond)
+    color-routes)
   (import
     (sph)
     (sph-info helper)
@@ -11,8 +11,7 @@
     (sph web app)
     (sph web app client)
     (sph web app http)
-    (sph web shtml)
-    (ytilitu helper))
+    (sph web shtml))
 
   (define* (shtml-input id title #:key (attributes (list)) no-title? (content-after (list)))
     (qq
@@ -85,10 +84,10 @@
             (label (@ (for "text_display_area")) (div (@ (class title)) (unquote "text results"))
               (textarea (@ (id "text_display_area")) "")))))))
 
-  (define title-calculator "web color converter and calculator")
+  (define title-color "web color converter and calculator")
 
   (define (shtml-calc-color)
-    (shtml-section 0 title-calculator
+    (shtml-section 0 title-color
       (list
         (list-q
           (div (@ (class "small-font"))
@@ -100,13 +99,14 @@
           (div (@ (class "footer")) "made with "
             (a (@ (href "https://github.com/bgrins/TinyColor") (target "_blank")) "TinyColor"))))))
 
-  (define (calculator-color-respond request)
-    (ytilitu-request-bind request (swa-env data route routes time-start)
+  (define (color-respond request)
+    (sph-info-request-bind request (swa-env data route routes time-start)
       (respond-shtml
         (shtml-layout (shtml-calc-color) #:body-class
           "calc-color" #:title
           (route-title route) #:css
-          (client-static swa-env (q css) (list-q default calculator-color)) #:js
-          (client-static swa-env (q js) (list-q default calculator-color)) #:links
-          (top-bar-links routes "/calculator" "/color"))
-        (cache-headers time-start)))))
+          (client-static swa-env (q css) (list-q default color)) #:js
+          (client-static swa-env (q js) (list-q default color)) #:links default-links)
+        (cache-headers time-start))))
+
+  (define color-routes (list (route-new "/color" "web color calculator" color-respond))))

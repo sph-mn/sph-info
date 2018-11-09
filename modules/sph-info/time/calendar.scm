@@ -1,6 +1,6 @@
 (library (sph-info time calendar)
   (export
-    time-calendar-respond)
+    time-calendar-routes)
   (import
     (guile)
     (sph)
@@ -19,8 +19,7 @@
     (sph web app client)
     (sph web app http)
     (sph web shtml)
-    (srfi srfi-41)
-    (ytilitu helper))
+    (srfi srfi-41))
 
   (define (calendar-dates year) "integer -> (vector:time-date integer:week-number)"
     (stream->list
@@ -44,7 +43,7 @@
       (q (td (@ (class week-n)) ""))
       (map (l (a) (list (q td) a)) (list "mo" "tu" "we" "th" "fr" "sa" "su"))))
 
-  (define (shtml-calendar year)
+  (define (shtml-calendar year web-base-path)
     (let* ((current-time (utc-current)) (current-date (utc->date current-time)))
       (shtml-section 0 (list "gregorian calendar for the year " (year-input year))
         (list
@@ -54,14 +53,14 @@
                 (@
                   (href
                     (unquote
-                      (string-append web-basename "/time/calendar/" (number->string (- year 1))))))
+                      (string-append web-base-path "time/calendar/" (number->string (- year 1))))))
                 "previous")
               "|"
               (a
                 (@
                   (href
                     (unquote
-                      (string-append web-basename "/time/calendar/" (number->string (+ year 1))))))
+                      (string-append web-base-path "time/calendar/" (number->string (+ year 1))))))
                 "next")))
           (qq
             (div (@ (id days-n)) "days: "
@@ -109,13 +108,15 @@
   (define (time-calendar-respond request)
     (let*
       ( (swa-env (swa-http-request-swa-env request)) (data (swa-http-request-data request))
+        (path (ht-ref-q data path)) (web-base-path (ht-ref-q data web-base-path))
         (year
-          (match-path (string-drop-prefix web-basename (swa-http-request-path request))
-            (("time" "calendar" (? string->number year)) (string->number year))
+          (match-path path (("time" "calendar" (? string->number year)) (string->number year))
             (("time" "calendar") (utc-year (utc-current))))))
       (respond-shtml
-        (shtml-layout (shtml-calendar year) #:title
+        (shtml-layout (shtml-calendar year web-base-path) #:title
           (string-append "gregorian calendar for the year " (number->string year)) #:js
           (client-static swa-env (q js) (list-q default time-calendar)) #:css
-          (client-static swa-env (q css) (list-q default time-calendar)) #:links
-          (top-bar-links (ht-ref-q data routes) "/time" "/calendar"))))))
+          (client-static swa-env (q css) (list-q default time-calendar)) #:links default-links))))
+
+  (define time-calendar-routes
+    (list (route-new "/time/calendar" "gregorian calendar" time-calendar-respond))))

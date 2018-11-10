@@ -622,6 +622,7 @@
 "use strict";
 
 module.define("sph-info.processor", function(exportx) {
+    var text_update_delay = 250;
     function xhr_request(form, text, c) {
         var xhr = new XMLHttpRequest();
         xhr.open("post", encodeURI(form.action));
@@ -645,7 +646,7 @@ module.define("sph-info.processor", function(exportx) {
                         return xhr_request(form, input_text.value, function(response_text) {
                             return output_text.value = response_text;
                         });
-                    }, 500));
+                    }, text_update_delay));
                 });
             }
             if (file_forms) {

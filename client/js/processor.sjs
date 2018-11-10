@@ -1,5 +1,5 @@
 (module.define "sph-info.processor"
-  (l (exportx)
+  (l (exportx) (define text-update-delay 250)
     (define (xhr-request form text c) (define xhr (new XMLHttpRequest))
       (xhr.open "post" (encodeURI form.action))
       (set xhr.onload
@@ -22,7 +22,7 @@
                   (nullary
                     (xhr-request form input-text.value
                       (l (response-text) (set output-text.value response-text))))
-                  500)))))
+                  text-update-delay)))))
         (if file-forms
           (file-forms.forEach
             (l (form) (define input-file (form.querySelector ".input-file"))

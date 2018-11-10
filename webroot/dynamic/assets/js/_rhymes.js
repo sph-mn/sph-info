@@ -1,1 +1,49 @@
-"use strict";module.define("sph-info.other.rhymes",function(){var o="/dynamic/json/rhymes/suggest/";function s(e){return(n=document.createElement("span")).setAttribute("style","font-style:italic"),n.innerHTML=e,n;var n}var i=document.getElementById("word"),e=document.getElementById("get"),u=document.getElementById("result");function t(){u.innerHTML="";var e,n,t,r=i.value;if(r)return r&&r.length<30&&/^[a-zA-Z]+$/.test(r)?(e=r,n=function(e){return"object"==typeof e&&e.length?u.innerHTML=e.join(", "):(u.innerHTML="",u.appendChild(s("no results"))),console.log(u,s("no results"))},(t=new XMLHttpRequest).open("get",encodeURI(o+e)),t.onload=function(){if(200===t.status)return n(JSON.parse(t.responseText))},t.send()):(u.innerHTML="",u.appendChild(s("invalid word")))}return i.addEventListener("keypress",function(e,n){if(e&&"Enter"===e.key)return t()}),e.addEventListener("click",t)});
+"use strict";
+
+module.define("sph-info.other.rhymes", function() {
+    var suggest_path = "/dynamic/json/rhymes/suggest/";
+    function italic(a) {
+        return function(b) {
+            b.setAttribute("style", "font-style:italic");
+            b.innerHTML = a;
+            return b;
+        }(document.createElement("span"));
+    }
+    var input_word = document.getElementById("word"), button_get = document.getElementById("get"), result_container = document.getElementById("result");
+    function get_rhyming_words_ampersand(word, c) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", encodeURI(suggest_path + word));
+        xhr.onload = function() {
+            if (200 === xhr.status) {
+                return c(JSON.parse(xhr.responseText));
+            }
+        };
+        return xhr.send();
+    }
+    function update_rhyming_words() {
+        result_container.innerHTML = "";
+        var word = input_word.value;
+        if (word) {
+            if (word && word.length < 30 && /^[a-zA-Z]+$/.test(word)) {
+                return get_rhyming_words_ampersand(word, function(result) {
+                    if ("object" === typeof result && result.length) {
+                        result_container.innerHTML = result.join(", ");
+                    } else {
+                        result_container.innerHTML = "";
+                        result_container.appendChild(italic("no results"));
+                    }
+                    return console.log(result_container, italic("no results"));
+                });
+            } else {
+                result_container.innerHTML = "";
+                return result_container.appendChild(italic("invalid word"));
+            }
+        }
+    }
+    input_word.addEventListener("keypress", function(event, other) {
+        if (event && "Enter" === event.key) {
+            return update_rhyming_words();
+        }
+    });
+    return button_get.addEventListener("click", update_rhyming_words);
+});

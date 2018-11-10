@@ -48,7 +48,6 @@
               (if (file-exists? source-path) (delete-file source-path)) a)))
         (download-path (string-append web-temp-path target-file-name))
         (download-file-name (file-name-f file-name options)))
-      (debug-log download-path download-file-name)
       (nginx-respond-file-download download-path download-file-name)))
 
   (define* (file->download-form #:key accept-file-types)
@@ -56,7 +55,9 @@
       (accept
         (if accept-file-types (list-qq (accept (unquote (string-join accept-file-types ",")))) null))
       (qq
-        (form (@ (method post) (enctype "multipart/form-data"))
+        (form
+          (@ (method post) (enctype "multipart/form-data")
+            (class "sph-info-processor file-to-download"))
           (label (@ (class file)) (div "select file")
             (input (@ (class input-file) (name file) (type file) (unquote-splicing accept))))
           (br) (button (@ (type submit)) "download result")))))
@@ -68,10 +69,12 @@
         (options
           (filter-map (l (a) (false-if-exception (tail (html-multipart-form-data-ref data a))))
             option-names)))
-      (respond-type (q text) (f data-text (swa-http-request-client request)))))
+      (respond-type (q text) (l (client) (f content client)))))
 
   (define (text->text-form)
     (qq
-      (form (@ (method post) (enctype "multipart/form-data"))
-        (div (@ (class text)) (textarea (@ (class input-text) (name text)) ""))
+      (form
+        (@ (method post) (action "?text")
+          (class "sph-info-processor text-to-text") (enctype "multipart/form-data"))
+        (div "insert text") (div (@ (class text)) (textarea (@ (class input-text) (name text)) ""))
         (div (@ (class text)) (textarea (@ (class output-text)) ""))))))

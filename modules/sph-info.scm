@@ -6,6 +6,7 @@
     (rnrs eval)
     (sph)
     (sph-info color)
+    (sph-info encoder)
     (sph-info helper)
     (sph-info other)
     (sph-info svn)
@@ -24,9 +25,7 @@
     (sph vector)
     (sph web app)
     (sph web app client)
-    (sph web app http)
-    (sph-info encoder)
-    )
+    (sph web app http))
 
   (define css (list "/css/sph.css"))
 
@@ -39,7 +38,8 @@
     (units js (#f "foreign/jquery" "foreign/select2" "units") css (#f "foreign/select2" "units"))
     (table-ascii css ("table")) (time-calendar css ("time/calendar") js ("time/calendar"))
     (color css (#f "color") js (#f "foreign/underscore" "foreign/tinycolor" "color"))
-    (text css (#f "text") js (#f "text")) (processor css (#f "processor") js (#f "processor"))
+    (text css (#f "text") js (#f "text"))
+    (processor css (#f "processor") js (#f "foreign/underscore" "processor"))
     (dice css (#f "dice") js (#f "foreign/underscore" "dice")) (yes-or-no css (#f "yes-or-no"))
     (rhymes css (#f "rhymes") js (#f "rhymes")))
 

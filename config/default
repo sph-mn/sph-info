@@ -1,5 +1,5 @@
 client-output-path "webroot/dynamic/"
-processed-path "webroot/temp/processed/"
+processed-path "webroot/dynamic/temp/"
 web-base-path "/dynamic/"
 server
   socket-name "sph-info"

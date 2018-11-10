@@ -1,4 +1,5 @@
-client-file-when newer
+client-file-when always
+mode development
 server
   parallelism 1
   exception-key none

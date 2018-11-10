@@ -6,6 +6,7 @@
     (sph)
     (sph-info helper)
     (sph-info processor)
+    (sph alist)
     (sph base91)
     (sph hashtable)
     (sph io)
@@ -30,16 +31,19 @@
       ( (get)
         (let (swa-env (swa-http-request-swa-env request))
           (respond-shtml
-            (shtml-layout (file->download-form) #:title
+            (shtml-layout (list (file->download-form) " or " (text->text-form)) #:title
               (route-title (ht-ref-q (swa-http-request-data request) route)) #:css
               (client-static swa-env (q css) (list-q default processor)) #:js
               (client-static swa-env (q js) (list-q default processor)) #:body-class "encode-base91"))))
       ( (post)
-        (file->download request
-          (l (source-path target-path options)
-            (call-with-output-file target-path
-              (l (port) (display (base91-encode (file->bytevector source-path)) port)) #:binary #t))
-          (l (file-name options) (string-append file-name ".base91"))))
+        (let (is-text (alist-ref (swa-http-request-query request) "text"))
+          (if is-text (text->text request (l (input-text client) (display input-text client)))
+            (file->download request
+              (l (source-path target-path options)
+                (call-with-output-file target-path
+                  (l (port) (display (base91-encode (file->bytevector source-path)) port)) #:binary
+                  #t))
+              (l (file-name options) (string-append file-name ".base91"))))))
       (else (respond 405))))
 
   (define encoder-routes (list (route-new "/base91-encode" "base91 encode" encode-base91-respond))))

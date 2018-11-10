@@ -1,1 +1,36 @@
-table.ascii{text-align:left;display:inline;}table.ascii:not(:first-of-type){margin-left:2rem;}table.ascii td,th{padding-left:0.5rem;padding-right:0.5rem;}table.ascii th{font-weight:700;}table.ascii td{font-style:italic;}table.ascii td:first-child{font-weight:700;font-style:normal;}table.ascii tr{border-bottom-style:solid;border-color:gray;border-width:1px;}table.ascii tr:first-child{border-top-style:solid;}
+table.ascii {
+text-align:left;
+display:inline;
+}
+
+table.ascii:not(:first-of-type) {
+margin-left:2rem;
+}
+
+table.ascii td,th {
+padding-left:0.5rem;
+padding-right:0.5rem;
+}
+
+table.ascii th {
+font-weight:700;
+}
+
+table.ascii td {
+font-style:italic;
+}
+
+table.ascii td:first-child {
+font-weight:700;
+font-style:normal;
+}
+
+table.ascii tr {
+border-bottom-style:solid;
+border-color:gray;
+border-width:1px;
+}
+
+table.ascii tr:first-child {
+border-top-style:solid;
+}

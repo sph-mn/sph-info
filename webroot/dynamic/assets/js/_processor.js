@@ -621,49 +621,38 @@
 
 "use strict";
 
-module.define("sph-info.processor", function(exportx) {
-    var text_update_delay = 250;
-    function xhr_request(form, text, c) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("post", encodeURI(form.action));
-        xhr.onload = function() {
-            if (200 === xhr.status) {
-                return c(xhr.responseText);
-            } else {
-                return alert("background request error " + xhr.status);
+sph_info = window.sph_info || {};
+
+sph_info.processor = {
+    container: null,
+    formats: null,
+    text_update_delay: 250,
+    init_formats_select: function() {
+        return function(select) {
+            for (var i = 0; i < select.options.length; i = 1 + i) {
+                (function(option) {
+                    if (sph_info.processor.formats === option.value) {
+                        return option.selected = true;
+                    }
+                })(select.options[i]);
             }
-        };
-        return xhr.send(new FormData(form));
+            return select.addEventListener("change", function(event) {
+                "remove the last two elements from path and add a new from/to path";
+                return window.location.pathname = sph_info.processor.path + "/" + event.target.value;
+            });
+        }(this.container.querySelector("select.formats"));
+    },
+    init: function() {
+        this.container = document.querySelector(".sph-info-processor");
+        if (!this.container) {
+            return;
+        }
+        (function(path_array) {
+            sph_info.processor.formats = _.last(path_array, 2).join("/");
+            return sph_info.processor.path = _.initial(path_array, 2).join("/");
+        })(window.location.pathname.split("/"));
+        return this.init_formats_select();
     }
-    function initialise_forms() {
-        return function(text_forms) {
-            var file_forms = document.querySelectorAll("form.sph-info-processor.file-to-download");
-            console.log(text_forms, file_forms);
-            if (text_forms) {
-                text_forms.forEach(function(form) {
-                    var input_text = form.querySelector(".input-text"), output_text = form.querySelector(".output-text");
-                    return input_text.addEventListener("keyup", _.debounce(function() {
-                        return xhr_request(form, input_text.value, function(response_text) {
-                            return output_text.value = response_text;
-                        });
-                    }, text_update_delay));
-                });
-            }
-            if (file_forms) {
-                return file_forms.forEach(function(form) {
-                    var input_file = form.querySelector(".input-file");
-                    return form.addEventListener("submit", function(event) {
-                        if (!input_file.value) {
-                            alert("please choose a file first");
-                            return event.preventDefault();
-                        }
-                    });
-                });
-            }
-        }(document.querySelectorAll("form.sph-info-processor.text-to-text"));
-    }
-    initialise_forms();
-    return exportx({
-        initialise_forms: initialise_forms
-    });
-});
+};
+
+sph_info.processor.init();

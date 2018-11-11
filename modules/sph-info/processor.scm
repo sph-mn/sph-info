@@ -1,26 +1,32 @@
 (library (sph-info processor)
   (export
-    file->download
-    file->download-form
+    file->file
+    file->file-form
+    processor-routes
+    text->file
+    text->file-form
     text->text
     text->text-form)
   (import
     (guile)
+    (ice-9 match)
     (sph)
     (sph-info helper)
     (sph alist)
     (sph filesystem)
     (sph hashtable)
-    (sph other)
+    (sph json)
+    (sph list)
     (sph web app)
+    (sph web app client)
     (sph web app http)
     (sph web html))
 
-  (define sph-info-processor-description "helpers to process input data from file or textarea")
+  (define sph-info-processor-description "helpers to process input data from file or textarea.")
   (define web-temp-path "/dynamic/temp/")
   (define default-processed-path "webroot/temp/")
 
-  (define* (file->download request f file-name-f #:optional (option-names null))
+  (define* (file->file request f file-name-f #:optional (option-names null))
     "default-file-name: file name to use for when no file name was send with the form data
      option-names: names of other fields to get from the form data"
     (and-let*
@@ -50,19 +56,17 @@
         (download-file-name (file-name-f file-name options)))
       (nginx-respond-file-download download-path download-file-name)))
 
-  (define* (file->download-form #:key accept-file-types)
+  (define* (file->file-form #:key accept-file-types)
     (let
       (accept
         (if accept-file-types (list-qq (accept (unquote (string-join accept-file-types ",")))) null))
       (qq
-        (form
-          (@ (method post) (enctype "multipart/form-data")
-            (class "sph-info-processor file-to-download"))
+        (form (@ (method post) (enctype "multipart/form-data") (class "file-to-file"))
           (label (@ (class file)) (div "select file")
             (input (@ (class input-file) (name file) (type file) (unquote-splicing accept))))
           (br) (button (@ (type submit)) "download result")))))
 
-  (define* (text->text request f #:key (option-names null))
+  (define* (text->text request f #:optional (option-names null))
     (and-let*
       ( (data (html-read-multipart-form-data (swa-http-request-client request) #t))
         (data-text (html-multipart-form-data-ref data "text")) (content (tail data-text))
@@ -74,7 +78,98 @@
   (define (text->text-form)
     (qq
       (form
-        (@ (method post) (action "?text")
-          (class "sph-info-processor text-to-text") (enctype "multipart/form-data"))
+        (@ (method post) (action "?io=text-to-text")
+          (class "text-to-text") (enctype "multipart/form-data"))
         (div "insert text") (div (@ (class text)) (textarea (@ (class input-text) (name text)) ""))
-        (div (@ (class text)) (textarea (@ (class output-text)) ""))))))
+        (div (@ (class text)) (textarea (@ (class output-text)) "")))))
+
+  (define* (text->file-form) null)
+  (define* (file->file request f file-name-f #:optional (option-names null)) null)
+
+  (define (processor-config->format-selects a c)
+    (if (> 30 (length a))
+      (c
+        (qq
+          (select (@ (class formats))
+            (unquote
+              (map-apply
+                (l (from to io-types . rest)
+                  (qq
+                    (option
+                      (@ (value (unquote (string-append from "/" to)))
+                        (data-io (unquote (string-join (map symbol->string io-types) " "))))
+                      (unquote (string-append from " -> " to)))))
+                a))))
+        #f)
+      (let
+        ( (suggestions
+            (map-apply
+              (l (from to io-types . rest)
+                (pair (string-append from " -> " to)
+                  (string-join (map symbol->string io-types) " ")))
+              a)))
+        (c (qq (select (@ (class formats suggest)) "")) suggestions))))
+
+  (define
+    (processor-respond-f select suggestions title from to io-types options file-f file-name-f
+      text-f)
+    (let
+      (forms
+        (list (q div) (q (@ (class "sph-info-processor")))
+          ; load url on select change
+          select
+          (interleave
+            ; a separate form for each one-to-one conversion
+            (map
+              (l (a)
+                (case a
+                  ((file-to-file) (file->file-form))
+                  ((text-to-text) (text->text-form))
+                  ((text-to-file) (text->file-form))
+                  (else (raise (q unsupported-io-type)))))
+              io-types)
+            " or ")))
+      (l (request)
+        (case (swa-http-request-method request)
+          ( (get)
+            (respond-shtml
+              (let (swa-env (swa-http-request-swa-env request))
+                (shtml-layout forms #:title
+                  title #:css
+                  (client-static swa-env (q css) (list-q default processor)) #:js
+                  (client-static swa-env (q js) (list-q default processor))))))
+          ( (post)
+            (and-let* ((io (alist-ref-q (swa-http-request-query request) "io")))
+              (cond
+                ((string= "file-to-file" io) (file->file request file-f file-name-f options))
+                ((string= "text-to-text" io) (text->text request text-f options))
+                ((string= "text-to-file" io) (text->file request file-f file-name-f options))
+                (else (respond 422)))))
+          (else (respond 405))))))
+
+  (define (processor-routes prefix . config)
+    "create routes for forms and form-handling of input output according to config.
+     config:
+       (string string ((symbol . symbol) ...) (string ...) procedure procedure procedure) ...
+       (from to ((input . output) ...):io-types add-form-fields file-f file-name-f text-f) ...
+     route urls: prefix/from/to
+     io-types: file file, text text, text file, number text
+     # features
+     * automatically uses an autosuggest select with route prefix/suggest if there are many possible combinations"
+    (processor-config->format-selects config
+      (l (select suggestions)
+        (append
+          (map-apply
+            (l (from to . rest)
+              (let (title (string-append from "->" to))
+                (route-new (string-append prefix "/" from "/" to) title
+                  (apply processor-respond-f select suggestions title from to rest))))
+            config)
+          (list
+            (route-new (string-append prefix "/suggest") #f
+              (l (request)
+                (let (word (last (string-split (swa-http-request-path request) #\/)))
+                  (if (string= "suggest" word) (respond 404)
+                    (respond-type (q json)
+                      (scm->json-string
+                        (filter (l (a) (string-prefix? word (first a))) suggestions)))))))))))))

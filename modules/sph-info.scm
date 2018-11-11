@@ -78,8 +78,9 @@
         ;formatter-routes text-routes
         encoder-routes
         ;converter-routes
-        units-routes other-routes
-        table-routes time-calculator-routes time-calendar-routes color-routes)))
+        ; other-routes
+        ;table-routes time-calculator-routes time-calendar-routes color-routes
+        )))
 
   (define paths (map vector-first routes))
 

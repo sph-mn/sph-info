@@ -1,7 +1,11 @@
 "/*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}"
 ("html" font-size "12px" line-height "15px" font-family "envypn, gohufont, monospace")
 ("h1,h2,h3,h4,h5,h6" font-weight bold)
-("h1~:not(h1),h2~:not(h2),h3~:not(h3),h4~:not(h4),h5~:not(h5),h6~:not(h6)" margin-left "2ch")
+
+("section >"
+  ( ("h1~:not(h1)" "h2~:not(h2)" "h3~:not(h3)" "h4~:not(h4)" "h5~:not(h5)" "h6~:not(h6)")
+    margin-left "2ch"))
+
 ((".middle" "section > div") ("> *" margin-top "0.25rem") ("> section" margin-top "1rem"))
 ("pre" margin-top "0.5rem" padding-top "0.25rem" padding-bottom "0.5rem")
 (".middle" ("> .mtime" color "#808080" position "fixed" top 0 right 0 padding-top 0))
@@ -33,33 +37,12 @@
 
 ;--sph-info
 
-("body.svn" background-color white
-  line-height "22px"
-  ("h1" font-size "2rem") ("h2" font-size "1.5rem")
-  ("h3" font-size "1.25rem")
-  (".middle" text-align center
-    ("ul" max-width "100%" ("li::before" content none)) (".input" ("[type=submit]" font-weight bold))
-    ("object" margin-bottom "6rem" margin-top "2rem")
-    (".results" margin-bottom "3rem"
-      font-size "1.5rem" padding "1rem" margin-top "2rem" background-color "#e0e4e8" color "#202428")
-    (".code" margin auto
-      ("pre" margin auto font-size "1rem" padding "2rem" width "80rem" text-align left))))
-
-("body.phrase-generator" (".results" padding-top "1rem" padding-bottom "1rem"))
-(".music-listings .d" color "gray")
-
 ("input,textarea,select" background-color "#fff"
   font-size "1rem"
   border "1px solid #048" color "#2b2b2b" padding-left "0.25rem" padding-bottom "0.25rem")
 
-("textarea" width "500px" height "250px")
 ("select,a,button" cursor pointer)
-
-(".library-exports" (".doc-index li" display inline)
-  (".doc-index li:not(:first-child)" margin-left "2ch")
-  (".doc-b" padding-top "0.5rem"
-    (".name" font-weight bold) (".first-sig" font-style italic)
-    (".rest-sig" font-style italic margin-left "2ch" max-width "80ch")
-    (".description" padding-top "0.25rem" margin-left "2ch" max-width "80ch")))
-
-(".audio-playlist label" display inline-block margin-right "1rem")
+(".sph-info-processor > *" margin-top "1rem")
+(".sph-info-units > *" margin-top "1rem")
+(".sph-info-units label" display block)
+(".middle > *" margin-top "1rem")

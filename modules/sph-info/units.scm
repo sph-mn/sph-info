@@ -109,7 +109,7 @@
   (define (valid-unit-name? a) (regexp-exec regexp-alphanumeric a))
   (define (valid-unit-value? a) (regexp-exec regexp-numeric a))
 
-  (define (units-names-definitions)
+  (define (units-names-other)
     (let ((regexp-line (make-regexp "^[a-z]+ ")) (exclude (units-exclude-set)))
       (call-with-input-file (string-append units-path-prefix "definitions.units")
         (l (port)
@@ -132,8 +132,7 @@
                 (if a (pair (string-trim-right (match:substring a)) r) r)))
             (list) port)))))
 
-  (define units-names-all
-    (delete-duplicates (append (units-names-definitions) (units-names-currencies))))
+  (define units-names-all (delete-duplicates (append (units-names-other) (units-names-currencies))))
 
   (define (display-dependency-errors)
     (if (not path-units)
@@ -158,24 +157,6 @@
           to)
         #\newline)
       1))
-
-  (define* (shtml-units #:optional from to from-value to-value)
-    (shtml-section 0 "unit converter"
-      (qq
-        ( (p (@ (class "small-font")) "supports more than 1500 units including currencies."
-            (br)
-            "enter a value in any of the value fields, press enter, and the other value updates automatically."
-            (br)
-            " select the units to use by typing their names into the unit fields and selecting it.")
-          (br)
-          (div
-            (input
-              (@ (id value-from) (placeholder "value here") (value (unquote (or from-value "")))))
-            (select (@ (id unit-from) (data-selected (unquote (or from "")))) (option "")))
-          (div "==")
-          (div
-            (input (@ (id value-to) (placeholder "value here") (value (unquote (or to-value "")))))
-            (select (@ (id unit-to) (data-selected (unquote (or to "")))) (option "")))))))
 
   (define (units-get-arguments request c)
     "request procedure:{from to from-value to-value -> any} -> any"
@@ -214,19 +195,35 @@
     (sph-info-request-bind request (swa-env data route time-start routes)
       (units-get-arguments request
         (l (from to from-value to-value)
-          (respond-shtml
-            (shtml-layout (shtml-units from to from-value to-value) #:body-class
-              "units" #:title
-              (string-append "convert units") #:css
-              (client-static swa-env (q css) (list-q default units)) #:js
-              (client-static swa-env (q js) (list-q default units)) #:links default-links)
-            (cache-headers time-start))))))
+          (let (title "converter between units")
+            (respond-shtml
+              (shtml-layout
+                (list (qq (h1 (unquote title)))
+                  (qq
+                    (div (@ (class "sph-info-units"))
+                      (p (@ (class "small-font"))
+                        "supports more than 1500 units including currencies." (br)
+                        "enter a value in any of the value fields, press enter, and the other value updates automatically.")
+                      (label (@ (class units)) "from "
+                        (select (@ (id unit-to) (data-selected (unquote (or to "")))) (option ""))
+                        " to "
+                        (select (@ (id unit-from) (data-selected (unquote (or from ""))))
+                          (option "")))
+                      (label (@ (class values))
+                        (input (@ (id value-from) (value (unquote (or from-value "")))))
+                        (span (@ (class unit-from)) (unquote (or from "")))
+                        (input (@ (id value-to) (value (unquote (or to-value "")))))
+                        (span (@ (class unit-to)) (unquote (or to "")))))))
+                #:title title
+                #:css (client-static swa-env (q css) (list-q default units))
+                #:js (client-static swa-env (q js) (list-q default units)) #:links default-links)
+              (cache-headers time-start)))))))
 
   (display-dependency-errors)
 
   (define units-routes
     (if path-units
-      (list (route-new "/json/units/suggest" #f units-suggest-respond)
+      (list (route-new "/units/suggest" #f units-suggest-respond)
         (route-new "/units" "units" units-respond)
-        (route-new "/json/units/convert" #f units-convert-respond))
+        (route-new "/units" #f units-convert-respond))
       null)))

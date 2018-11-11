@@ -35,13 +35,14 @@
       ( (unquote (alist-q utc-leap-second-table ses-utc-leap-second-table)) "foreign/underscore"
         "foreign/moment" "time/calculator")
       css ("time/calculator"))
-    (units js (#f "foreign/jquery" "foreign/select2" "units") css (#f "foreign/select2" "units"))
+    (units js ("foreign/underscore" "foreign/jquery" "foreign/select2" "units")
+      css ("foreign/select2" "units"))
     (table-ascii css ("table")) (time-calendar css ("time/calendar") js ("time/calendar"))
-    (color css (#f "color") js (#f "foreign/underscore" "foreign/tinycolor" "color"))
-    (text css (#f "text") js (#f "text"))
-    (processor css (#f "processor") js (#f "foreign/underscore" "processor"))
-    (dice css (#f "dice") js (#f "foreign/underscore" "dice")) (yes-or-no css (#f "yes-or-no"))
-    (rhymes css (#f "rhymes") js (#f "rhymes")))
+    (color css ("color") js ("foreign/underscore" "foreign/tinycolor" "color"))
+    (text css ("text") js ("text"))
+    (processor css ("processor") js ("foreign/underscore" "processor"))
+    (dice css ("dice") js ("foreign/underscore" "dice")) (yes-or-no css ("yes-or-no"))
+    (rhymes css ("rhymes") js ("rhymes")))
 
   (define (app-init swa-env)
     ;(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))
@@ -76,7 +77,7 @@
       (append
         ;minifier-routes
         ;formatter-routes text-routes
-        encoder-routes
+        units-routes encoder-routes
         ;converter-routes
         ; other-routes
         ;table-routes time-calculator-routes time-calendar-routes color-routes

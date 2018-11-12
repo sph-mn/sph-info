@@ -6171,9 +6171,8 @@ function sph_info_units_init() {
             delay: text_update_delay,
             minimumInputLength: 1
         }
-    };
+    }, unit_from_select = container.find(".units .unit-from"), unit_to_select = container.find(".units .unit-to");
     function init_unit_selects(base_path) {
-        var unit_from_select = container.find(".units .unit-from"), unit_to_select = container.find(".units .unit-to");
         unit_from_select.select2(select2_options);
         unit_to_select.select2(select2_options);
         [ unit_from_select, unit_to_select ].forEach(function(a) {
@@ -6191,9 +6190,9 @@ function sph_info_units_init() {
     }
     function init_value_inputs() {
         var value_from_input = container.find(".values .value-from"), value_to_input = container.find(".values .value-to");
-        function xhr_convert(param_name, value, c) {
+        function xhr_convert(from, to, value, c) {
             var xhr = new XMLHttpRequest();
-            xhr.open("get", encodeURI("?" + param_name + "=" + value));
+            xhr.open("get", encodeURI(base_path + "/" + from + "/" + to + "/" + value + "?json"));
             xhr.onload = function() {
                 if (200 === xhr.status) {
                     return c(JSON.parse(xhr.responseText));
@@ -6201,17 +6200,21 @@ function sph_info_units_init() {
             };
             return xhr.send();
         }
-        function on_change_f(param_name) {
+        function on_change_f(value_input, result_input, is_from) {
             return function(event) {
-                console.log("change", param_name);
-                var value_from = value_from_input.val(), value_from = value_from && jQuery.isNumeric(value_from) && value_from, value_to = value_to_input.val(), value_to = value_to && jQuery.isNumeric(value_to) && value_to;
-                return xhr_convert(param_name, value_from, function(result) {
-                    return console.log(result[0]);
+                var value = value_input.val(), value = value && jQuery.isNumeric(value) && value;
+                if (!value) {
+                    return;
+                }
+                var from = unit_from_select.val(), to = unit_to_select.val();
+                return xhr_convert(is_from ? from : to, is_from ? to : from, value, function(result) {
+                    return result_input.val(result[0]);
                 });
             };
         }
-        value_from_input.on("keyup", _.debounce(on_change_f("a"), text_update_delay));
-        return value_to_input.on("keyup", _.debounce(on_change_f("b"), text_update_delay));
+        value_from_input.on("keyup", _.debounce(on_change_f(value_from_input, value_to_input, true), text_update_delay));
+        value_to_input.on("keyup", _.debounce(on_change_f(value_to_input, value_from_input, false), text_update_delay));
+        return value_from_input.trigger("keyup");
     }
     init_unit_selects(base_path);
     return init_value_inputs();

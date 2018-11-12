@@ -418,16 +418,25 @@ color:#fff;
 border-color:#5897fb;
 }
 
-select {
+.sph-info-units select,.values input {
 width:12rem;
 }
 
-input {
-margin-right:1rem;
+.sph-info-units table {
+margin-top:2rem;
 }
 
-.select2-container li {
-margin-left:0;
+.sph-info-units .values input {
+font-weight:700;
+padding:0.5rem;
+}
+
+.sph-info-units td {
+padding:0.5rem;
+}
+
+.sph-info-units th {
+padding:0 0.5rem;
 }
 
 .select2-container .select2-search--inline,.select2-container--default[dir=rtl] .select2-selection--single .select2-selection__clear,.select2-container--classic[dir=rtl] .select2-selection--single .select2-selection__clear {

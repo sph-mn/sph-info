@@ -30,16 +30,18 @@
     (define value-from-input (container.find ".values .value-from")
       value-to-input (container.find ".values .value-to"))
     (define (xhr-convert from to value c) (define xhr (new XMLHttpRequest))
-      (xhr.open "get" (encodeURI (+ base-path "/" from "/" to "/" value)))
+      (xhr.open "get" (encodeURI (+ base-path "/" from "/" to "/" value "?json")))
       (set xhr.onload (nullary (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
-    (define (on-change-f value-input is-from)
+    (define (on-change-f value-input result-input is-from)
       (l (event) (define value (value-input.val) value (and value (jQuery.isNumeric value) value))
-        (if value
-          (begin (define from (unit-from-select.val) to (unit-to-select.val))
-            (xhr-convert (if* is-from from to) (if* is-from to from)
-              value (l (result) (console.log (get result 0))))))))
-    (value-from-input.on "keyup" (_.debounce (on-change-f value-from-input #t) text-update-delay))
-    (value-to-input.on "keyup" (_.debounce (on-change-f value-to-input #f) text-update-delay)))
+        (if (not value) return) (define from (unit-from-select.val) to (unit-to-select.val))
+        (xhr-convert (if* is-from from to) (if* is-from to from)
+          value (l (result) (result-input.val (get result 0))))))
+    (value-from-input.on "keyup"
+      (_.debounce (on-change-f value-from-input value-to-input #t) text-update-delay))
+    (value-to-input.on "keyup"
+      (_.debounce (on-change-f value-to-input value-from-input #f) text-update-delay))
+    (value-from-input.trigger "keyup"))
   (init-unit-selects base-path) (init-value-inputs))
 
 (sph-info-units-init)

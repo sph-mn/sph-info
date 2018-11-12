@@ -6143,7 +6143,7 @@
 "use strict";
 
 function sph_info_units_init() {
-    var text_update_delay = 250, path_array = window.location.pathname.split("/"), formats = _.last(path_array, 2).join("/"), path = _.initial(path_array, 2).join("/"), suggest_path = "json/units/suggest", convert_path = "json/units/convert", select2_options = {
+    var path_array = window.location.pathname.split("/"), base_path = _.first(path_array, 1 + _.indexOf(path_array, "units")).join("/"), text_update_delay = 250, container = jQuery(".sph-info-units"), select2_options = {
         language: {
             searching: function() {
                 return "searching...";
@@ -6152,7 +6152,7 @@ function sph_info_units_init() {
         placeholder: "unit here",
         ajax: {
             url: function(params) {
-                return web_base_path + suggest_path + "/" + (params.term ? params.term : "");
+                return base_path + "/suggest" + (params.term ? "/" + params.term : "");
             },
             data: function(params) {
                 return false;
@@ -6168,73 +6168,53 @@ function sph_info_units_init() {
                 };
             },
             dataType: "json",
-            delay: 250,
+            delay: text_update_delay,
             minimumInputLength: 1
         }
-    }, selects = $("#unit-from,#unit-to").select2(select2_options), inputs = $("#value-from,#value-to");
-    function unit_convert_ampersand(from, to, value, c) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("get", encodeURI(web_base_path + convert_path + "/" + from + "/" + to + "/" + value));
-        xhr.onload = function() {
-            if (200 === xhr.status) {
-                return c(JSON.parse(xhr.responseText));
-            }
-        };
-        return xhr.send();
-    }
-    function on_change(event) {
-        return function(unit_from, unit_to) {
+    };
+    function init_unit_selects(base_path) {
+        var unit_from_select = container.find(".units .unit-from"), unit_to_select = container.find(".units .unit-to");
+        unit_from_select.select2(select2_options);
+        unit_to_select.select2(select2_options);
+        [ unit_from_select, unit_to_select ].forEach(function(a) {
+            var selected = a.attr("data-selected");
+            return selected && a.append(new Option(selected, selected, true, true)).trigger("change");
+        });
+        function on_change(event) {
+            var unit_from = unit_from_select.val(), unit_to = unit_to_select.val();
             if (unit_from && unit_to) {
-                return function(input_from) {
-                    var input_to = inputs.eq(1);
-                    var value_from = input_from.val();
-                    var value_to = input_to.val();
-                    var value_from_valid = jQuery.isNumeric(value_from);
-                    var value_to_valid = jQuery.isNumeric(value_to);
-                    switch (event.target.id) {
-                      case "value-from":
-                        return unit_convert_ampersand(unit_from, unit_to, value_from, function(result) {
-                            return input_to.val(result[0]);
-                        });
-                        break;
-
-                      case "value-to":
-                        if (value_to_valid) {
-                            return unit_convert_ampersand(unit_to, unit_from, value_to, function(result) {
-                                return input_from.val(result[0]);
-                            });
-                        }
-                        ;
-                        break;
-
-                      case "unit-from":
-                        if (value_from) {
-                            return unit_convert_ampersand(unit_from, unit_to, value_from, function(result) {
-                                return input_to.val(result[0]);
-                            });
-                        }
-                        ;
-                        break;
-
-                      case "unit-to":
-                        if (value_from) {
-                            return unit_convert_ampersand(unit_from, unit_to, value_from, function(result) {
-                                return input_to.val(result[0]);
-                            });
-                        }
-                        ;
-                        break;
-                    }
-                }(inputs.eq(0));
+                return window.location.pathname = base_path + "/" + unit_from + "/" + unit_to;
             }
-        }(selects.eq(0).val(), selects.eq(1).val());
+        }
+        unit_from_select.on("change", on_change);
+        return unit_to_select.on("change", on_change);
     }
-    selects.on("change", on_change);
-    inputs.on("keyup", _.debounce(on_change, text_update_delay));
-    return selects.each(function(index, a) {
-        var selected = a.getAttribute("data-selected");
-        return selected && jQuery(a).append(new Option(selected, selected, true, true)).trigger("change");
-    });
+    function init_value_inputs() {
+        var value_from_input = container.find(".values .value-from"), value_to_input = container.find(".values .value-to");
+        function xhr_convert(param_name, value, c) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("get", encodeURI("?" + param_name + "=" + value));
+            xhr.onload = function() {
+                if (200 === xhr.status) {
+                    return c(JSON.parse(xhr.responseText));
+                }
+            };
+            return xhr.send();
+        }
+        function on_change_f(param_name) {
+            return function(event) {
+                console.log("change", param_name);
+                var value_from = value_from_input.val(), value_from = value_from && jQuery.isNumeric(value_from) && value_from, value_to = value_to_input.val(), value_to = value_to && jQuery.isNumeric(value_to) && value_to;
+                return xhr_convert(param_name, value_from, function(result) {
+                    return console.log(result[0]);
+                });
+            };
+        }
+        value_from_input.on("keyup", _.debounce(on_change_f("a"), text_update_delay));
+        return value_to_input.on("keyup", _.debounce(on_change_f("b"), text_update_delay));
+    }
+    init_unit_selects(base_path);
+    return init_value_inputs();
 }
 
 sph_info_units_init();

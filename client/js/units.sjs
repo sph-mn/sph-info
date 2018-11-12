@@ -1,55 +1,45 @@
 (define (sph-info-units-init)
-  (define text-update-delay 250
-    path-array (window.location.pathname.split "/")
-    formats (chain join (_.last path-array 2) "/")
-    path (chain join (_.initial path-array 2) "/")
-    suggest-path "json/units/suggest"
-    convert-path "json/units/convert"
+  (define path-array (window.location.pathname.split "/")
+    base-path (chain join (_.first path-array (+ 1 (_.indexOf path-array "units"))) "/")
+    text-update-delay 250
+    container (jQuery ".sph-info-units")
     select2-options
     (object language (object searching (nullary "searching..."))
       placeholder "unit here"
       ajax
-      (object url (l (params) (+ web-base-path suggest-path "/" (if* params.term params.term "")))
+      (object url (l (params) (+ base-path "/suggest" (if* params.term (+ "/" params.term) "")))
         data (l (params) #f)
         processResults (l (data) (object results (data.map (l (a) (object text a id a)))))
-        dataType "json" delay 250 minimumInputLength 1))
-    selects (chain select2 ($ "#unit-from,#unit-to") select2-options)
-    inputs ($ "#value-from,#value-to"))
-  (define (unit-convert& from to value c) (define xhr (new XMLHttpRequest))
-    (xhr.open "get" (encodeURI (+ web-base-path convert-path "/" from "/" to "/" value)))
-    (set xhr.onload (nullary (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
-  (define (on-change event)
-    (let ((unit-from (chain val (selects.eq 0))) (unit-to (chain val (selects.eq 1))))
+        dataType "json" delay text-update-delay minimumInputLength 1))
+    unit-from-select (container.find ".units .unit-from")
+    unit-to-select (container.find ".units .unit-to"))
+  (define (init-unit-selects base-path) (unit-from-select.select2 select2-options)
+    (unit-to-select.select2 select2-options)
+    ; set on-load value
+    (chain forEach (array unit-from-select unit-to-select)
+      (l (a) (define selected (a.attr "data-selected"))
+        (and selected
+          (chain trigger (chain append a (new Option selected selected #t #t)) "change"))))
+    ; set change event
+    (define (on-change event)
+      (define unit-from (unit-from-select.val) unit-to (unit-to-select.val))
       (if (and unit-from unit-to)
-        (let*
-          ( (input-from (inputs.eq 0)) (input-to (inputs.eq 1)) (value-from (input-from.val))
-            (value-to (input-to.val)) (value-from-valid (jQuery.isNumeric value-from))
-            (value-to-valid (jQuery.isNumeric value-to)))
-          (switch event.target.id
-            ("value-from"
-              (unit-convert& unit-from unit-to
-                value-from (l (result) (input-to.val (get result 0))))
-              break)
-            ("value-to"
-              (if value-to-valid
-                (unit-convert& unit-to unit-from
-                  value-to (l (result) (input-from.val (get result 0)))))
-              break)
-            ("unit-from"
-              (if value-from
-                (unit-convert& unit-from unit-to
-                  value-from (l (result) (input-to.val (get result 0)))))
-              break)
-            ("unit-to"
-              (if value-from
-                (unit-convert& unit-from unit-to
-                  value-from (l (result) (input-to.val (get result 0)))))
-              break))))))
-  (chain on selects "change" on-change)
-  (chain on inputs "keyup" (_.debounce on-change text-update-delay))
-  (selects.each
-    (l (index a) (define selected (a.getAttribute "data-selected"))
-      (and selected
-        (chain trigger (chain append (jQuery a) (new Option selected selected #t #t)) "change")))))
+        (set window.location.pathname (+ base-path "/" unit-from "/" unit-to))))
+    (unit-from-select.on "change" on-change) (unit-to-select.on "change" on-change))
+  (define (init-value-inputs)
+    (define value-from-input (container.find ".values .value-from")
+      value-to-input (container.find ".values .value-to"))
+    (define (xhr-convert from to value c) (define xhr (new XMLHttpRequest))
+      (xhr.open "get" (encodeURI (+ base-path "/" from "/" to "/" value)))
+      (set xhr.onload (nullary (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
+    (define (on-change-f value-input is-from)
+      (l (event) (define value (value-input.val) value (and value (jQuery.isNumeric value) value))
+        (if value
+          (begin (define from (unit-from-select.val) to (unit-to-select.val))
+            (xhr-convert (if* is-from from to) (if* is-from to from)
+              value (l (result) (console.log (get result 0))))))))
+    (value-from-input.on "keyup" (_.debounce (on-change-f value-from-input #t) text-update-delay))
+    (value-to-input.on "keyup" (_.debounce (on-change-f value-to-input #f) text-update-delay)))
+  (init-unit-selects base-path) (init-value-inputs))
 
 (sph-info-units-init)

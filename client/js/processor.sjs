@@ -18,7 +18,7 @@
       (l (event) "remove the last two elements from path and add a new from/to path"
         (set window.location.pathname (+ path "/" event.target.value)))))
   (if (not container) return)
- (define path-array (window.location.pathname.split "/")
+  (define path-array (window.location.pathname.split "/")
     formats (chain join (_.last path-array 2) "/") path (chain join (_.initial path-array 2) "/"))
   (init-formats-select container formats path)
   ; initialise text-to-text forms
@@ -29,7 +29,7 @@
           (define input-text (form.querySelector ".input-text")
             output-text (form.querySelector ".output-text"))
           (input-text.addEventListener "keyup"
- (_.debounce
+            (_.debounce
               (nullary
                 (form-xhr-submit form input-text.value
                   (l (response-text) (set output-text.value response-text))))

@@ -8,38 +8,28 @@
     (sph-info helper)
     (sph-info processor)
     (sph alist)
+    (sph base64)
     (sph base91)
     (sph hashtable)
-    (sph io)
     (sph web app client)
-    (sph web app http))
+    (sph web app http)
+    (rename (sph io) (file->file io-file->file)))
 
-  #;(ht-create "encode-base64"
-    (l (path-input path-output options)
-      (file->file path-input path-output
-        #:copy base64-encode-port #:input-binary #t #:output-binary #f))
-    "decode-base64"
-    (l (path-input path-output options)
-      (file->file path-input path-output
-        #:copy base64-decode-port #:input-binary #t #:output-binary #f))
-    "encode-base91" "decode-base91"
-    (l (path-input path-output options)
-      (call-with-output-file path-output
-  (l (out) (bytevector->file (base91-decode (file->string path-input)) path-output)))))
-
-  ; todo: suggest, two-way
-  ; input type select: select, suggest select
-  ; groups
-  ;   formatter (js, css, perl, xml, html, scheme, json, sql, c, sxml, sc)
-  ;   documents (pandoc formats)
-  ;   units (units formats)
-  ;   minifier (js, css, html)
-  ;   syntax (json-xml, sxml-json, sxml-xml, sc-c, coffee-js, sjs-js)
-  ;   binary-to-text (base64, base91)
-  ;   text (lowercase, remove double newlines, newlines to comma, comma to newlines, remove line comments, randomise lines)
-
-(define encoder-routes
+  (define encoder-routes
     (processor-routes "binary/text conversions" "/binary-text"
+      (list "any" "base64"
+        (list-q file-to-file text-to-text) null
+        (l (source-path target-path options)
+          (io-file->file source-path target-path
+            #:copy base64-encode-port #:input-binary #t #:output-binary #f))
+        (l (file-name options) (string-append file-name ".base64"))
+        (l (input-text client) (display (base64-encode (string->utf8 input-text)) client)))
+      (list "base64" "any"
+        (list-q file-to-file text-to-file) null
+        (l (source-path target-path options)
+          (call-with-output-file target-path
+            (l (port) (put-bytevector port (base64-decode (file->string source-path))))))
+        (l (file-name options) file-name) #f)
       (list "any" "base91"
         (list-q file-to-file text-to-text) null
         (l (source-path target-path options)
@@ -53,4 +43,4 @@
           (call-with-output-file target-path
             (l (port) (bytevector->file (base91-decode (file->string source-path)) target-path))
             #:binary #t))
-        (l (file-name options) (string-append file-name)) #f))))
+        (l (file-name options) file-name) #f))))

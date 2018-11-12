@@ -8,6 +8,7 @@
     (rnrs sorting)
     (sph)
     (sph-info helper)
+    (sph-info processor)
     (sph alist)
     (sph hashtable)
     (sph io)
@@ -29,14 +30,16 @@
     (ytilitu helper)
     (only (srfi srfi-1) drop-right))
 
-  (define dependencies
+  (define path-pandoc (search-env-path-one "pandoc"))
+
+  #;(define dependencies
     (file-processor-dependencies
       (list-q ("pandoc" "documents") ("ses" "sescript-javascript")
         (#t "xml-sxml") (#t "sxml-xml")
         ("xml-json-converter" "xml-json" "json-xml") ("sc" "sc-c")
         ("coffee-compile-from-to" "coffeescript-javascript"))))
 
-  (define name->proc
+  #;(define name->proc
     (file-processor-name->processor-proc
       (l (paths-program)
         (ht-create "documents"
@@ -77,9 +80,9 @@
               path-output))))
       dependencies))
 
-  (define (title-map a) (string-append (string-join (string-split a #\-) " to ") " converter"))
+  #;(define (title-map a) (string-append (string-join (string-split a #\-) " to ") " converter"))
 
-  (define-as document-type->file-name-extension-table ht-create-string
+  #;(define-as type->file-name-extension-table ht-create-string
     "asciidoc" "txt"
     "html5" "html"
     "commonmark" "md"
@@ -89,9 +92,9 @@
     "markdown_phpextra" "md"
     "markdown_strict" "md" "docbook5" "dbk" "docbook" "dbk" "epub3" "epub" "plain" "txt")
 
-  (define (document-type->extension a) (ht-ref document-type->file-name-extension-table a a))
+  #;(define (document-type->extension a) (ht-ref document-type->file-name-extension-table a a))
 
-  (define-as document-input-types list
+  (define-as input-types list
     "asciidoc" "beamer"
     "commonmark" "context"
     "docbook" "docbook5"
@@ -108,7 +111,7 @@
     "opendocument" "opml"
     "org" "plain" "revealjs" "rst" "rtf" "s5" "slideous" "slidy" "tei" "texinfo" "textile")
 
-  (define-as document-output-types list
+  (define-as output-types list
     "commonmark" "docbook"
     "docx" "epub"
     "haddock" "html"
@@ -117,16 +120,25 @@
     "markdown_phpextra" "markdown_strict"
     "mediawiki" "native" "odt" "opml" "org" "rst" "t2t" "textile" "twiki")
 
-  (define file-name-extensions
+  (define-as text-types list
+    "commonmark" "html5"
+    "textile" "twiki"
+    "html" "org"
+    "latex" "texinfo"
+    "plain" "markdown"
+    "asciidoc" "markdown_github"
+    "markdown_mmd" "markdown_phpextra" "markdown_strict" "dokuwiki" "mediawiki")
+
+  #;(define file-name-extensions
     (map (l (a) (string-append "." a))
       (delete-duplicates
         (append document-output-types document-input-types
           (vector->list (ht-values document-type->file-name-extension-table))))))
 
-  (define (drop-file-name-extension a)
+  #;(define (drop-file-name-extension a)
     (or (any (l (b) (and (string-suffix? b a) (string-drop-suffix b a))) file-name-extensions) a))
 
-  (define name->extensions
+  #;(define name->extensions
     (let
       (table
         (ht-create "xml-json" #t
@@ -140,7 +152,7 @@
           (if (and (boolean? value) value)
             (let (r (string-split a #\-)) (pair (first r) (first (tail r)))) value)))))
 
-  (define (name->options a)
+  #;(define (name->options a)
     (let ((default (list #:title-map title-map)) (form-options (list #:input-text? #t)))
       (append default
         (string-case a
@@ -172,6 +184,23 @@
               #:shtml-section-options
               (list #:form-options form-options #:description file-processor-description)))))))
 
-  (define converter-routes
-    (file-processor-create-routes "/converter" "converted"
-      name->proc dependencies #:name->options name->options)))
+  ; todo: text-io, file name map
+
+  (define documents-routes
+    (apply processor-routes "document format conversions"
+      "/documents"
+      (compact
+        (produce
+          (l (a b)
+            (if (equal? a b) #f
+              (list a b
+                (append (q (file-to-file))
+                  (if (contains? text-types a)
+                    (list (if (contains? text-types b) (q text-to-text) (q text-to-file))) null))
+                null
+                (l (source-path target-path options)
+                  (execute-and-check-result path-pandoc (cli-option "from" a)
+                    (cli-option "to" b) (cli-option "output" target-path) source-path))
+                (l (file-name options) (string-append file-name))
+                (l (input-text client) (display "not implementd" client)))))
+          input-types output-types)))))

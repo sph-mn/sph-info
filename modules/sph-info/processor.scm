@@ -120,36 +120,23 @@
         (download-file-name (file-name-f "converted" options)))
       (nginx-respond-file-download download-path download-file-name)))
 
-  (define (processor-config->format-selects a c)
-    (if (> 30 (length a))
-      (c
-        (qq
-          (select (@ (class formats))
-            (unquote
-              (map-apply
-                (l (from to io-types . rest)
-                  (qq
-                    (option
-                      (@ (value (unquote (string-append from "/" to)))
-                        (data-io (unquote (string-join (map symbol->string io-types) " "))))
-                      (unquote (string-append from " to " to)))))
-                a))))
-        #f)
-      (let
-        ( (suggestions
-            (map-apply
-              (l (from to io-types . rest)
-                (pair (string-append from " to " to)
-                  (string-join (map symbol->string io-types) " ")))
-              a)))
-        (c (qq (select (@ (class formats suggest)) "")) suggestions))))
+  (define (processor-config->format-select a)
+    (qq
+      (select (@ (class formats))
+        (unquote
+          (map-apply
+            (l (from to io-types . rest)
+              (qq
+                (option
+                  (@ (value (unquote (string-append from "/" to)))
+                    (data-io (unquote (string-join (map symbol->string io-types) " "))))
+                  (unquote (string-append from " to " to)))))
+            a)))))
 
-  (define
-    (processor-respond-f select suggestions title from to io-types options file-f file-name-f
-      text-f)
+  (define (processor-respond-f select title io-types options file-f file-name-f text-f)
     (let
       (forms
- (list (q div) (q (@ (class "sph-info-processor")))
+        (list (q div) (q (@ (class "sph-info-processor")))
           ; load url on select change
           (qq (label (div "format") (unquote select)))
           (interleave
@@ -190,22 +177,10 @@
        (from to ((input . output) ...):io-types add-form-fields file-f file-name-f text-f) ...
      route urls: prefix/from/to
      io-types: file file, text text, text file"
-    (processor-config->format-selects config
-      (l (select suggestions)
-        (append
-          (map-apply
-            (l (from to . rest)
-              (route-new (string-append prefix "/" from "/" to)
-                (string-append "convert from " from " to " to)
-                (apply processor-respond-f select suggestions title from to rest)))
-            config)
-          (if suggestions
-            (list
-              (route-new (string-append prefix "/suggest") #f
-                (l (request)
-                  (let (word (last (string-split (swa-http-request-path request) #\/)))
-                    (if (string= "suggest" word) (respond 404)
-                      (respond-type (q json)
-                        (scm->json-string
-                          (filter (l (a) (string-prefix? word (first a))) suggestions))))))))
-            null))))))
+    (let (select (processor-config->format-select config))
+      (map-apply
+        (l (from to . rest)
+          (route-new (string-append prefix "/" from "/" to)
+            (string-append "convert from " from " to " to)
+            (apply processor-respond-f select title rest)))
+        config))))

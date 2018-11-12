@@ -6,6 +6,7 @@
     (rnrs eval)
     (sph)
     (sph-info color)
+    (sph-info documents)
     (sph-info encoder)
     (sph-info helper)
     (sph-info other)
@@ -77,7 +78,8 @@
       (append
         ;minifier-routes
         ;formatter-routes text-routes
-        units-routes encoder-routes
+        documents-routes units-routes
+        encoder-routes
         ;converter-routes
         ; other-routes
         ;table-routes time-calculator-routes time-calendar-routes color-routes

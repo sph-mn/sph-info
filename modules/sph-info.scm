@@ -75,12 +75,11 @@
     (phrase-generator-responder "buzzword compliant headlines" "bs" (nullary (make-marketing-bs 5))))
 
   (define routes
-    (debug-log
-      (append
-        ;formatter-routes minifier-routes text-routes
-        documents-routes units-routes
-        syntax-routes encoder-routes
-        other-routes table-routes time-calculator-routes time-calendar-routes color-routes)))
+    (append
+      ;formatter-routes minifier-routes text-routes
+      documents-routes units-routes
+      syntax-routes encoder-routes
+      other-routes table-routes time-calculator-routes time-calendar-routes color-routes))
 
   (define paths (map vector-first routes))
 

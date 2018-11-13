@@ -7,6 +7,10 @@ font-weight:700;
 font-style:italic;
 }
 
+#result {
+line-height:1;
+}
+
 #sides {
 width:4rem;
 margin-right:0.5rem;

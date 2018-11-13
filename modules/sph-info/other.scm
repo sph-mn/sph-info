@@ -20,6 +20,8 @@
     (sph web app http)
     (sph web shtml))
 
+  (define path-rhyme (search-env-path-one "rhyme"))
+
   (define (shtml-ip route ip)
     (shtml-section 0 (route-title route)
       (if ip (qq ("your ip is " (unquote ip))) (qq ("your ip could not be determined")))))
@@ -36,9 +38,7 @@
       (list (q div) (qq (@ (class "yes-or-no-result"))) (if (= 1 (random 2)) "yes" "no"))))
 
   (define (rhymes-suggest word)
-    (let
-      (result
-        (string-split (execute->string (ht-ref paths-program "rhyme") "--merged" word) #\newline))
+    (let (result (string-split (execute->string path-rhyme "--merged" word) #\newline))
       (if (< (length result) 3)
         ; probably an error message
         (string-trim (first result) (char-set #\* #\space))
@@ -55,8 +55,7 @@
     (shtml-section 0 (route-title route)
       (qq
         ( (div (@ (class small-font)) "online rhyming dictionary") (br)
-          (input (@ (placeholder "word here") (id "word"))) (button (@ (id get)) "get rhyming words")
-          (br) (br) (div (@ (id result)))))))
+          (input (@ (placeholder "word here") (id "word"))) (br) (br) (div (@ (id result)))))))
 
   (define ip-route
     (route-new "/ip" "what is my ip?"
@@ -92,16 +91,6 @@
               (client-static swa-env (q css) (list-q default yes-or-no)) #:links default-links)
             (cache-headers time-start))))))
 
-  (define paths-program
-    (let (r (ht-create))
-      (each
-        (l (a)
-          (let (path (search-env-path-one a))
-            (if path (ht-set! r a path)
-              (log-message (q error) (string-append "missing dependency " a)))))
-        (list "rhyme"))
-      r))
-
   (define rhymes-suggest-route
     (route-new "/json/rhymes/suggest" #f
       (l (request)
@@ -114,7 +103,6 @@
                     (string-append (route-path (ht-ref-q (swa-http-request-data request) route))
                       "/")
                     path)))
-              (debug-log word)
               (if (string-match "^[a-zA-Z]{1,30}$" word) (rhymes-suggest word) (list))))))))
 
   (define rhymes-route
@@ -130,9 +118,5 @@
             (cache-headers time-start))))))
 
   (define other-routes
-    (apply append
-      (filter-map
-        (l (a) "include only routes whose helper programs are available"
-          (if (list? a) (and (every (l (b) (ht-ref paths-program b)) (tail a)) (first a)) (list a)))
-        (list ip-route (list (list rhymes-route rhymes-suggest-route) "rhyme")
-          dice-route yes-or-no-route)))))
+    (append (if path-rhyme (list rhymes-route rhymes-suggest-route) null)
+      (list ip-route dice-route yes-or-no-route))))

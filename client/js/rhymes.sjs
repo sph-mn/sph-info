@@ -18,10 +18,7 @@
                 (if (and (= "object" (typeof result)) result.length)
                   (set result-container.innerHTML (result.join ", "))
                   (begin (set result-container.innerHTML "")
-                    (result-container.appendChild (italic "no results"))))
-                (console.log result-container (italic "no results")))))
+                    (result-container.appendChild (italic "no results")))))))
           (begin (set result-container.innerHTML "")
             (result-container.appendChild (italic "invalid word"))))))
-    (input-word.addEventListener "keypress"
-      (l (event other) (if (and event (= "Enter" event.key)) (update-rhyming-words))))
-    (button-get.addEventListener "click" update-rhyming-words)))
+    (input-word.addEventListener "keyup" (l (event) (update-rhyming-words)))))

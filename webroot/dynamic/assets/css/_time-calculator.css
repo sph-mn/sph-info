@@ -1,9 +1,6 @@
 .hbox > * {
 margin-right:1rem;
-}
-
-section > div {
-padding-left:2rem;
+display:inline-block;
 }
 
 .year-month input {

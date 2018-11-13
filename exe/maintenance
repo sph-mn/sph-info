@@ -2,5 +2,5 @@
 
 if test -f modules/ytilitu.scm
 then
-  find dynamic/temp -xdev -type f -mmin +3 | xargs srm --doe
+  find webroot/dynamic/temp -xdev -type f -mmin +3 | xargs srm --doe
 fi

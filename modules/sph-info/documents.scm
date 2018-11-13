@@ -32,57 +32,7 @@
 
   (define path-pandoc (search-env-path-one "pandoc"))
 
-  #;(define dependencies
-    (file-processor-dependencies
-      (list-q ("pandoc" "documents") ("ses" "sescript-javascript")
-        (#t "xml-sxml") (#t "sxml-xml")
-        ("xml-json-converter" "xml-json" "json-xml") ("sc" "sc-c")
-        ("coffee-compile-from-to" "coffeescript-javascript"))))
-
-  #;(define name->proc
-    (file-processor-name->processor-proc
-      (l (paths-program)
-        (ht-create "documents"
-          (l (path-input path-output options)
-            (alist-bind options (input-type output-type)
-              (and input-type output-type
-                (contains? document-input-types input-type)
-                (contains? document-output-types output-type)
-                (execute-and-check-result (ht-ref paths-program "pandoc")
-                  (cli-option "from" input-type) (cli-option "to" output-type)
-                  (cli-option "output" path-output) path-input))))
-          "xml-json"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "xml-json-converter") "--to_json"
-              path-input path-output))
-          "json-xml"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "xml-json-converter") "--to_xml"
-              path-input path-output))
-          "xml-sxml"
-          (l (path-input path-output options)
-            (call-with-output-file path-output
-              (l (out) (display (call-with-input-file path-input (l (in) (xml->sxml in))) out))))
-          "sxml-xml"
-          (l (path-input path-output options)
-            (call-with-output-file path-output
-              (l (out) (sxml->xml (rw-file->list read path-input) out))))
-          "endianess" (l (path-input path-output options) #t)
-          "sescript-javascript"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "ses") path-input path-output))
-          "sc-c"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "sc") path-input path-output))
-          "coffeescript-javascript"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "coffee-compile-from-to") path-input
-              path-output))))
-      dependencies))
-
-  #;(define (title-map a) (string-append (string-join (string-split a #\-) " to ") " converter"))
-
-  #;(define-as type->file-name-extension-table ht-create-string
+  (define-as type->file-name-extension-table ht-create-string
     "asciidoc" "txt"
     "html5" "html"
     "commonmark" "md"
@@ -92,17 +42,14 @@
     "markdown_phpextra" "md"
     "markdown_strict" "md" "docbook5" "dbk" "docbook" "dbk" "epub3" "epub" "plain" "txt")
 
-  #;(define (document-type->extension a) (ht-ref document-type->file-name-extension-table a a))
-
   (define-as input-types list
     "asciidoc" "beamer"
     "commonmark" "context"
-    "docbook" "docbook5"
-    "docx" "dokuwiki"
-    "dzslides" "epub"
-    "epub3" "fb2"
-    "haddock" "html"
-    "html5" "icml"
+    "docbook" "docx"
+    "dokuwiki" "dzslides"
+    "epub" "epub3"
+    "fb2" "haddock"
+    "html" "icml"
     "latex" "man"
     "markdown" "markdown_github"
     "markdown_mmd" "markdown_phpextra"
@@ -129,78 +76,46 @@
     "asciidoc" "markdown_github"
     "markdown_mmd" "markdown_phpextra" "markdown_strict" "dokuwiki" "mediawiki")
 
-  #;(define file-name-extensions
+  (define (type->extension a) (ht-ref type->file-name-extension-table a a))
+
+  (define file-name-extensions
     (map (l (a) (string-append "." a))
       (delete-duplicates
-        (append document-output-types document-input-types
-          (vector->list (ht-values document-type->file-name-extension-table))))))
+        (append output-types input-types (vector->list (ht-values type->file-name-extension-table))))))
 
-  #;(define (drop-file-name-extension a)
+  (define (display-dependency-errors)
+    (if (not path-pandoc)
+      (log-message (log-message (q error) (string-append "missing dependency pandoc")))))
+
+  (define (drop-file-name-extension a)
     (or (any (l (b) (and (string-suffix? b a) (string-drop-suffix b a))) file-name-extensions) a))
 
-  #;(define name->extensions
-    (let
-      (table
-        (ht-create "xml-json" #t
-          "json-xml" #t
-          "xml-sxml" #t
-          "sxml-xml" #t
-          "sc-c" #t
-          "coffeescript-javascript" (pair "coffee" "js") "sescript-javascript" (pair "sjs" "js")))
-      (l (a)
-        (let (value (ht-ref table a))
-          (if (and (boolean? value) value)
-            (let (r (string-split a #\-)) (pair (first r) (first (tail r)))) value)))))
-
-  #;(define (name->options a)
-    (let ((default (list #:title-map title-map)) (form-options (list #:input-text? #t)))
-      (append default
-        (string-case a
-          ("documents"
-            (list #:respond-form-options
-              (list #:file-name-map
-                (l (a options input-field)
-                  (string-append (drop-file-name-extension a) "."
-                    (document-type->extension (alist-ref-q options output-type)))))
-              #:shtml-section-options
-              (list #:description
-                (string-append "convert between various document file formats. "
-                  file-processor-description)
-                #:form-options
-                (append
-                  (list #:input-types document-input-types #:output-types document-output-types)
-                  form-options))))
-          (else
-            (list #:respond-form-options
-              (list #:file-name-map
-                (l (input-file-name options input-field)
-                  (let (extensions (name->extensions a))
-                    (if extensions
-                      (string-append
-                        (string-drop-suffix-if-exists (string-append "." (first extensions))
-                          input-file-name)
-                        "." (tail extensions))
-                      input-file-name))))
-              #:shtml-section-options
-              (list #:form-options form-options #:description file-processor-description)))))))
-
-  ; todo: text-io, file name map
+  (display-dependency-errors)
 
   (define documents-routes
     (apply processor-routes "document format conversions"
       "/documents"
-      (compact
-        (produce
-          (l (a b)
-            (if (equal? a b) #f
-              (list a b
-                (append (q (file-to-file))
-                  (if (contains? text-types a)
-                    (list (if (contains? text-types b) (q text-to-text) (q text-to-file))) null))
-                null
-                (l (source-path target-path options)
-                  (execute-and-check-result path-pandoc (cli-option "from" a)
-                    (cli-option "to" b) (cli-option "output" target-path) source-path))
-                (l (file-name options) (string-append file-name))
-                (l (input-text client) (display "not implementd" client)))))
-          input-types output-types)))))
+      (if path-pandoc
+        (compact
+          (produce
+            (l (a b)
+              (if (equal? a b) #f
+                (list a b
+                  (append (q (file-to-file))
+                    (if (contains? text-types a)
+                      (list (if (contains? text-types b) (q text-to-text) (q text-to-file))) null))
+                  null
+                  (l (request source-path target-path options)
+                    (execute-and-check-result path-pandoc (cli-option "from" a)
+                      (cli-option "to" b) (cli-option "output" target-path) source-path))
+                  (l (request file-name options)
+                    (string-append (drop-file-name-extension file-name) "." (type->extension b)))
+                  (l (request input-text client)
+                    (list-bind (processor-temp-paths (swa-http-request-swa-env request))
+                      (source-path target-path target-file-name)
+                      (string->file input-text source-path)
+                      (execute-and-check-result path-pandoc (cli-option "from" a)
+                        (cli-option "to" b) (cli-option "output" target-path) source-path)
+                      (display (file->string target-path) client))))))
+            input-types output-types))
+        null))))

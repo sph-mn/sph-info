@@ -3,6 +3,7 @@
     file->file
     file->file-form
     processor-routes
+    processor-temp-paths
     text->file
     text->file-form
     text->text
@@ -26,6 +27,19 @@
   (define web-temp-path "/dynamic/temp/")
   (define default-processed-path "webroot/temp/")
 
+  (define (processor-temp-paths swa-env)
+    (and-let*
+      ( (processed-dir
+          (string-append (swa-env-root swa-env)
+            (ensure-trailing-slash
+              (or (ht-ref-q (swa-env-config swa-env) processed-path) default-processed-path))))
+        (target-file-name
+          (string-append (number->string (current-time) 32) "-"
+            (number->string (process-unique-number) 32)))
+        (target-path (string-append processed-dir target-file-name))
+        (source-path (string-append target-path ".source")))
+      (list source-path target-path target-file-name)))
+
   (define* (file->file request f file-name-f #:optional (option-names null))
     "default-file-name: file name to use for when no file name was send with the form data
      option-names: names of other fields to get from the form data"
@@ -38,22 +52,14 @@
         (options
           (filter-map (l (a) (false-if-exception (tail (html-multipart-form-data-ref data a))))
             option-names))
-        (swa-env (swa-http-request-swa-env request))
-        (processed-dir
-          (string-append (swa-env-root swa-env)
-            (ensure-trailing-slash
-              (or (ht-ref-q (swa-env-config swa-env) processed-path) default-processed-path))))
-        (target-file-name
-          (string-append (number->string (current-time) 32) "-"
-            (number->string (process-unique-number) 32)))
-        (target-path (string-append processed-dir target-file-name))
-        (source-path (string-append target-path ".source"))
+        (swa-env (swa-http-request-swa-env request)) (temp-paths (processor-temp-paths swa-env))
         (status
-          (begin (call-with-output-file source-path (l (port) (display content port)) #:binary #t)
-            (let (a (f source-path target-path options))
+          (list-bind temp-paths (source-path target-path target-file-name)
+            (call-with-output-file source-path (l (port) (display content port)) #:binary #t)
+            (let (a (f request source-path target-path options))
               (if (file-exists? source-path) (delete-file source-path)) a)))
-        (download-path (string-append web-temp-path target-file-name))
-        (download-file-name (file-name-f file-name options)))
+        (download-path (string-append web-temp-path (third temp-paths)))
+        (download-file-name (file-name-f request file-name options)))
       (nginx-respond-file-download download-path download-file-name)))
 
   (define* (file->file-form #:key accept-file-types)
@@ -75,7 +81,7 @@
         (options
           (filter-map (l (a) (false-if-exception (tail (html-multipart-form-data-ref data a))))
             option-names)))
-      (respond-type (q text) (l (client) (f content client)))))
+      (respond-type (q text) (l (client) (f request content client)))))
 
   (define (text->text-form)
     (qq
@@ -114,10 +120,10 @@
         (source-path (string-append target-path ".source"))
         (status
           (begin (call-with-output-file source-path (l (port) (display content port)) #:binary #t)
-            (let (a (f source-path target-path options))
+            (let (a (f request source-path target-path options))
               (if (file-exists? source-path) (delete-file source-path)) a)))
         (download-path (string-append web-temp-path target-file-name))
-        (download-file-name (file-name-f "converted" options)))
+        (download-file-name (file-name-f request "converted" options)))
       (nginx-respond-file-download download-path download-file-name)))
 
   (define (processor-config->format-select a)
@@ -164,7 +170,12 @@
               (if io
                 (cond
                   ((string= "file-to-file" io) (file->file request file-f file-name-f options))
-                  ((string= "text-to-text" io) (text->text request text-f options))
+                  ( (string= "text-to-text" io)
+                    (text->text request
+                      (l (request input-text client)
+                        (or (false-if-exception (text-f request input-text client))
+                          (display "error" client)))
+                      options))
                   ((string= "text-to-file" io) (text->file request file-f file-name-f options))
                   (else (respond 422)))
                 (respond 422))))
@@ -177,7 +188,7 @@
        (from to ((input . output) ...):io-types add-form-fields file-f file-name-f text-f) ...
      route urls: prefix/from/to
      io-types: file file, text text, text file"
-    (let (select (processor-config->format-select config))
+    (let* ((config (compact config)) (select (processor-config->format-select config)))
       (map-apply
         (l (from to . rest)
           (route-new (string-append prefix "/" from "/" to)

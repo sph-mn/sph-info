@@ -11,6 +11,7 @@
     (sph-info helper)
     (sph-info other)
     (sph-info svn)
+    (sph-info syntax)
     (sph-info table)
     (sph-info time calculator)
     (sph-info time calendar)
@@ -76,14 +77,10 @@
   (define routes
     (debug-log
       (append
-        ;minifier-routes
-        ;formatter-routes text-routes
+        ;formatter-routes minifier-routes text-routes
         documents-routes units-routes
-        encoder-routes
-        ;converter-routes
-        ; other-routes
-        ;table-routes time-calculator-routes time-calendar-routes color-routes
-        )))
+        syntax-routes encoder-routes
+        other-routes table-routes time-calculator-routes time-calendar-routes color-routes)))
 
   (define paths (map vector-first routes))
 

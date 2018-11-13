@@ -186,7 +186,7 @@
                       (p (@ (class "small-font"))
                         "convert between more than 1500 units including currencies. currency conversion rates are not current rates."
                         (br)
-                        "enter a value in any of the value fields, press enter, and the other value updates automatically.")
+                        "select units by clicking on the select fields and typing the unit name. change any of the value fields and the other value updates automatically.")
                       (table (tr (th "from") (th "to"))
                         (tr (@ (class units))
                           (td

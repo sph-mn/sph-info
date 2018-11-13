@@ -31,48 +31,34 @@
   (define path-pandoc (search-env-path-one "pandoc"))
 
   (define-as type->file-name-extension-table ht-create-string
-    "asciidoc" "txt"
-    "html5" "html"
-    "commonmark" "md"
-    "markdown" "md"
-    "markdown_github" "md"
-    "markdown_mmd" "mmd"
-    "markdown_phpextra" "md"
-    "markdown_strict" "md" "docbook5" "dbk" "docbook" "dbk" "epub3" "epub" "plain" "txt")
+    "asciidoc" "txt" "commonmark" "md" "markdown" "md" "markdown_github" "md" "dbk" "docbook" "dbk")
 
   (define-as input-types list
     "asciidoc" "beamer"
     "commonmark" "context"
     "docbook" "docx"
     "dokuwiki" "dzslides"
-    "epub" "epub3"
-    "fb2" "haddock"
+    "epub" "haddock"
     "html" "icml"
     "latex" "man"
     "markdown" "markdown_github"
-    "markdown_mmd" "markdown_phpextra"
-    "markdown_strict" "mediawiki"
-    "native" "odt"
+    "mediawiki" "odt"
     "opendocument" "opml"
-    "org" "plain" "revealjs" "rst" "rtf" "s5" "slideous" "slidy" "tei" "texinfo" "textile")
+    "org" "revealjs" "rst" "rtf" "s5" "slideous" "slidy" "tei" "texinfo" "textile")
 
   (define-as output-types list
     "commonmark" "docbook"
     "docx" "epub"
-    "haddock" "html"
-    "latex" "markdown"
-    "markdown_github" "markdown_mmd"
-    "markdown_phpextra" "markdown_strict"
+    ;"pdf"
+    "haddock"
+    "html" "latex"
+    "markdown" "markdown_github"
     "mediawiki" "native" "odt" "opml" "org" "rst" "t2t" "textile" "twiki")
 
   (define-as text-types list
-    "commonmark" "html5"
-    "textile" "twiki"
-    "html" "org"
-    "latex" "texinfo"
-    "plain" "markdown"
-    "asciidoc" "markdown_github"
-    "markdown_mmd" "markdown_phpextra" "markdown_strict" "dokuwiki" "mediawiki")
+    "commonmark" "textile"
+    "twiki" "html"
+    "org" "latex" "texinfo" "markdown" "asciidoc" "markdown_github" "dokuwiki" "mediawiki")
 
   (define (type->extension a) (ht-ref type->file-name-extension-table a a))
 

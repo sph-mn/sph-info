@@ -65,8 +65,7 @@
       (nullary
         (respond-shtml
           (shtml-layout (shtml-ui (generate)) #:body-class
-            "phrase-generator" #:title
-            title #:css css #:top (qq (nav (@ (class one)) (a (@ (href (unquote "/"))) "sph.mn"))))))))
+            "phrase-generator" #:title title #:css css)))))
 
   (define respond-german-names
     (phrase-generator-responder "funny german names" "german-names" (nullary (make-german-names 5))))

@@ -26,8 +26,6 @@
     (sph web html)
     (sph web shtml)
     (sxml simple)
-    (ytilitu file-processor)
-    (ytilitu helper)
     (only (srfi srfi-1) drop-right))
 
   (define path-pandoc (search-env-path-one "pandoc"))

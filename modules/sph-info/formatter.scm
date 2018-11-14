@@ -2,125 +2,111 @@
   (export
     formatter-routes)
   (import
+    (guile)
+    (ice-9 threads)
     (sph)
-    (sph hashtable)
+    (sph-info processor)
+    (sph io)
     (sph list)
-    (sph alist)
     (sph other)
     (sph process)
-    (sph string)
+    (sph process create)
     (sph web app)
-    (ytilitu file-processor)
-    (only (guile) rename-file))
+    (sph web app http))
 
-  (define dependencies
-    (file-processor-dependencies
-      (list-q ("uglifyjs" "javascript") ("csstidy" "css")
-        ("scm-format" "sxml" "scheme") ("perltidy" "perl")
-        ("json-to-file" "json") ("php-cs-fixer" "php")
-        ("xmllint" "xml" "html") ("astyle-to-file" "c" "cpp" "csharp" "java" "objective-c")
-        ("sqlformat" "sql") ("gofmt" "go"))))
+  (define path-uglifyjs (search-env-path-one "uglifyjs"))
+  (define path-csstidy (search-env-path-one "csstidy"))
+  (define path-perltidy (search-env-path-one "perltidy"))
+  (define path-json (search-env-path-one "json"))
+  (define path-clang-format (search-env-path-one "json"))
+  (define path-sqlformat (search-env-path-one "sqlformat"))
+  (define path-xmllint (search-env-path-one "xmllint"))
 
-  (define name->proc
-    (file-processor-name->processor-proc
-      (l (paths-program)
-        (ht-create "javascript"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "uglifyjs") "--beautify"
-              (cli-option "output" path-output) path-input))
-          "perl"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "perltidy") "-l=120"
-              "-ole=unix" "-nolc"
-              "-pt=2" "-sbt=2" "-i=2" "-nbbc" path-input (string-append "-o=" path-output)))
-          "css"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "csstidy") path-input
-              (cli-option "template"
-                (string-append (swa-env-root (alist-ref-q options swa-env))
-                  "other/csstidy-template"))
-              (cli-option "silent" "true") path-output))
-          "xml"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "xmllint") "--output"
-              path-output path-input))
-          "html"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "xmllint") "--html"
-              "--output" path-output path-input))
-          "scheme"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "scm-format")
-              (cli-option "output" path-output) path-input))
-          "json"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "json-to-file") path-output path-input))
-          "go"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "gofmt") "-w" path-input)
-            (rename-file path-input path-output))
-          "sql"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "sqlformat")
-              (cli-option "outfile" path-output) (cli-option "keywords" "lower")
-              (cli-option "reindent") path-input))
-          "c"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "astyle-to-file")
-              (cli-option "astyle-options" (cli-option "mode" "c")) path-input path-output))
-          "php"
-          (l (path-input path-output options)
-            (and (execute-and-check-result (ht-ref paths-program "php-cs-fixer") "fix" path-input)
-              (rename-file path-input path-output)))
-          "csharp"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "astyle-to-file")
-              (cli-option "astyle-options" (cli-option "mode" "cs")) path-input path-output))
-          "java"
-          (l (path-input path-output options)
-            (execute-and-check-result (ht-ref paths-program "astyle-to-file")
-              (cli-option "astyle-options" (cli-option "mode" "java")) path-input path-output))
-          "cpp" "c" "objective-c" "c" "sxml" "scheme"))
-      dependencies))
+  (define (process-string-via-files swa-env a f port)
+    (list-bind (processor-temp-paths swa-env) (source-path target-path target-file-name)
+      (string->file a source-path) (and (f source-path target-path) (file->port target-path port))))
 
-  (define (title-map a) (string-append "online " a " code formatter"))
+  (define (sqlformat-string->port a port)
+    (execute-with-pipes
+      (l (input output) (begin-thread (display a input) (close-port input))
+        (begin-first (port->port output port) (close-port output)))
+      path-sqlformat (list "-" "--keywords" "lower" "--reindent") #t #t #f))
 
-  (define name->extension
-    (let
-      (table
-        (ht-create "go" #t
-          "sql" #t
-          "cpp" #t
-          "xml" #t
-          "php" #t
-          "css" #t
-          "c" #t
-          "java" #t
-          "html" #t
-          "json" #t
-          "perl" "pl" "sxml" #t "csharp" "cs" "scheme" "scm" "javascript" "js" "objective-c" "m"))
-      (l (a) (let (value (ht-ref table a)) (if (and (boolean? value) value) a value)))))
+  (define (json-string->port a port)
+    (execute-with-pipes
+      (l (input output) (begin-thread (display a input) (close-port input))
+        (begin-first (port->port output port) (close-port output)))
+      path-json null #t #t #f))
 
-  (define (name->options a)
-    (let
-      (default
-        (list #:title-map title-map
-          #:respond-form-options
-          (list #:file-name-map
-            (l (file-name options input-field)
-              (if (equal? (q text) input-field)
-                (let (extension (name->extension a))
-                  (if extension (string-append file-name "." extension) file-name))
-                file-name)))
-          #:shtml-section-options
-          (list #:description
-            (append
-              (list (string-append "format/beautify/prettyprint code. " file-processor-description))
-              (if (string-equal? "php" a)
-                (list (qq ((br) "for psr-1 and psr-2 coding standards."))) (list)))
-            #:form-options (list #:input-text? #t))))
-      default))
+  (define (csstidy-string->port request a port)
+    (let (swa-env (swa-http-request-swa-env request))
+      (list-bind (processor-temp-paths swa-env) (source-path target-path target-file-name)
+        (string->file a source-path)
+        (execute-and-check-result path-csstidy source-path
+          (string-append "--template=" (swa-env-root swa-env) "other/csstidy-template")
+          "--silent=true" target-path)
+        (file->port target-path port))))
+
+  (define (uglifyjs-string->port a port)
+    (execute-with-pipes
+      (l (input output) (begin-thread (display a input) (close-port input))
+        (begin-first (port->port output port) (close-port output)))
+      path-uglifyjs (list "--beautify") #t #t #f))
+
+  (define (xmllint-html-string->port request a port)
+    (process-string-via-files (swa-http-request-swa-env request) a
+      (l (source-path target-path)
+        (execute-and-check-result path-xmllint "--html"
+          "--nowarning" "--output" target-path source-path))
+      port))
+
+  (define (xmllint-string->port request a port)
+    (process-string-via-files (swa-http-request-swa-env request) a
+      (l (source-path target-path)
+        (execute-and-check-result path-xmllint "--nowarning" "--output" target-path source-path))
+      port))
 
   (define formatter-routes
-    (file-processor-create-routes "/formatter" "formatted"
-      name->proc dependencies #:name->options name->options)))
+    (processor-routes "code formatter" "/formatter"
+      (list "sql" "formatted-sql"
+        (list-q text-to-text) null
+        #f #f (l (request input-text client) (sqlformat-string->port input-text client)))
+      (list "json" "formatted-json"
+        (list-q text-to-text) null
+        #f #f (l (request input-text client) (json-string->port input-text client)))
+      (list "css" "formatted-css"
+        (list-q text-to-text) null
+        #f #f (l (request input-text client) (csstidy-string->port request input-text client)))
+      (list "javascript" "formatted-javascript"
+        (list-q text-to-text) null
+        #f #f (l (request input-text client) (uglifyjs-string->port input-text client)))
+      (list "html" "formatted-html"
+        (list-q text-to-text) null
+        #f #f (l (request input-text client) (xmllint-html-string->port request input-text client)))
+      (list "xml" "formatted-xml"
+        (list-q text-to-text) null
+        #f #f (l (request input-text client) (xmllint-string->port request input-text client)))))
+
+  ;scheme, perl, c, sc, sxml
+
+  (list-q "perl"
+    (l (path-input path-output options)
+      (execute-and-check-result (ht-ref paths-program "perltidy") "-l=120"
+        "-ole=unix" "-nolc"
+        "-pt=2" "-sbt=2" "-i=2" "-nbbc" path-input (string-append "-o=" path-output)))
+    "xml"
+    (l (path-input path-output options)
+      (execute-and-check-result (ht-ref paths-program "xmllint") "--output" path-output path-input))
+    "html"
+    (l (path-input path-output options)
+      (execute-and-check-result (ht-ref paths-program "xmllint") "--html"
+        "--output" path-output path-input))
+    "scheme"
+    (l (path-input path-output options)
+      (execute-and-check-result (ht-ref paths-program "scm-format")
+        (cli-option "output" path-output) path-input))
+    "c"
+    (l (path-input path-output options)
+      (execute-and-check-result (ht-ref paths-program "astyle-to-file")
+        (cli-option "astyle-options" (cli-option "mode" "c")) path-input path-output))
+    "sxml"))

@@ -10,6 +10,7 @@
     (sph-info encoder)
     (sph-info helper)
     (sph-info other)
+    (sph-info formatter)
     (sph-info svn)
     (sph-info syntax)
     (sph-info table)
@@ -75,7 +76,8 @@
 
   (define routes
     (append
-      ;formatter-routes minifier-routes text-routes
+      formatter-routes
+      ;text-routes
       documents-routes units-routes
       syntax-routes encoder-routes
       other-routes table-routes time-calculator-routes time-calendar-routes color-routes))

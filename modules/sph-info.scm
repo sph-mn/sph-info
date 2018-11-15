@@ -52,8 +52,8 @@
       (shtml-ui
         (l (results)
           (let*
-            ( (li (map (l (a) (list (q li) a)) results))
-              (results-shtml (pairs (q ul) (q (@ (class "results"))) li)))
+            ( (lines (map (l (a) (list (q p) a)) results))
+              (results-shtml (pairs (q div) (q (@ (class "results"))) lines)))
             (qq
               (section (h1 (unquote title)) (unquote results-shtml)
                 (form (@ (action (unquote url-path)) (method get))

@@ -108,7 +108,8 @@
             (list-q text-to-text) null
             #f #f
             (l (request input-text client)
-              (uglifyjs-string->port (program-path "uglifyjs") input-text client)))
+              (uglifyjs-string->port (program-path "uglifyjs") input-text client))))
+        (and (program-path "json")
           (list "json" "formatted"
             (list-q text-to-text) null
             #f #f

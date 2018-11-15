@@ -4,6 +4,7 @@
     default-links
     path-processed
     process-unique-number
+    program-paths-f
     respond-shtml
     route->body-class
     route-handler
@@ -22,6 +23,8 @@
     (sph hashtable)
     (sph io)
     (sph list)
+    (sph log)
+    (sph other)
     (sph time)
     (sph time string)
     (sph vector)
@@ -33,6 +36,16 @@
 
   (define default-links (list (list "/" "start") (list "/other/utilities.html" "utilities")))
   (define (swa-env-web-base-path a) (or (ht-ref-q (swa-env-config a) web-base-path)))
+
+  (define (program-paths-f dependencies) "(string:program-name ...)"
+    (let (program-paths (ht-create-string))
+      (each
+        (l (a)
+          (let (path (search-env-path-one a))
+            (if path (ht-set! program-paths a path)
+              (log-message (q error) (string-append "missing dependency " a)))))
+        dependencies)
+      (l (name) (ht-ref program-paths name))))
 
   (define* (respond-shtml shtml #:optional (headers null))
     (respond 200 (pair "content-type:text/html\r\n" headers)

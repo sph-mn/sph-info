@@ -20,7 +20,7 @@
     (sph web app http)
     (sph web shtml))
 
-  (define path-rhyme (search-env-path-one "rhyme"))
+  (define program-dependencies (list "rhyme"))
 
   (define (shtml-ip route ip)
     (shtml-section 0 (route-title route)
@@ -37,7 +37,7 @@
     (shtml-section 0 (route-title route)
       (list (q div) (qq (@ (class "yes-or-no-result"))) (if (= 1 (random 2)) "yes" "no"))))
 
-  (define (rhymes-suggest word)
+  (define (rhymes-suggest path-rhyme word)
     (let (result (string-split (execute->string path-rhyme "--merged" word) #\newline))
       (if (< (length result) 3)
         ; probably an error message
@@ -91,7 +91,7 @@
               (client-static swa-env (q css) (list-q default yes-or-no)) #:links default-links)
             (cache-headers time-start))))))
 
-  (define rhymes-suggest-route
+  (define (rhymes-suggest-route path-rhyme)
     (route-new "/json/rhymes/suggest" #f
       (l (request)
         (respond-type (q json)
@@ -103,7 +103,7 @@
                     (string-append (route-path (ht-ref-q (swa-http-request-data request) route))
                       "/")
                     path)))
-              (if (string-match "^[a-zA-Z]{1,30}$" word) (rhymes-suggest word) (list))))))))
+              (if (string-match "^[a-zA-Z]{1,30}$" word) (rhymes-suggest path-rhyme word) (list))))))))
 
   (define rhymes-route
     (route-new "/rhymes" "rhyming words"
@@ -117,6 +117,8 @@
               (client-static swa-env (q js) (list-q default rhymes)) #:links default-links)
             (cache-headers time-start))))))
 
-  (define other-routes
-    (append (if path-rhyme (list rhymes-route rhymes-suggest-route) null)
-      (list ip-route dice-route yes-or-no-route))))
+  (define (other-routes)
+    (let*
+      ((program-path (program-paths-f program-dependencies)) (path-rhyme (program-path "rhyme")))
+      (append (if path-rhyme (list rhymes-route (rhymes-suggest-route path-rhyme)) null)
+        (list ip-route dice-route yes-or-no-route)))))

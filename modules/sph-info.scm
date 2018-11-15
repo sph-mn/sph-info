@@ -8,9 +8,9 @@
     (sph-info color)
     (sph-info documents)
     (sph-info encoder)
+    (sph-info formatter)
     (sph-info helper)
     (sph-info other)
-    (sph-info formatter)
     (sph-info svn)
     (sph-info syntax)
     (sph-info table)
@@ -47,11 +47,6 @@
     (dice css ("dice") js ("foreign/underscore" "dice")) (yes-or-no css ("yes-or-no"))
     (rhymes css ("rhymes") js ("rhymes")))
 
-  (define (app-init swa-env)
-    ;(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))
-    ;(ensure-directory-structure (file-processor-path-processed swa-env))
-    (client-static-compile swa-env client-static-config))
-
   (define (phrase-generator-responder title url-path generate)
     (let
       (shtml-ui
@@ -74,27 +69,31 @@
   (define respond-marketing-bs
     (phrase-generator-responder "buzzword compliant headlines" "bs" (nullary (make-marketing-bs 5))))
 
-  (define routes
-    (append
-      formatter-routes
-      ;text-routes
-      documents-routes units-routes
-      syntax-routes encoder-routes
-      other-routes table-routes time-calculator-routes time-calendar-routes color-routes))
-
-  (define paths (map vector-first routes))
+  (define (app-init swa-env)
+    ;(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))
+    ;(ensure-directory-structure (file-processor-path-processed swa-env))
+    (client-static-compile swa-env client-static-config)
+    (ht-set! (swa-env-data swa-env) (q routes)
+      (append
+        ;text-routes
+        (formatter-routes) (documents-routes)
+        (units-routes) (syntax-routes)
+        encoder-routes (other-routes)
+        table-routes time-calculator-routes time-calendar-routes color-routes)))
 
   (define (app-respond request)
     (let*
-      ( (full-path (swa-http-request-path request))
-        (web-base-path (ht-ref-q (swa-env-config (swa-http-request-swa-env request)) web-base-path))
+      ( (full-path (swa-http-request-path request)) (swa-env (swa-http-request-swa-env request))
+        (web-base-path (ht-ref-q (swa-env-config swa-env) web-base-path))
         (path (string-append "/" (string-drop-prefix web-base-path full-path))))
       (string-case path ("/svn" (svn-respond request))
         ("/bs" (respond-marketing-bs)) ("/german-names" (respond-german-names))
         ("/utc-day-kiloseconds" (respond (utc-elapsed-day-string (utc-current))))
         (else
           (or
-            (and-let* ((route (any (l (a) (and (string-prefix? (route-path a) path) a)) routes)))
+            (and-let*
+              ( (routes (ht-ref-q (swa-env-data swa-env) routes))
+                (route (any (l (a) (and (string-prefix? (route-path a) path) a)) routes)))
               (swa-http-request-data-set! request
                 (ht-create-symbol-q web-base-path web-base-path
                   route route full-path full-path path path time-start (utc-current) routes routes))

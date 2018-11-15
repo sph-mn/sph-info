@@ -173,9 +173,7 @@
                   ( (string= "text-to-text" io)
                     (text->text request
                       (l (request input-text client)
-                        (or (identity
-                            ;false-if-exception
-                            (text-f request input-text client))
+                        (or (false-if-exception (text-f request input-text client))
                           (display "error" client)))
                       options))
                   ((string= "text-to-file" io) (text->file request file-f file-name-f options))

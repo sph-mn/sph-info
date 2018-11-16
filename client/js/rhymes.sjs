@@ -21,4 +21,4 @@
                     (result-container.appendChild (italic "no results")))))))
           (begin (set result-container.innerHTML "")
             (result-container.appendChild (italic "invalid word"))))))
-    (input-word.addEventListener "keyup" (l (event) (update-rhyming-words)))))
+    (input-word.addEventListener "keyup" (_.debounce (l (event) (update-rhyming-words)) 250))))

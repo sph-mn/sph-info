@@ -45,7 +45,7 @@
     (text css ("text") js ("text"))
     (processor css ("processor") js ("foreign/underscore" "processor"))
     (dice css ("dice") js ("foreign/underscore" "dice")) (yes-or-no css ("yes-or-no"))
-    (rhymes css ("rhymes") js ("rhymes")))
+    (rhymes css ("rhymes") js ("foreign/underscore" "rhymes")))
 
   (define (phrase-generator-responder title url-path generate)
     (let

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if test -f modules/ytilitu.scm
+if test -d modules/sph-info
 then
   find webroot/dynamic/temp -xdev -type f -mmin +3 | xargs srm --doe
 fi

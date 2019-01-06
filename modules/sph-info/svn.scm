@@ -9,7 +9,6 @@
     (sph fun shitty-variable-name-generator)
     (sph list)
     (sph list other)
-    (sph random-data)
     (sph string)
     (sph web app)
     (sph web app client)

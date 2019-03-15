@@ -13,7 +13,6 @@
     (sph log)
     (sph other)
     (sph process)
-    (sph random-data)
     (sph string)
     (sph web app)
     (sph web app client)

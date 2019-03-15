@@ -9,7 +9,6 @@
     (sph alist)
     (sph hashtable)
     (sph io)
-    (sph io read-write)
     (sph json)
     (sph list)
     (sph log)

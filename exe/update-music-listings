@@ -4,6 +4,6 @@
 (import (sph-info swp))
 
 (sph-info-music-listings-update
-  "/home/nonroot/sdb/audio/music"
+  "/home/nonroot/sdb/music"
   "other/music-listings-descriptions"
   "content/foreign/music-listings")

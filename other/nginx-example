@@ -1,20 +1,21 @@
 server {
-  server_name sph-info.localhost;
-  listen [::1]:80;
-  rewrite ^/o/bs$ /dynamic/bs permanent;
-  rewrite ^/o/svn$ /dynamic/svn permanent;
-  rewrite ^/o/german-names$ /dynamic/german-names permanent;
-  rewrite ^/c/ / permanent;
+  server_name sph.mn;
+  listen 80;
   include params/scgi;
   root /srv/http/sph-info;
+  location /dynamic/german-names {
+    charset ISO-8859-1;
+    scgi_pass unix:/tmp/1001/sph-info;
+  }
   location /dynamic/assets {
   }
-  location /dynamic/processed {
+  location /dynamic/temp {
     internal;
     default_type application/octet-stream;
   }
   location /dynamic {
-    scgi_pass unix:/tmp/1000/sph-info;
+    client_max_body_size 3m;
+    scgi_pass unix:/tmp/1001/sph-info;
   }
   location / {
     root /srv/http/sph-info/static;

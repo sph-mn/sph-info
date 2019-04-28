@@ -1,10 +1,13 @@
-# extensions
-* markdown
+# code of the sph.mn website
+
+# extra features
+* for markdown
   * audio playlist
-  * software list
-  * test io
+  * automatic documentation generation
+  * create a table for a software list from csv
+  * list input/output arguments of (sph test) test modules
 * generated files
-  * music directory lists
+  * music directory listings
 
 # deployment
 * publish sph-info/content to /srv/http/sph-info/static

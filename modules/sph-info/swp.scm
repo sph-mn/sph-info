@@ -151,6 +151,7 @@
             (sph documentation display-format-plist) (sph documentation display-format-signature)
             (sph documentation itpn) (sph documentation shtml)
             (sph exception) (sph filesystem versioning)
+            (sph futures)
             (sph hashtable) (sph io other)
             (sph lang config) (sph lang itpn)
             (sph lang parser outline) (sph lang scheme)

@@ -145,7 +145,9 @@
             (sph thread-pool) (sph time gregorian)
             (sph time rfc3339) (sph time) (sph tree) (sph web atom)))
         (other
-          (list-q (sph) (sph alist)
+          (list-q
+            ;(sph)
+            (sph alist)
             (sph install) (sph base64)
             (sph documentation) (sph documentation display-format-itpn)
             (sph documentation display-format-plist) (sph documentation display-format-signature)

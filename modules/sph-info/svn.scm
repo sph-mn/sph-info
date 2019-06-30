@@ -1,6 +1,5 @@
 (library (sph-info svn)
-  (export
-    svn-respond)
+  (export svn-respond)
   (import
     (guile)
     (sph)
@@ -46,7 +45,8 @@
           (list "index generator" "input validator"
             "buffer size" "position"
             "array length" "media loader"
-            "user name" "account id" "event handler" "error message" "get device name" "settings"))
+            "submit button" "user name"
+            "account id" "event handler" "error message" "get device name" "settings"))
         (button-text
           (list "save $2" "get rich"
             "calculate" "let the results appear" "do the magic" "choose gate 3" "ask 100 people"))
@@ -60,9 +60,8 @@
         (example-function-name-prefix (list-ref-randomise-cycle function-name-prefix))
         (example-code-string
           (string-join
-            (list "function svn0svn1() {" "  var svn2 = svn5;"
-              "  for (var svn3 = 0; svn3 < svn4.length; ++svn3) {" "    svn2 += svn4[svn3];"
-              "  }" "  return svn2;" "}" "svn1(svn6, 1);" "svn1(svn6, 2, svn7);")
+            (list "let svn2 = svn5;" "for (let svn3 = 0; svn3 < svn4.length; ++svn3) {"
+              "  svn2 += svn4[svn3];" "}" "svn1(svn6, 1);" "svn1(svn6, 2, svn7);")
             "\n"))
         (example-code
           (l (variable-names)
@@ -105,7 +104,7 @@
           ( (query (swa-http-request-query request))
             (words (false-if-exception (html-uri-decode (alist-ref query "words"))))
             (count (false-if-exception (string->number (alist-ref query "count"))))
-            (results (and words (svn-multiple (or count 5) words))))
+            (results (and words (svn-multiple (or count 10) words))))
           (respond-shtml
             (shtml-layout (shtml-ui words results) #:body-class
               "svn" #:css css #:title "variable name generator")))))))

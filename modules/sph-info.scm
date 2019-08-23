@@ -1,6 +1,5 @@
 (library (sph-info)
-  (export
-    swa-app)
+  (export swa-app)
   (import
     (guile)
     (rnrs eval)
@@ -64,10 +63,12 @@
             "phrase-generator" #:title title #:css css)))))
 
   (define respond-german-names
-    (phrase-generator-responder "funny german names generator" "german-names" (nullary (make-german-names 5))))
+    (phrase-generator-responder "funny german band/animal/food/etc names generator" "german-names"
+      (nullary (make-german-names 5))))
 
   (define respond-marketing-bs
-    (phrase-generator-responder "buzzword compliant headlines generator" "bs" (nullary (make-marketing-bs 5))))
+    (phrase-generator-responder "buzzword compliant headlines generator" "bs"
+      (nullary (make-marketing-bs 5))))
 
   (define (app-init swa-env)
     ;(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))

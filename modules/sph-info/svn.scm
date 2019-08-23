@@ -20,27 +20,24 @@
   (define svn-respond
     (let*
       ( (slogans
-          (list "newbie friendly" "business performance optimised"
-            "might increase program efficiency" "highly usable"
-            "readability" "it has always worked that way"
+          (list "for beginners and experienced users alike" "might increase program performance"
+            "highly usable" "readability"
+            "it has always worked that way" "rich text coding is the future"
             "the only service that fulfills all your variable name needs"
             "write your code in a rich text editor and use all the formatting options" "splendid"
             "ready for the enterprise" "critical variable name solutions from the industry leader"
-            "trust only the best" "leverage powerful variable names"
-            "become a programming guru" "generate cunning variable names with this simple trick"
-            "in russia, variable names you" "typos are no problem because of autocomplete"
-            "\"genius!\" - a magazine" "known from tv and radio"
-            "the fascination of not knowing" "ignorance is bliss"
-            "your colleagues will like you" "be awesome, amazing, and whatnot"
-            "disrupts the market"
+            "trust only the best" "become a programming guru"
+            "generate cunning variable names with this simple trick" "in russia, variable names you"
+            "typos are not a problem because of autocomplete" "the fascination of not knowing"
+            "ignorance is bliss" "your colleagues will like you"
+            "be awesome, amazing and whatnot" "disrupts the market"
             "from the cloud, for the cloud, at the cloud, in the cloud. cloud, cloud, cloud"
             "\"when i use a word, it means just what I choose it to mean - neither more nor less\""
             "as used by programmers with 30 years of industry experience"
             "makes programs easier to maintain because guessing is more fun"))
         (result-titles
-          (list list "no animals were harmed in the making of these names"
-            "get them before they are trademarked" "didn't the intern just use this one?"
-            "diversity is good" "why not use several"))
+          (list "get them before they are trademarked" "didn't the intern just use this one?"
+            "variety is good" "why not use several"))
         (examples
           (list "index generator" "input validator"
             "buffer size" "position"
@@ -56,6 +53,7 @@
             "doData" "process"
             "calc_" "reduce_" "flubulate_" "__" "" "" "" "" "" "" "" "" "" "" "" "" ""))
         (next-slogan (list-ref-randomise-cycle slogans))
+        (next-result-title (list-ref-randomise-cycle result-titles))
         (next-button-text (list-ref-randomise-cycle button-text))
         (example-function-name-prefix (list-ref-randomise-cycle function-name-prefix))
         (example-code-string
@@ -76,8 +74,9 @@
             (let*
               ( (words (or words (list-ref-random examples))) (results (or results null))
                 (results-shtml
-                  (pairs (q ul) (q (@ (class "results"))) (map (l (a) (list (q li) a)) results)))
-                (code-example
+                  (pairs (q ul) (qq (@ (class "results") (title (unquote (next-result-title)))))
+                    (map (l (a) (list (q li) a)) results)))
+                #;(code-example
                   (if (null? results) ""
                     (let
                       (examples
@@ -92,13 +91,13 @@
                       (title
                         (unquote
                           (list-ref-random
-                            (list "do not mind me" "hey buddy" "only valid with this seal")))))
+                            (list "dont mind me" "hey buddy" "only valid with this seal")))))
                     "")
                   (form (@ (action "svn") (class input) (method get))
                     (label (div "enter the words that should go into the name and press enter")
                       (input (@ (name words) (type text) (value (unquote words)) (size 40)))
                       (input (@ (type submit) (value (unquote (next-button-text)))))))
-                  (unquote results-shtml) (unquote code-example)))))))
+                  (unquote results-shtml)))))))
       (l (request)
         (let*
           ( (query (swa-http-request-query request))

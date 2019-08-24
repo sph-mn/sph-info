@@ -74,8 +74,9 @@
             (let*
               ( (words (or words (list-ref-random examples))) (results (or results null))
                 (results-shtml
-                  (pairs (q ul) (qq (@ (class "results") (title (unquote (next-result-title)))))
-                    (map (l (a) (list (q li) a)) results)))
+                  (if (null? results) null
+                    (pairs (q ul) (qq (@ (class "results") (title (unquote (next-result-title)))))
+                      (map (l (a) (list (q li) a)) results))))
                 #;(code-example
                   (if (null? results) ""
                     (let

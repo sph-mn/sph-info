@@ -20,11 +20,10 @@
   (define svn-respond
     (let*
       ( (slogans
-          (list "for beginners and experienced users alike" "might increase program performance"
+          (list "for beginners and experienced users alike" "might improve performance"
             "highly usable" "readability"
             "it has always worked that way" "rich text coding is the future"
-            "the only service that fulfills all your variable name needs"
-            "write your code in a rich text editor and use all the formatting options" "splendid"
+            "the only service that fulfills all your variable name needs" "splendid"
             "ready for the enterprise" "critical variable name solutions from the industry leader"
             "trust only the best" "become a programming guru"
             "generate cunning variable names with this simple trick" "in russia, variable names you"
@@ -45,8 +44,8 @@
             "submit button" "user name"
             "account id" "event handler" "error message" "get device name" "settings"))
         (button-text
-          (list "save $2" "get rich"
-            "calculate" "let the results appear" "do the magic" "choose gate 3" "ask 100 people"))
+          (list "get rich" "calculate"
+            "let the results appear" "do the magic" "choose gate 3" "ask 100 people"))
         (function-name-prefix
           (list "do_" "do"
             "make_" "make"

@@ -27,7 +27,7 @@
             "ready for the enterprise" "critical variable name solutions from the industry leader"
             "trust only the best" "become a programming guru"
             "generate cunning variable names with this simple trick" "in russia, variable names you"
-            "typos are not a problem because of autocomplete" "the fascination of not knowing"
+            "leave the typos, we got autocomplete" "the fascination of not knowing"
             "ignorance is bliss" "your colleagues will like you"
             "be awesome, amazing and whatnot" "disrupts the market"
             "from the cloud, for the cloud, at the cloud, in the cloud. cloud, cloud, cloud"

@@ -15,6 +15,6 @@
 * link sph-info/dynamic/temp to /srv/http/sph-info/temp
 
 # server configuration
-* sph-web-app generated content is accessible under /dynamic
-* sph-web-publish generated content is accessible under /
+* [sph-web-app](https://github.com/sph-mn/sph-web-app) generated content is accessible under /dynamic
+* [sph-web-publish](https://github.com/sph-mn/sph-web-publish) generated content is accessible under /
 * an example configuration file is under other/nginx-example

@@ -47,7 +47,7 @@
           paths))))
 
   (define (test-io module-name test-name)
-    "display a formatted textual representation of io for a test from a test module.
+    "display a formatted textual representation of input and output for one test from a (sph test) test module.
      example: (sph-info-test-test-io (q (test module sph lang sc)) (q sc->c))"
     (or
       (and-let*
@@ -109,7 +109,7 @@
       csv-list))
 
   (define (sph-info-software-list-grouped directory heading-level path)
-    (software-list-grouped-shtml heading-level (swp-csv->list (string-append directory path))))
+    (vector path (software-list-grouped-shtml heading-level (swp-csv->list (string-append directory path)))))
 
   (define (sph-info-software-list directory path)
     (software-list-shtml (swp-csv->list (string-append directory path)))))

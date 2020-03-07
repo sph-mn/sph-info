@@ -1,13 +1,7 @@
 #!/usr/bin/guile
 !#
 
-(import (sph) (sph web publish) (sph web publish shtml) (ice-9 sandbox) (sph alist))
-
-#;(swp-file-handler-new "sjs" ".sjs"
-  #t (l (env target-path) (string-append (string-drop-suffix ".sjs" target-path) ".js"))
-  (l (env path target-path)
-    (let (data (file->datums path))
-      (call-with-output-file target-path (l (port) (sescript->ecmascript data port))))))
+(use-modules (sph) (sph web publish) (sph web publish shtml) (ice-9 sandbox) (sph alist))
 
 (define sph-info-md-scm-env
   (make-sandbox-module

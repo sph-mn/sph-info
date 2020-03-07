@@ -1,5 +1,5 @@
 (module.define "sph-info.formatter" (unquote "sph-info.lib.file-processor")
-  (nullary
+  (l ()
     (define (initialise)
       (chain forEach
         (array "javascript" "css"

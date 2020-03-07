@@ -1,5 +1,5 @@
 (module.define "sph-info.other.rhymes"
-  (nullary (define suggest-path "/dynamic/json/rhymes/suggest/")
+  (l () (define suggest-path "/dynamic/json/rhymes/suggest/")
     (define (italic a)
       (let (b (document.createElement "span")) (b.setAttribute "style" "font-style:italic")
         (set b.innerHTML a) b))
@@ -7,7 +7,7 @@
       button-get (document.getElementById "get") result-container (document.getElementById "result"))
     (define (get-rhyming-words& word c) (define xhr (new XMLHttpRequest))
       (xhr.open "get" (encodeURI (+ suggest-path word)))
-      (set xhr.onload (nullary (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
+      (set xhr.onload (l () (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
     (define (update-rhyming-words) (set result-container.innerHTML "")
       (define word input-word.value)
       (if word

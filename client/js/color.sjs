@@ -1,5 +1,5 @@
 (module.define "sph-info.color"
-  (nullary (define (string-space->comma a) (a.replace (make-regexp "\\s+" "g") ","))
+  (l () (define (string-space->comma a) (a.replace (make-regexp "\\s+" "g") ","))
     (define inputs
       (object input-rgb
         (object value->color (l (a) (tinycolor (+ "rgb(" (string-space->comma a) ")")))
@@ -76,7 +76,7 @@
     (define (update-alternatives) (update-single-preview "complement")
       (update-single-preview "greyscale")
       (_.each names-multi-preview
-        (l (name) (update-multi-preview (nullary ((get current-color-modified name))) name))))
+        (l (name) (update-multi-preview (l () ((get current-color-modified name))) name))))
     (define (update current-input)
       (if (not current-input) (set current-input inputs.input-rgb.element))
       (set text-display-lines (array)) (update-inputs current-input)

@@ -1,5 +1,5 @@
 (module.define "sph-info.other.operations"
-  (nullary
+  (l ()
     (define descriptions
       (object remove-hash-commment-lines "removes all lines that start with a \"#\" character"
         compress-whitespace-vertical "reduces multiple successive newlines"
@@ -49,8 +49,8 @@
         (set container-description.style.display "none")))
     (select-operation.addEventListener "change" update-description)
     (button-undo.addEventListener "click"
-      (nullary (if undo-history.length (set textarea.value (undo-history.pop)))))
+      (l () (if undo-history.length (set textarea.value (undo-history.pop)))))
     (button-apply.addEventListener "click"
-      (nullary (define proc (eval select-operation.value))
+      (l () (define proc (eval select-operation.value))
         (if proc
           (begin (undo-history.push textarea.value) (set textarea.value (proc textarea.value))))))))

@@ -4,7 +4,7 @@
     text-update-delay 250
     container (jQuery ".sph-info-units")
     select2-options
-    (object language (object searching (nullary "searching..."))
+    (object language (object searching (l () "searching..."))
       placeholder "unit here"
       ajax
       (object url (l (params) (+ base-path "/suggest" (if* params.term (+ "/" params.term) "")))
@@ -31,7 +31,7 @@
       value-to-input (container.find ".values .value-to"))
     (define (xhr-convert from to value c) (define xhr (new XMLHttpRequest))
       (xhr.open "get" (encodeURI (+ base-path "/" from "/" to "/" value "?json")))
-      (set xhr.onload (nullary (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
+      (set xhr.onload (l () (if (= 200 xhr.status) (c (JSON.parse xhr.responseText))))) (xhr.send))
     (define (on-change-f value-input result-input is-from)
       (l (event) (define value (value-input.val) value (and value (jQuery.isNumeric value) value))
         (if (not value) return) (define from (unit-from-select.val) to (unit-to-select.val))

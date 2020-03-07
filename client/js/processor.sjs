@@ -3,7 +3,7 @@
   (define (form-xhr-submit form text c) (define xhr (new XMLHttpRequest))
     (xhr.open "post" (encodeURI form.action))
     (set xhr.onload
-      (nullary
+      (l ()
         (if (= 200 xhr.status) (c xhr.responseText)
           (alert (+ "background request error " xhr.status)))))
     (xhr.send (new FormData form)))
@@ -30,7 +30,7 @@
             output-text (form.querySelector ".output-text"))
           (input-text.addEventListener "keyup"
             (_.debounce
-              (nullary
+              (l ()
                 (form-xhr-submit form input-text.value
                   (l (response-text) (set output-text.value response-text))))
               text-update-delay))))))

@@ -1,8 +1,8 @@
-(".middle section > div" text-align center margin "2rem")
+(".middle section > div" text-align center)
 
 (".month" vertical-align top
   margin-bottom "0.5rem"
-  font-size "0.75rem"
+  ;font-size "0.75rem"
   margin-right "0.5rem"
   display inline-block
   ("th" padding-top "0.125rem" text-align center font-weight bold font-size "1rem")
@@ -10,6 +10,6 @@
   (".week-n" font-weight bold))
 
 ("#year-n" font-weight bold font-size "1rem" width "6rem")
-("#days-n" font-size "0.75rem")
+;("#days-n" font-size "0.75rem")
 (".day-h" text-decoration underline ("td" padding-bottom "0.25rem"))
 ;(".note-bottom" margin-top "0.5rem")

@@ -14,10 +14,9 @@
   (sph time) (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
 
 (export swa-app)
-(define css (list "/css/sph.css"))
 
 (define client-static-config
-  (client-static-config-create (default js ("foreign/module") css ("sph"))
+  (client-static-config-create (default js ("foreign/module") css ("sph" "utilities"))
     (time-calculator js
       ( (unquote (alist-q utc-leap-second-table ses-utc-leap-second-table)) "foreign/underscore"
         "foreign/moment" "time/calculator")
@@ -44,7 +43,8 @@
                 (input (@ (type submit) (value "more")))))))))
     (nullary
       (respond-shtml
-        (shtml-layout (shtml-ui (generate)) #:body-class "phrase-generator" #:title title #:css css)))))
+        (shtml-layout (shtml-ui (generate)) #:body-class
+          "phrase-generator" #:title title #:css (list "/css/sph.css"))))))
 
 (define respond-german-names
   (phrase-generator-responder "funny german band/animal/food/etc names generator" "german-names"

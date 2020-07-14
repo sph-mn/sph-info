@@ -1,5 +1,5 @@
 "/*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}"
-("html" font-size "16px" line-height "18px" font-family "envypn, gohufont, monospace")
+("html" font-size "16px" line-height "20px" font-family "monospace")
 ("h1,h2,h3,h4,h5,h6" font-weight bold)
 ("h1~:not(h1),h2~:not(h2),h3~:not(h3),h4~:not(h4),h5~:not(h5),h6~:not(h6)" margin-left "2ch")
 ((".middle" "section > div") ("> *" margin-top "0.25rem") ("> section" margin-top "1rem"))
@@ -20,8 +20,9 @@
   ("&:hover" color "#37b" text-decoration underline) ("&.external" font-style italic)
   ("img.preview" margin-right "1ch" height "96px" width "96px"))
 
-("@media screen and (max-device-width: 700px) and (max-device-height: 700px)"
-  ("a" font-size "150%" padding "0.25rem" display "inline-block"))
+("@media screen and (max-device-width: 700px)"
+  ("a" font-size "110%"
+    text-decoration "underline" margin-top "0.5rem" margin-bottom "0.5rem" display "inline-block"))
 
 ("@media screen and (max-device-width: 1200px)"
   (".middle" padding 0 ("> .mtime" position relative)))
@@ -32,7 +33,7 @@
 ("@media screen and (min-width: 2400px)" (".middle" column-count 3))
 
 (".middle" margin-bottom "4rem"
-  ("> object:only-child" margin-left "-2ch")
+  ("img[alt=gpl]" height "32px") ("> object:only-child" margin-left "-2ch")
   ("&.plaintext" white-space pre-wrap background-color inherit)
   ((".library-description" ".library-exports") ("p" white-space pre)))
 
@@ -65,9 +66,9 @@
         font-size "1rem"
         padding "2rem" width "80rem" text-align left background-color "#eee" color "#000"))))
 
-("body.phrase-generator"
-  (".middle" column-count 1)
+("body.phrase-generator" (".middle" column-count 1)
   (".results" padding-top "1rem" padding-bottom "1rem"))
+
 (".music-listings .d" color "gray" margin-left "1rem")
 
 ("input,textarea,select" background-color "#fff"
@@ -86,3 +87,4 @@
 
 (".audio-playlist label" display inline-block margin-right "1rem")
 ("@media print" ("body > .top" display "none"))
+("code" background-color "#e2e2e2" padding-left "1ch" padding-right "1ch")

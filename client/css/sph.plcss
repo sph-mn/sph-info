@@ -80,10 +80,10 @@
 
 (".library-exports" (".doc-index li" display inline)
   (".doc-index li:not(:first-child)" margin-left "2ch")
-  (".doc-b" padding-top "0.5rem"
+  (".doc-b" padding-top "10px"
     (".name" font-weight bold) (".first-sig" font-style italic)
     (".rest-sig" font-style italic margin-left "2ch")
-    (".description" padding-top "0.25rem" margin-left "2ch")))
+    (".description" padding-top "5px" margin-left "2ch")))
 
 (".audio-playlist label" display inline-block margin-right "1rem")
 ("@media print" ("body > .top" display "none"))

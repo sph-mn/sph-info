@@ -20,14 +20,14 @@
   (define svn-respond
     (let*
       ( (slogans
-          (list "for beginners and experienced users alike" "might improve performance"
+          (list "might improve performance"
             "highly usable" "readability"
             "it has always worked that way" "rich text coding is the future"
             "the only service that fulfills all your variable name needs" "splendid"
             "ready for the enterprise" "critical variable name solutions from the industry leader"
             "trust only the best" "become a programming guru"
             "generate cunning variable names with this simple trick" "in russia, variable names you"
-            "leave the typos, we got autocomplete" "the fascination of not knowing"
+            "leave the typos in, just use autocomplete" "the fascination of not knowing"
             "ignorance is bliss" "your colleagues will like you"
             "be awesome, amazing and whatnot" "disrupts the market"
             "from the cloud, for the cloud, at the cloud, in the cloud. cloud, cloud, cloud"

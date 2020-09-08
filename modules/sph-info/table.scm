@@ -20,7 +20,7 @@
 
 (define (shtml-table-ascii route)
   (shtml-section 0 (route-title route)
-    (list (list (q p) "name, decimal, hexadecimal") (list-q br)
+    (list (list (q p) "name, decimal, hexadecimal") (q (br))
       (let ((step 32) (end 127))
         (let loop ((index 0))
           (if (<= index end)
@@ -33,7 +33,7 @@
       (shtml-layout (shtml-table-ascii route) #:title
         (route-title route) #:body-class
         (route->body-class route) #:css
-        (client-static swa-env (q css) (list-q default table-ascii)) #:links default-links)
+        (client-static swa-env (q css) (q (default table-ascii))) #:links default-links)
       (cache-headers time-start))))
 
 (define table-routes (list (route-new "/ascii" "ascii table" table-ascii-respond)))

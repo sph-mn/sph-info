@@ -186,8 +186,8 @@
                           (td (input (@ (class value-from) (value (unquote (or value ""))))))
                           (td (input (@ (class value-to)))))))))
                 #:title title
-                #:css (client-static swa-env (q css) (list-q default units))
-                #:js (client-static swa-env (q js) (list-q default units)) #:links default-links)
+                #:css (client-static swa-env (q css) (q (default units)))
+                #:js (client-static swa-env (q js) (q (default units))) #:links default-links)
               (cache-headers time-start))))))))
 
 (define (units-routes)

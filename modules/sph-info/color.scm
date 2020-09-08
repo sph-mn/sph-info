@@ -58,8 +58,8 @@
                         (shtml-input (string-append "input_" title) title
                           #:attributes
                           (if (string-equal? "hue" title)
-                            (list-q (type number) (value 0) (size 3) (step 10) (min -360) (max 360))
-                            (list-q (type number) (value 0) (size 3) (min -100) (max 100)))))
+                            (q ((type number) (value 0) (size 3) (step 10) (min -360) (max 360)))
+                            (q ((type number) (value 0) (size 3) (min -100) (max 100))))))
                       (unquote (shtml-preview-value title #f)))))
                 (list "hue" "brightness" "lightness" "saturation")))
             (br) (unquote (shtml-preview-value "modified_preview" "modified")))
@@ -80,11 +80,11 @@
 (define (shtml-calc-color)
   (shtml-section 0 title-color
     (list
-      (list-q
-        (div (@ (class "small-font"))
-          "enter a color value into the appropriate field and other values update automatically.")
-        (br))
-      (shtml-calc-inputs) (list-q br) (list-q br))))
+      (q
+        ( (div (@ (class "small-font"))
+            "enter a color value into the appropriate field and other values update automatically.")
+          (br)))
+      (shtml-calc-inputs) (q (br)) (q (br)))))
 
 (define (color-respond request)
   (sph-info-request-bind request (swa-env data route routes time-start)
@@ -92,8 +92,8 @@
       (shtml-layout (shtml-calc-color) #:body-class
         "calc-color" #:title
         (route-title route) #:css
-        (client-static swa-env (q css) (list-q default color)) #:js
-        (client-static swa-env (q js) (list-q default color)) #:links default-links)
+        (client-static swa-env (q css) (q (default color))) #:js
+        (client-static swa-env (q js) (q (default color))) #:links default-links)
       (cache-headers time-start))))
 
 (define color-routes (list (route-new "/color" "web color calculator" color-respond)))

@@ -54,7 +54,7 @@
         (qq
           (div (@ (id days-n)) "days: "
             (unquote (if (= 0 year) 0 (if (greg-year-leap-year? year) 366 365)))))
-        (list-q br)
+        (q (br))
         (pairs (q div) (q (@ (class months)))
           (map
             (l (month)
@@ -82,7 +82,7 @@
                                   (tail week)))))))
                       (tail month))))))
             (if (= 0 year) (list) (calendar-data year))))
-        (list-q br)
+        (q (br))
         (qq
           (div (@ (class "note-bottom very-small-font subdued"))
             "any year including negative years supported"))
@@ -104,8 +104,8 @@
     (respond-shtml
       (shtml-layout (shtml-calendar year web-base-path) #:title
         "gregorian calendar" #:js
-        (client-static swa-env (q js) (list-q default time-calendar)) #:css
-        (client-static swa-env (q css) (list-q default time-calendar)) #:links default-links))))
+        (client-static swa-env (q js) (q (default time-calendar))) #:css
+        (client-static swa-env (q css) (q (default time-calendar))) #:links default-links))))
 
 (define time-calendar-routes
   (list (route-new "/time/calendar" "gregorian calendar" time-calendar-respond)))

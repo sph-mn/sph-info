@@ -70,9 +70,9 @@
             "converts unix timestamps to dates and back or calculates iso week numbers and time differences.")
           (p
             "edit any field and other fields update automatically. all times are in timezone utc+0.")))
-      (list-q br) (shtml-time-entry "first" "past")
-      (list-q br) (shtml-time-entry "second" "future")
-      (list-q br)
+      (q (br)) (shtml-time-entry "first" "past")
+      (q (br)) (shtml-time-entry "second" "future")
+      (q (br))
       (qq
         (div (@ (class "difference small-font")) (h2 "difference")
           (table
@@ -101,8 +101,8 @@
     (respond-shtml
       (shtml-layout (shtml-calculator) #:title
         title-calculator #:js
-        (client-static swa-env (q js) (list-q default time-calculator)) #:css
-        (client-static swa-env (q css) (list-q default time-calculator)) #:links default-links))))
+        (client-static swa-env (q js) (q (default time-calculator))) #:css
+        (client-static swa-env (q css) (q (default time-calculator))) #:links default-links))))
 
 (define time-calculator-routes
   (list (route-new "/time/calculator" "time calculator" time-calculator-respond)))

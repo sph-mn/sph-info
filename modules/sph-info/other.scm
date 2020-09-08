@@ -49,7 +49,7 @@
             (shtml-layout (shtml-ip route ip) #:body-class
               "ip" #:title
               (route-title route) #:css
-              (client-static swa-env (q css) (list-q default)) #:links default-links)))))))
+              (client-static swa-env (q css) (q (default))) #:links default-links)))))))
 
 (define dice-route
   (route-new "/dice" "custom dice"
@@ -59,8 +59,8 @@
           (shtml-layout (shtml-dice route) #:body-class
             "dice" #:title
             (route-title route) #:css
-            (client-static swa-env (q css) (list-q default dice)) #:js
-            (client-static swa-env (q js) (list-q default dice)) #:links default-links)
+            (client-static swa-env (q css) (q (default dice))) #:js
+            (client-static swa-env (q js) (q (default dice))) #:links default-links)
           (cache-headers time-start))))))
 
 (define yes-or-no-route
@@ -71,7 +71,7 @@
           (shtml-layout (shtml-yes-or-no route) #:body-class
             "yes-or-no" #:title
             (route-title route) #:css
-            (client-static swa-env (q css) (list-q default yes-or-no)) #:links default-links)
+            (client-static swa-env (q css) (q (default yes-or-no))) #:links default-links)
           (cache-headers time-start))))))
 
 (define (rhymes-suggest-route path-rhyme)
@@ -95,8 +95,8 @@
           (shtml-layout (shtml-rhymes route) #:body-class
             "rhymes" #:title
             (route-title route) #:css
-            (client-static swa-env (q css) (list-q default rhymes)) #:js
-            (client-static swa-env (q js) (list-q default rhymes)) #:links default-links)
+            (client-static swa-env (q css) (q (default rhymes))) #:js
+            (client-static swa-env (q js) (q (default rhymes))) #:links default-links)
           (cache-headers time-start))))))
 
 (define (other-routes)

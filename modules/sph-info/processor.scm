@@ -51,7 +51,7 @@
 (define* (file->file-form #:key accept-file-types)
   (let
     (accept
-      (if accept-file-types (list-qq (accept (unquote (string-join accept-file-types ",")))) null))
+      (if accept-file-types (qq ((accept (unquote (string-join accept-file-types ","))))) null))
     (qq
       (form
         (@ (method post) (enctype "multipart/form-data")
@@ -147,8 +147,8 @@
             (let (swa-env (swa-http-request-swa-env request))
               (shtml-layout (list (qq (h1 (unquote title))) forms) #:title
                 title #:css
-                (client-static swa-env (q css) (list-q default processor)) #:js
-                (client-static swa-env (q js) (list-q default processor))))))
+                (client-static swa-env (q css) (q (default processor))) #:js
+                (client-static swa-env (q js) (q (default processor)))))))
         ( (post)
           (let (io (alist-ref (swa-http-request-query request) "io"))
             (if io

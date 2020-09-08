@@ -76,64 +76,64 @@
     (processor-routes "code formatter" "/formatter"
       (and (program-path "clang-format")
         (list "c" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (clang-format-string->port (program-path "clang-format") request input-text client))))
       (and (program-path "csstidy")
         (list "css" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (csstidy-string->port (program-path "csstidy") request input-text client))))
       (and (program-path "xmllint")
         (list "html" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (xmllint-html-string->port (program-path "xmllint") request input-text client))))
       (and (program-path "uglifyjs")
         (list "javascript" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (uglifyjs-string->port (program-path "uglifyjs") input-text client))))
       (and (program-path "json")
         (list "json" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (json-string->port (program-path "json") input-text client))))
       (and (program-path "perltidy")
         (list "perl" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (perltidy-string->port (program-path "perltidy") request input-text client))))
       (list "sc" "formatted"
-        (list-q text-to-text) null
+        (q (text-to-text)) null
         #f #f
         (l (request input-text client)
           (display (sc-format (string->datums input-text read-for-formatting)) client)))
       (list "scheme" "formatted"
-        (list-q text-to-text) null
+        (q (text-to-text)) null
         #f #f
         (l (request input-text client)
           (display (scm-format-port (open-input-string input-text)) client)))
       (and (program-path "sqlformat")
         (list "sql" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (sqlformat-string->port (program-path "sqlformat") input-text client))))
       (list "sxml" "formatted"
-        (list-q text-to-text) null
+        (q (text-to-text)) null
         #f #f
         (l (request input-text client)
           (display (scm-format-port (open-input-string input-text)) client)))
       (and (program-path "xmllint")
         (list "xml" "formatted"
-          (list-q text-to-text) null
+          (q (text-to-text)) null
           #f #f
           (l (request input-text client)
             (xmllint-string->port (program-path "xmllint") request input-text client)))))))

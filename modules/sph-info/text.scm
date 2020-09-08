@@ -47,8 +47,8 @@
           (respond-html request
             (alist-q body-class "operations"
               title (route-title route)
-              css (client-static swa-env (q ytilitu) (q css) (list-q default text-operations))
-              js (client-static swa-env (q ytilitu) (q js) (list-q default text-operations))
+              css (client-static swa-env (q ytilitu) (q css) (q (default text-operations)))
+              js (client-static swa-env (q ytilitu) (q js) (q (default text-operations)))
               nav-one (shtml-nav-one-section routes "/text" "operations"))
             (q ytilitu) (list (list shtml-layout (shtml-operations route)))
             (cache-headers time-start))))))

@@ -107,7 +107,7 @@
           (qq
             ( (action (unquote path)) (method post) (accept-charset utf-8)
               (enctype "multipart/form-data")))
-          (if new-tab? (list-q (target "_blank")) (list))
+          (if new-tab? (q ((target "_blank"))) (list))
           (if (list? accepted-file-types)
             (list (list (q accept) (string-join accepted-file-types ","))) (list)))))
     (qq

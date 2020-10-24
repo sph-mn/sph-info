@@ -37,7 +37,7 @@
 (define (shtml-rhymes route)
   (shtml-section 0 (route-title route)
     (qq
-      ( (div (@ (class small-font)) "online rhyming dictionary") (br)
+      ( (div (@ (class small-font)) "online rhyming dictionary. based on the command-line application \"rhyme\".") (br)
         (input (@ (placeholder "word here") (id "word"))) (br) (br) (div (@ (id result)))))))
 
 (define ip-route

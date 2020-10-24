@@ -20,16 +20,16 @@
   (define svn-respond
     (let*
       ( (slogans
-          (list "might improve performance"
-            "highly usable" "readability"
-            "it has always worked that way" "rich text coding is the future"
+          (list "might improve performance" "highly usable"
+            "readability" "it has always worked that way"
+            "rich text coding is the future"
             "the only service that fulfills all your variable name needs" "splendid"
             "ready for the enterprise" "critical variable name solutions from the industry leader"
             "trust only the best" "become a programming guru"
             "generate cunning variable names with this simple trick" "in russia, variable names you"
             "leave the typos in, just use autocomplete" "the fascination of not knowing"
             "ignorance is bliss" "your colleagues will like you"
-            "be awesome, amazing and whatnot" "disrupts the market"
+            "disrupts the market"
             "from the cloud, for the cloud, at the cloud, in the cloud. cloud, cloud, cloud"
             "\"when i use a word, it means just what I choose it to mean - neither more nor less\""
             "as used by programmers with 30 years of industry experience"
@@ -41,8 +41,8 @@
           (list "index generator" "input validator"
             "buffer size" "position"
             "array length" "media loader"
-            "submit button" "user name"
-            "account id" "event handler" "error message" "get device name" "settings"))
+            "synchronization" "submit button"
+            "user name" "account id" "event handler" "error message" "get device name" "settings"))
         (button-text
           (list "get rich" "calculate"
             "let the results appear" "do the magic" "choose gate 3" "ask 100 people"))
@@ -76,7 +76,7 @@
                   (if (null? results) null
                     (pairs (q ul) (qq (@ (class "results") (title (unquote (next-result-title)))))
                       (map (l (a) (list (q li) a)) results))))
-                #;(code-example
+                (code-example
                   (if (null? results) ""
                     (let
                       (examples

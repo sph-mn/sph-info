@@ -78,16 +78,16 @@
           (table
             (tr
               (unquote-splicing
-                (list->table-header "" "years" "weeks" "months" "days" "hours" "minutes" "seconds")))
+                (list->table-header "" "years" "months" "weeks" "days" "hours" "minutes" "seconds")))
             (tr (@ (class combined))
               (unquote-splicing
                 (list->table-data "split" (pair "ye" "")
-                  (pair "we" "") (pair "mo" "")
+                  (pair "mo" "") (pair "we" "")
                   (pair "da" "") (pair "ho" "") (pair "mi" "") (pair "se" ""))))
             (tr (@ (class separate))
               (unquote-splicing
                 (list->table-data "total" (pair "ye" "")
-                  (pair "we" "") (pair "mo" "")
+                  (pair "mo" "") (pair "we" "")
                   (pair "da" "") (pair "ho" "") (pair "mi" "") (pair "se" ""))))))))))
 
 (import-unexported (srfi srfi-19) leap-second-table)

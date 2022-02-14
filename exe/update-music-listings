@@ -6,4 +6,4 @@
 (sph-info-music-listings-update
   "/home/nonroot/sdb/music"
   "other/music-listings-descriptions"
-  "content/foreign/music-listings")
+  "content/foreign/music/listings")

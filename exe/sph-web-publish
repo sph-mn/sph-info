@@ -10,7 +10,7 @@
       number-bindings
       (q (((sph web publish markdown scm-env) link-files include-files)
           ( (sph-info markdown-scm-env) sph-info-audio-playlist sph-info-software-list
-            sph-info-test-io sph-info-software-list-grouped))))))
+            sph-info-test-io sph-info-software-list-grouped sph-info-time-difference))))))
 
 (define (sph-info-shtml-layout a . b) (apply shtml-layout a #:css (list "/css/sph.css") b))
 

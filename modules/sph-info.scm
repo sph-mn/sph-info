@@ -70,7 +70,7 @@
                     (div (unquote label) ": "
                       (unquote
                         (inexact->exact (floor (exact->inexact (utc->days (- future past))))))
-                      " (" (unquote (utc->ymd future)) ")"))))
+                      " days (" (unquote (utc->ymd future)) ")"))))
               arguments)))
         (respond-shtml
           (shtml-layout content #:links #f #:body-class

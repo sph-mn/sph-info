@@ -1,15 +1,14 @@
 (define-module (sph-info markdown-scm-env))
 
 (import (srfi srfi-1) (srfi srfi-2)
-  (sph) (sph time string)
-  (sph time) (sph filesystem)
+  (sph) (sph filesystem)
   (sph lang scheme) (sph libmagic)
   (sph list) (sph list other)
   (sph module) (sph string)
   (sph tree) (sph vector) (sph web publish helper) (sph web publish shtml) (sph web shtml))
 
-(export sph-info-time-difference sph-info-audio-playlist
-  sph-info-software-list sph-info-software-list-grouped sph-info-test-io)
+(export sph-info-audio-playlist sph-info-software-list
+  sph-info-software-list-grouped sph-info-test-io)
 
 (define (audio-playlist-file-title a)
   (last (string-split (remove-filename-extension a (list ".ogg" ".mp3" ".flac")) #\.)))
@@ -101,7 +100,3 @@
 
 (define (sph-info-software-list directory path)
   (software-list-shtml (swp-csv->list (string-append directory path))))
-
-(define* (sph-info-time-difference directory future-string #:optional past-string)
-  (let ((future (utc-from-ymd future-string)) (past (if past-string (utc-from-ymd past-string) (utc-current))))
-    (qq (div (unquote (inexact->exact (floor (exact->inexact (utc->days (- future past)))))) " (" (unquote future-string) ")"))))

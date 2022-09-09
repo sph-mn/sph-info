@@ -2,16 +2,18 @@
 
 (use-modules (srfi srfi-1) (srfi srfi-2)
   (rnrs eval) (sph)
-  (sph-info color) (sph-info documents)
-  (sph-info encoder) (sph-info formatter)
-  (sph-info helper) (sph-info other)
-  (sph-info svn) (sph-info syntax)
-  (sph-info table) (sph-info time calculator)
-  (sph-info time calendar) (sph-info units)
-  (sph alist) (sph filesystem)
-  (sph fun german-names) (sph fun marketing-bs)
-  (sph hashtable) (sph string)
-  (sph time) (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
+  (sph list) (sph-info color)
+  (sph-info documents) (sph-info encoder)
+  (sph-info formatter) (sph-info helper)
+  (sph-info other) (sph-info svn)
+  (sph-info syntax) (sph-info table)
+  (sph-info time calculator) (sph time string)
+  (sph time) (sph-info time calendar)
+  (sph-info units) (sph alist)
+  (sph filesystem) (sph fun german-names)
+  (sph fun marketing-bs) (sph hashtable)
+  (sph string) (sph time)
+  (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
 
 (export swa-app)
 
@@ -54,6 +56,26 @@
   (phrase-generator-responder "buzzword compliant headlines generator" "bs"
     (nullary (make-marketing-bs 5))))
 
+(define* (respond-time-differences request)
+  (swa-http-parse-query (swa-http-request-headers request)
+    (l (path arguments)
+      (let*
+        ( (arguments (string-split (alist-ref arguments "times") #\,))
+          (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
+          (content
+            (map-slice 3
+              (l (label past future)
+                (let ((past (parse-time past)) (future (parse-time future)))
+                  (qq
+                    (div (unquote label) ": "
+                      (unquote
+                        (inexact->exact (floor (exact->inexact (utc->days (- future past))))))
+                      " (" (unquote (utc->ymd future)) ")"))))
+              arguments)))
+        (respond-shtml
+          (shtml-layout content #:links #f #:body-class
+            "time-differences" #:title "time differences" #:css (list "/css/sph.css")))))))
+
 (define (app-init swa-env)
   "(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))
    (ensure-directory-structure (file-processor-path-processed swa-env))"
@@ -71,6 +93,7 @@
       (path (string-append "/" (string-drop-prefix web-base-path full-path))))
     (string-case path ("/svn" (svn-respond request))
       ("/bs" (respond-marketing-bs)) ("/german-names" (respond-german-names))
+      ("/time-differences" (respond-time-differences request))
       ("/utc-day-kiloseconds" (respond (utc-elapsed-day-string (utc-current))))
       (else
         (or

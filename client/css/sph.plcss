@@ -1,4 +1,5 @@
 "/*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}"
+("img" max-width "99%")
 ("html" font-size "16px" line-height "20px" font-family "monospace")
 ("h1,h2,h3,h4,h5,h6" font-weight bold)
 ("h1~:not(h1),h2~:not(h2),h3~:not(h3),h4~:not(h4),h5~:not(h5),h6~:not(h6)" margin-left "2ch")
@@ -18,7 +19,7 @@
 ("a" color "#048"
   text-decoration none
   ("&:hover" color "#37b" text-decoration underline) ("&.external" font-style italic)
-  ("img.preview" margin-right "1ch" height "96px" width "96px"))
+  ("&.thumbnail" margin-right "1ch" height "96px" width "96px"))
 
 ("@media screen and (max-device-width: 700px)"
   ("a" font-size "110%"

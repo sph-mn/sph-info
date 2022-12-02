@@ -9,7 +9,8 @@
       symbol-bindings list-bindings
       number-bindings
       (q
-        ( ( (sph web publish markdown scm-env) link-files include-files link-files-reverse include-files-reverse)
+        ( ( (sph web publish markdown scm-env) link-files include-files
+            link-files-reverse include-files-reverse include-images include-images-reverse)
           ( (sph-info markdown-scm-env) sph-info-audio-playlist sph-info-software-list
             sph-info-test-io sph-info-software-list-grouped))))))
 

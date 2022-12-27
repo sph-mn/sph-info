@@ -7,12 +7,11 @@
   (sph-info formatter) (sph-info helper)
   (sph-info other) (sph-info svn)
   (sph-info syntax) (sph-info table)
-  (sph-info time calculator) (sph time string)
-  (sph time) (sph-info time calendar)
-  (sph-info units) (sph alist)
-  (sph filesystem) (sph fun german-names)
-  (sph fun marketing-bs) (sph hashtable)
-  (sph string) (sph time)
+  (sph-info time calculator) (sph time)
+  (sph-info time calendar) (sph-info units)
+  (sph alist) (sph filesystem)
+  (sph fun german-names) (sph fun marketing-bs)
+  (sph hashtable) (sph string)
   (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
 
 (export swa-app)
@@ -73,8 +72,38 @@
                       " days (" (unquote (utc->ymd future)) ")"))))
               arguments)))
         (respond-shtml
-          (shtml-layout content #:links #f #:body-class
-            "time-differences" #:title "time differences" #:css (list "/css/sph.css")))))))
+          (shtml-layout content #:links
+            #f #:body-class "time-differences" #:title "time differences" #:css (list "/css/sph.css")))))))
+
+(define (days-shtml data)
+  (map-slice 3
+    (let (now (utc-current))
+      (l (label start-string end-string)
+        (let*
+          ( (start (utc-from-ymd start-string)) (end (utc-from-ymd end-string))
+            (is-past (> now end))
+            (day-difference
+              (inexact->exact (floor (utc->days (if is-past (- end now) (- start now))))))
+            (day-difference (if is-past (+ 2 day-difference) day-difference))
+            (day-duration (number->string (+ 1 (inexact->exact (floor (utc->days (- end start))))))))
+          (qq
+            (div "the " (unquote label)
+              " time " (unquote (if is-past " was " " is in "))
+              (unquote (abs day-difference)) " days"
+              (unquote (if is-past " ago" "")) "."
+              " it " (unquote (if is-past " was " " will be "))
+              (unquote day-duration) " days from "
+              (unquote start-string) " to " (unquote end-string) ".")))))
+    data))
+
+(define* (respond-days request)
+  (swa-http-parse-query (swa-http-request-headers request)
+    (l (path arguments)
+      (let*
+        ( (arguments (string-split (alist-ref arguments "times") #\,))
+          (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
+          (title "days") (content (qq (section (h1 "") (unquote (days-shtml arguments))))))
+        (respond-shtml (shtml-layout content #:links #f #:body-class "" #:title title #:css (list "/css/sph.css")))))))
 
 (define (app-init swa-env)
   "(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))
@@ -93,7 +122,7 @@
       (path (string-append "/" (string-drop-prefix web-base-path full-path))))
     (string-case path ("/svn" (svn-respond request))
       ("/bs" (respond-marketing-bs)) ("/german-names" (respond-german-names))
-      ("/time-differences" (respond-time-differences request))
+      ("/time-differences" (respond-time-differences request)) ("/p/days" (respond-days request))
       ("/utc-day-kiloseconds" (respond (utc-elapsed-day-string (utc-current))))
       (else
         (or

@@ -85,7 +85,7 @@
         (q (br))
         (qq
           (div (@ (class "note-bottom very-small-font subdued"))
-            "any year including negative years supported"))
+            "any year, including negative years, supported"))
         (if (negative? year)
           (qq
             (div (@ (class "small-font"))

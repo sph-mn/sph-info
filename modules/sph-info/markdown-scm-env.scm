@@ -2,16 +2,18 @@
 
 (import (srfi srfi-1) (srfi srfi-2)
   (sph) (sph filesystem)
-  (sph lang scheme) (sph libmagic)
-  (sph list) (sph list other)
-  (sph module) (sph string)
-  (sph tree) (sph vector) (sph web publish helper) (sph web publish shtml) (sph web shtml))
+  (sph time string) (sph time)
+  (ice-9 i18n) (sph lang scheme)
+  (sph libmagic) (sph list)
+  (sph list other) (sph module)
+  (sph string) (sph tree)
+  (sph vector) (sph web publish helper) (sph web publish shtml) (sph web shtml))
 
-(export sph-info-audio-playlist sph-info-software-list
-  sph-info-software-list-grouped sph-info-test-io)
+(export sph-info-audio-playlist sph-info-audio-playlist-reverse
+  sph-info-software-list sph-info-software-list-grouped sph-info-test-io)
 
 (define (audio-playlist-file-title a)
-  (last (string-split (remove-filename-extension a (list ".ogg" ".mp3" ".flac")) #\.)))
+  (remove-filename-extension (basename a) (list ".flac" ".wav" ".ogg" ".mp3")))
 
 (define* (audio-playlist-shtml url title #:optional (attributes null))
   "string string -> sxml
@@ -22,18 +24,24 @@
         (@ (src (unquote url)) (preload "none") (controls "controls") (unquote-splicing attributes))
         ""))))
 
-(define (sph-info-audio-playlist directory . paths) "accepts file paths like link-files"
+(define (sph-info-audio-playlist-content directory paths) "accepts file paths like link-files"
   (let*
     ( (content-dir (ensure-trailing-slash (dirname (dirname directory))))
       (paths (append-map (l (a) (filesystem-glob (string-append content-dir a))) paths)))
-    (pairs (q div) (q (@ (class "audio-playlist")))
-      (filter-map
-        (l (a)
-          (and (not (directory? a))
-            (let (relative-path (string-append "/" (string-drop-prefix content-dir a)))
-              (audio-playlist-shtml relative-path (audio-playlist-file-title relative-path)
-                (list (list (q type) (or (first-or-false (file->mime-types a)) "")))))))
-        paths))))
+    (filter-map
+      (l (a)
+        (and (not (directory? a))
+          (let (relative-path (string-append "/" (string-drop-prefix content-dir a)))
+            (audio-playlist-shtml relative-path (audio-playlist-file-title relative-path)
+              (list (list (q type) (or (first-or-false (file->mime-types a)) "")))))))
+      paths)))
+
+(define (sph-info-audio-playlist directory . paths) "accepts file paths like link-files"
+  (pairs (q div) (q (@ (class "audio-playlist"))) (sph-info-audio-playlist-content directory paths)))
+
+(define (sph-info-audio-playlist-reverse directory . paths)
+  (pairs (q div) (q (@ (class "audio-playlist")))
+    (reverse (sph-info-audio-playlist-content directory paths))))
 
 (define (test-io module-name test-name)
   "display a formatted textual representation of input and output for one test from a (sph test) test module.

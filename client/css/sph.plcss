@@ -1,4 +1,4 @@
-"/*! minireset.css v0.0.3 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select,textarea{margin:0}html{box-sizing:border-box}*,*:before,*:after{box-sizing:inherit}img,embed,iframe,object,audio,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0;text-align:left}"
+"/*! minireset.css v0.0.6 | MIT License | github.com/jgthms/minireset.css */html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6{margin:0;padding:0}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}ul{list-style:none}button,input,select{margin:0}html{box-sizing:border-box}*,*::before,*::after{box-sizing:inherit}img,video{height:auto;max-width:100%}iframe{border:0}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}"
 ("img" max-width "99%")
 ("html" font-size "16px" line-height "20px" font-family "monospace")
 ("h1,h2,h3,h4,h5,h6" font-weight bold)
@@ -19,7 +19,7 @@
 ("a" color "#048"
   text-decoration none
   ("&:hover" color "#37b" text-decoration underline) ("&.external" font-style italic)
-  ("&.thumbnail" margin-right "1ch" height "96px" width "96px"))
+  ("&.thumbnail" margin-right "1ch"))
 
 ("@media screen and (max-device-width: 700px)"
   ("a" font-size "110%"
@@ -65,7 +65,8 @@
       margin auto
       ("pre" margin auto
         font-size "1rem"
-        padding "2rem" width "80rem" text-align left background-color "#eee" color "#000"))))
+        padding "2rem" width "80rem" text-align left background-color "#eee" color "#000"))
+    (("h1 ~ *" "h2 ~ *" "h3 ~ *" "h4 ~ *") margin-left 0)))
 
 ("body.phrase-generator" (".middle" column-count 1)
   (".results" padding-top "1rem" padding-bottom "1rem"))

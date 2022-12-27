@@ -2,14 +2,15 @@
 
 (".month" vertical-align top
   margin-bottom "0.5rem"
-  ;font-size "0.75rem"
+  ; font-size "0.75rem"
   margin-right "0.5rem"
   display inline-block
   ("th" padding-top "0.125rem" text-align center font-weight bold font-size "1rem")
   ("td" padding-left "0.25rem" padding-right "0.25rem" ("&.today" background-color "#ccc"))
   (".week-n" font-weight bold))
 
+("h1 ~ :not(h1), h2 ~ :not(h2), h3 ~ :not(h3)" margin-left 0)
 ("#year-n" font-weight bold font-size "1rem" width "6rem")
-;("#days-n" font-size "0.75rem")
+; ("#days-n" font-size "0.75rem")
 (".day-h" text-decoration underline ("td" padding-bottom "0.25rem"))
-;(".note-bottom" margin-top "0.5rem")
+; (".note-bottom" margin-top "0.5rem")

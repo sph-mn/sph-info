@@ -103,7 +103,7 @@
         ( (arguments (string-split (alist-ref arguments "times") #\,))
           (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
           (title "days") (content (qq (section (h1 "") (unquote (days-shtml arguments))))))
-        (respond-shtml (shtml-layout content #:links #f #:body-class "" #:title title #:css (list "/css/sph.css")))))))
+        (respond-shtml (shtml-layout content #:links #f #:body-class "days" #:title title #:css (list "/css/sph.css")))))))
 
 (define (app-init swa-env)
   "(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))

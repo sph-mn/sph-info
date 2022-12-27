@@ -68,6 +68,8 @@
         padding "2rem" width "80rem" text-align left background-color "#eee" color "#000"))
     (("h1 ~ *" "h2 ~ *" "h3 ~ *" "h4 ~ *") margin-left 0)))
 
+("body.days" (".middle" column-count 1))
+
 ("body.phrase-generator" (".middle" column-count 1)
   (".results" padding-top "1rem" padding-bottom "1rem"))
 

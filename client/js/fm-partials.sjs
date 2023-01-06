@@ -22,7 +22,7 @@
         (define amp (fm-partial-amp n cfrq mamp mfrq))
         (if (> amp 1/10000) (result.push (array n amp))))
       (return result))
-    (define (fm-spectrum cfrq mfrq mamp) (define amps (fm-spectrum-amps cfrq mfrq mamp 30))
+    (define (fm-spectrum cfrq mfrq mamp) (define amps (fm-spectrum-amps cfrq mfrq mamp 60))
       (if (not amps) (return (array)))
       (set negative-amps (chain reverse (if* (get amps 0 0) amps (amps.slice 1))))
       (chain concat

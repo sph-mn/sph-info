@@ -37,8 +37,21 @@
 (define (shtml-rhymes route)
   (shtml-section 0 (route-title route)
     (qq
-      ( (div (@ (class small-font)) "online rhyming dictionary. based on the command-line application \"rhyme\".") (br)
-        (input (@ (placeholder "word here") (id "word"))) (br) (br) (div (@ (id result)))))))
+      ( (div (@ (class small-font))
+          "online rhyming dictionary. based on the command-line application \"rhyme\".")
+        (br) (input (@ (placeholder "word here") (id "word"))) (br) (br) (div (@ (id result)))))))
+
+(define (shtml-fm-partials route)
+  (shtml-section 0 (route-title route)
+    (qq
+      ( (div (@ (class small-font))
+          "calculate frequency modulation sideband frequencies and amplitudes. sidebands with amplitude < 1/10000 are not listed")
+        (br)
+        (div (label (div "carrier frequency (hz)") (input (@ (type number) (id "cfrq"))))
+          (label (div "modulator frequency (hz)") (input (@ (type number) (id "mfrq"))))
+          (label (div "modulator amplitude")
+            (input (@ (type number) (step 0.05) (value 1) (id "mamp")))))
+        (br) (pre (@ (id result)))))))
 
 (define ip-route
   (route-new "/ip" "what is my ip?"
@@ -99,7 +112,19 @@
             (client-static swa-env (q js) (q (default rhymes))) #:links default-links)
           (cache-headers time-start))))))
 
+(define fm-partials-route
+  (route-new "/fm-partials" "frequency modulation partials"
+    (l (request)
+      (sph-info-request-bind request (swa-env data routes route time-start)
+        (respond-shtml
+          (shtml-layout (shtml-fm-partials route) #:body-class
+            "fm-partials" #:title
+            (route-title route) #:css
+            (client-static swa-env (q css) (q (default fm-partials))) #:js
+            (client-static swa-env (q js) (q (default fm-partials))) #:links default-links)
+          (cache-headers time-start))))))
+
 (define (other-routes)
   (let* ((program-path (program-paths-f program-dependencies)) (path-rhyme (program-path "rhyme")))
     (append (if path-rhyme (list rhymes-route (rhymes-suggest-route path-rhyme)) null)
-      (list ip-route dice-route yes-or-no-route))))
+      (list ip-route dice-route fm-partials-route yes-or-no-route))))

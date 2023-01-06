@@ -1,0 +1,4 @@
+("label" display inline-block
+  ("&:not(:first-child)" margin-left "3rem") ("input" width "11ch"))
+
+("#result" background-color inherit)

@@ -29,7 +29,8 @@
     (text css ("text") js ("text"))
     (processor css ("processor") js ("foreign/underscore" "processor"))
     (dice css ("dice") js ("foreign/underscore" "dice")) (yes-or-no css ("yes-or-no"))
-    (rhymes css ("rhymes") js ("foreign/underscore" "rhymes"))))
+    (rhymes css ("rhymes") js ("foreign/underscore" "rhymes"))
+    (fm-partials css ("fm-partials") js ("foreign/underscore" "foreign/bessel" "fm-partials"))))
 
 (define (phrase-generator-responder title url-path generate)
   (let
@@ -103,7 +104,9 @@
         ( (arguments (string-split (alist-ref arguments "times") #\,))
           (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
           (title "days") (content (qq (section (h1 "") (unquote (days-shtml arguments))))))
-        (respond-shtml (shtml-layout content #:links #f #:body-class "days" #:title title #:css (list "/css/sph.css")))))))
+        (respond-shtml
+          (shtml-layout content #:links
+            #f #:body-class "days" #:title title #:css (list "/css/sph.css")))))))
 
 (define (app-init swa-env)
   "(ht-alist (ht-ref (swa-env-data swa-env) (q client-static)) (inf))

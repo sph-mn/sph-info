@@ -7,7 +7,8 @@
     (define (fm-partial-frq-positive n carrier-frequency modulator-frequency)
       (+ carrier-frequency (* n modulator-frequency)))
     (define (fm-partial-amp n carrier-frequency modulator-amplitude modulator-frequency)
-      (besselj n (fm-modulation-index modulator-amplitude modulator-frequency) 30))
+      (besselj n
+        (fm-modulation-index (* modulator-amplitude modulator-frequency) modulator-frequency) 30))
     (define (italic a)
       (let (b (document.createElement "span")) (b.setAttribute "style" "font-style:italic")
         (set b.innerHTML a) b))
@@ -40,7 +41,7 @@
         (+ (+ "carrier frequency: " cfrq) "\n"
           (+ "modulator frequency: " mfrq) "\n"
           (+ "modulator amplitude: " mamp) "\n"
-          (+ "modulation index: " (/ mamp mfrq)) "\n"
+          (+ "modulation index: " (/ (* mamp mfrq) mfrq)) "\n"
           (+ "bandwidth: " (- (Math.max.apply null frqs) (Math.min.apply null frqs))) "\n\n"
           (+ "frequency and amplitude\n"
             (chain join (chain map spectrum (l (a) (+ (get a 0) " " (get a 1)))) "\n")))))

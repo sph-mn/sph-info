@@ -19,20 +19,23 @@
         result (document.getElementById "result")))
     (define (fm-spectrum-amps cfrq mfrq mamp count) (define result (array))
       (for ((define n 0) (< n count) (set n (+ n 1)))
-        (define amp (fm-partial-amp n cfrq mamp mfrq))
+        (define amp (Math.abs (fm-partial-amp n cfrq mamp mfrq)))
         (if (> amp 1/10000) (result.push (array n amp))))
-      (return result))
+      result)
     (define (fm-spectrum cfrq mfrq mamp) (define amps (fm-spectrum-amps cfrq mfrq mamp 60))
-      (if (not amps) (return (array)))
-      (set negative-amps (chain reverse (if* (get amps 0 0) amps (amps.slice 1))))
-      (chain concat
-        (negative-amps.map (l (a) (array (fm-partial-frq-negative (get a 0) cfrq mfrq) (get a 1))))
-        (amps.map (l (a) (array (fm-partial-frq-positive (get a 0) cfrq mfrq) (get a 1))))))
+      (if (not amps.length) (return (array)))
+      (set negative-amps (chain reverse (if* (get amps 0 0) (Array.from amps) (amps.slice 1))))
+      (chain filter
+        (chain concat
+          (negative-amps.map
+            (l (a) (array (fm-partial-frq-negative (get a 0) cfrq mfrq) (get a 1))))
+          (amps.map (l (a) (array (fm-partial-frq-positive (get a 0) cfrq mfrq) (get a 1)))))
+        (l (a) (not (= 0 (get a 0))))))
     (define (update) (set dom.result.innerHTML "")
       (define cfrq (parseFloat dom.input.cfrq.value)
-        mfrq (parseFloat dom.input.mfrq.value)
-        mamp (parseFloat dom.input.mamp.value)
-        spectrum (fm-spectrum cfrq mfrq mamp) frqs (spectrum.map (l (a) (get a 0))))
+        mfrq (parseFloat dom.input.mfrq.value) mamp (parseFloat dom.input.mamp.value))
+      (if (not (and cfrq mfrq mamp)) (begin (set dom.result.innerHTML "") return))
+      (define spectrum (fm-spectrum cfrq mfrq mamp) frqs (spectrum.map (l (a) (get a 0))))
       (set dom.result.innerHTML
         (+ (+ "carrier frequency: " cfrq) "\n"
           (+ "modulator frequency: " mfrq) "\n"

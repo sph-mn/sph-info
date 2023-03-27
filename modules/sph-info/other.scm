@@ -45,7 +45,7 @@
   (shtml-section 0 (route-title route)
     (qq
       ( (div (@ (class small-font))
-          "calculate frequency modulation sideband frequencies and amplitudes. at most 60 sidebands. sidebands with amplitude < 1/10000 are not listed")
+          "calculate frequency modulation sideband frequencies and amplitudes. at most 60 sidebands. sidebands with amplitude < 1/1000 are not listed")
         (br)
         (div (label (div "carrier frequency (hz)") (input (@ (type number) (id "cfrq"))))
           (label (div "modulator frequency (hz)") (input (@ (type number) (id "mfrq"))))

@@ -20,7 +20,7 @@
     (define (fm-spectrum-amps cfrq mfrq mamp count) "-> [[partial-index, amplitude], ...]"
       (define result (array))
       (for ((define n 0) (< n count) (set n (+ n 1))) (define amp (fm-partial-amp n mamp mfrq))
-        (if (> (Math.abs amp) 1/10000) (result.push (array n amp))))
+        (if (> (Math.abs amp) 1/1000) (result.push (array n amp))))
       result)
     (define (fm-spectrum cfrq mfrq mamp) (define amps (fm-spectrum-amps cfrq mfrq mamp 60))
       (if (not amps.length) (return (array)))

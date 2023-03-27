@@ -47,10 +47,12 @@
       ( (div (@ (class small-font))
           "calculate frequency modulation sideband frequencies and amplitudes. at most 60 sidebands. sidebands with amplitude < 1/1000 are not listed")
         (br)
-        (div (label (div "carrier frequency (hz)") (input (@ (type number) (id "cfrq"))))
-          (label (div "modulator frequency (hz)") (input (@ (type number) (id "mfrq"))))
-          (label (div "modulator amplitude") (input (@ (type number) (step 0.1) (id "mamp"))))
-          (label (div "modulation index") (input (@ (type number) (step 0.1) (value 1) (id "mi")))))
+        (div
+          (label (div "carrier frequency (hz)") (input (@ (type number) (value 200) (id "cfrq"))))
+          (label (div "modulator frequency (hz)") (input (@ (type number) (value 100) (id "mfrq"))))
+          (label (div "modulator amplitude")
+            (input (@ (type number) (step 0.1) (value 400) (id "mamp"))))
+          (label (div "modulation index") (input (@ (type number) (step 0.1) (value 4) (id "mi")))))
         (br) (pre (@ (id result)))))))
 
 (define ip-route

@@ -10,7 +10,7 @@
   (sph-info time calculator) (sph time)
   (sph-info time calendar) (sph-info units)
   (sph alist) (sph filesystem)
-  (sph fun german-names) (sph fun marketing-bs)
+  (sph-info fun german-names) (sph-info fun marketing-bs)
   (sph hashtable) (sph string)
   (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
 
@@ -49,7 +49,7 @@
           "phrase-generator" #:title title #:css (list "/css/sph.css"))))))
 
 (define respond-german-names
-  (phrase-generator-responder "funny german band/animal/food/etc names generator" "german-names"
+  (phrase-generator-responder "german invented words generator" "german-names"
     (nullary (make-german-names 5))))
 
 (define respond-marketing-bs

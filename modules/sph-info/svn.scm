@@ -3,9 +3,9 @@
   (import
     (guile)
     (sph)
+    (sph-info fun shitty-variable-name-generator)
     (sph-info helper)
     (sph alist)
-    (sph fun shitty-variable-name-generator)
     (sph list)
     (sph list other)
     (sph string)

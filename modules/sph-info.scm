@@ -49,7 +49,7 @@
           "phrase-generator" #:title title #:css (list "/css/sph.css"))))))
 
 (define respond-german-names
-  (phrase-generator-responder "german invented words generator" "german-names"
+  (phrase-generator-responder "invented german words generator" "german-names"
     (nullary (make-german-names 5))))
 
 (define respond-marketing-bs

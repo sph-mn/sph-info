@@ -35,7 +35,12 @@
           (amps.map (l (a) (array (fm-partial-frq-positive (get a 0) cfrq mfrq) (get a 1)))))
         (l (a) (not (= 0 (get a 0))))))
     (define (fm-spectrum-merge a) "work in progress"
-      (define hash (object)) (a.forEach (l (a) (define key (Math.abs (get a 0))))) a)
+      (define hash (object))
+      (set a (a.map (l (a) (array (Math.abs (get a 0)) (* (if* (< (get a 0) 0) -1 1) (get a 1))))))
+      (a.forEach
+        (l (a) (define frq (get a 0) frq-amp (get hash frq))
+          (if frq-amp (set (get frq-amp 1) (+ (get frq-amp 1) (get a 1))) (set (get hash frq) a))))
+      (Object.values hash))
     (define (update input) (set dom.result.innerHTML "")
       (define cfrq (parseFloat dom.input.cfrq.value)
         mfrq (parseFloat dom.input.mfrq.value)
@@ -43,16 +48,18 @@
       (if (= input dom.input.mi) (set mamp (chain toFixed (* mi mfrq) 2) dom.input.mamp.value mamp))
       (if (= input dom.input.mamp)
         (set mi (chain toFixed (fm-modulation-index mamp mfrq) 2) dom.input.mi.value mi))
+      (if (= input dom.input.mfrq)
+        (set mi (chain toFixed (fm-modulation-index mamp mfrq) 2) dom.input.mi.value mi))
       (if (not (and cfrq mfrq mamp)) (begin (set dom.result.innerHTML "") return))
       (define spectrum (fm-spectrum-merge (fm-spectrum cfrq mfrq mamp))
         frqs (spectrum.map (l (a) (get a 0))))
       (set dom.result.innerHTML
-        (+ (+ "modulation index: " (chain toFixed (fm-modulation-index mamp mfrq) 2)) "\n"
-          (+ "bandwidth: " (- (Math.max.apply null frqs) (Math.min.apply null frqs))) "\n\n"
+        (+ (+ "bandwidth: " (- (Math.max.apply null frqs) (Math.min.apply null frqs))) "\n\n"
           (+ "frequency and amplitude\n"
             (chain join (chain map spectrum (l (a) (+ (get a 0) " " (get a 1)))) "\n")))))
     (define input-fields (array dom.input.cfrq dom.input.mfrq dom.input.mamp dom.input.mi))
     (input-fields.forEach
-      (l (input) (input.addEventListener "keyup" (_.debounce (l (event) (update)) 250))
+      (l (input)
+        (input.addEventListener "keyup" (_.debounce (l (event) (update event.target)) 250))
         (input.addEventListener "change" (_.debounce (l (event) (update event.target)) 250))))
     (update)))

@@ -17,16 +17,16 @@
     "transformation" "architecture"
     "association teardown" "technology"
     "marketing" "integration"
-    "microservice" "information superhighway"
-    "value-add" "mashup"
+    "microservice" "information superhighways"
+    "value-add" "mashups"
     "mindshare" "datafication"
     "data mining" "innovation"
     "tooling" "web services"
-    "synergies" "strategy"
+    "synergies" "strategies"
     "ecosystem" "analytics"
     "return of investment" "master-data management"
-    "service bus" "data warehouse"
-    "point-to-point channels" "pipeline" "big data" "backporting" "logic" "big data" "provisioning"))
+    "service buses" "data warehouse"
+    "point-to-point channels" "pipelines" "big data" "backporting" "logic" "big data" "provisioning"))
 
 (define synonym-with (list "by" "with" "through" "via"))
 
@@ -47,13 +47,13 @@
     "improve" "increase"
     "invest into" "kick-start"
     "leverage" "manage"
-    "obtain" "offer" "provide" "revolutionise" "streamline" "successfully market" "upgrade"))
+    "obtain" "offer" "provide" "revolutionize" "streamline" "successfully market" "upgrade"))
 
 (define combinator (vector "and" "by" "by using" "for" "over" "through" "under" "with" "with"))
 
 (define predicative-adjective
   (vector "agility" "alignment"
-    "backlog" "chaining" "competence" "integration" "management" "processing" "rules" "wizard"))
+    "backlogs" "chaining" "competence" "integration" "management" "processing" "rules" "wizard"))
 
 (define adjective
   (vector "cloud" "enterprise-ready"
@@ -65,7 +65,7 @@
     "continuous" "best of breed"
     "hyperlocal" "beautiful"
     "high-volume" "integrated"
-    "amazing" "awesome"
+    "awesome" "omnichannel"
     "holistic" "game-changing"
     "flexible" "multi-domain"
     "project-driven" "data-driven"
@@ -101,18 +101,20 @@
   (list->vector
     (let*
       ( (source
-          (list (list verb "and" verb noun "to" goal "with" adjective noun)
-            (list adjective noun predicative-adjective combinator adjective noun)
-            (list verb "your" adjective noun "and" verb adjective noun)
-            (list verb noun predicative-adjective "and" verb adjective noun predicative-adjective)
-            (list noun noun combinator noun predicative-adjective)))
+        (list (list verb "and" verb noun "to" goal "with" adjective noun)
+          (list adjective noun predicative-adjective combinator adjective noun)
+          (list verb "your" adjective noun "and" verb adjective noun)
+          (list verb noun predicative-adjective "and" verb adjective noun predicative-adjective)
+          (list noun noun combinator noun predicative-adjective)))
         (source+goal (map (l (a) (if (eq? verb (first a)) (append a (list "and" goal)) a)) source)))
       (append source source+goal))))
 
 (define (random-vector-ref v) (vector-ref v (max 0 (- (random (vector-length v)) 1))))
 
 (define (get-unused words use-list)
-  (let loop ((a (random-vector-ref words)) (tries 20))
+  (let
+    loop
+    ((a (random-vector-ref words)) (tries 20))
     (if (or (not (contains? use-list a)) (< tries 0)) a
       (loop (random-vector-ref words) (- tries 1)))))
 
@@ -142,13 +144,17 @@
 (define (compress-commas a) "string -> string" (string-replace-string a " ," ","))
 
 (define (create-patterns use-lists c)
-  (let loop ((pattern (random-vector-ref patterns)) (result null) (use-lists use-lists))
+  (let
+    loop
+    ((pattern (random-vector-ref patterns)) (result null) (use-lists use-lists))
     (if (null? pattern)
       (c (compress-commas (string-join (fix-a-an (remove string-null? (reverse result)))))
         use-lists)
-      (let (words (first pattern))
+      (let
+        (words (first pattern))
         (if (string? words) (loop (tail pattern) (pair words result) use-lists)
-          (let (word (get-unused words (get-use-list words use-lists)))
+          (let
+            (word (get-unused words (get-use-list words use-lists)))
             (loop (tail pattern) (pair word result) (use-list-add words word use-lists))))))))
 
 (define (make-use-lists)
@@ -156,7 +162,9 @@
     goal-prefix null goal null verb null adjective null predicative-adjective null combinator null))
 
 (define (make-marketing-bs count)
-  (let loop ((n 0) (use-lists (make-use-lists)) (result null))
+  (let
+    loop
+    ((n 0) (use-lists (make-use-lists)) (result null))
     (if (> count n)
       (create-patterns use-lists
         (l (pattern use-lists) (loop (+ n 1) use-lists (pair pattern result))))

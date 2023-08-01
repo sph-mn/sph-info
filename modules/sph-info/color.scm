@@ -44,8 +44,7 @@
     (list
       (qq
         ( (div (@ (class conversion))
-            (unquote (list->tag div (map map-one (list "rgb" "hex" "hsl"))))
-            (unquote (list->tag div (map map-one (list "rgb_css" "hex_css" "hsl_css"))))
+            (unquote (list->tag div (map map-one (list "hex" "rgb" "hsl"))))
             (div (unquote (shtml-preview))))
           (br)
           (div (@ (class "modification"))
@@ -61,7 +60,7 @@
                             (q ((type number) (value 0) (size 3) (step 10) (min -360) (max 360)))
                             (q ((type number) (value 0) (size 3) (min -100) (max 100))))))
                       (unquote (shtml-preview-value title #f)))))
-                (list "hue" "brightness" "lightness" "saturation")))
+                (list "saturation" "lightness" "brightness" "hue")))
             (br) (unquote (shtml-preview-value "modified_preview" "modified")))
           (br)
           (div (@ (class "alternatives"))
@@ -70,10 +69,7 @@
             (unquote-splicing
               (let (classes (list "triad" "splitcomplement" "tetrad" "analogous" "monochromatic"))
                 (map (l (class title count) (shtml-preview-value class title count)) classes
-                  classes (list 2 2 3 5 5)))))
-          (br)
-          (label (@ (for "text_display_area")) (div (@ (class title)) (unquote "text results"))
-            (textarea (@ (id "text_display_area")) "")))))))
+                  classes (list 2 2 3 5 5))))))))))
 
 (define title-color "web color converter and calculator")
 

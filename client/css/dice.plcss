@@ -1,4 +1,4 @@
-("#result .number" font-size "8rem" font-weight bold)
+("#result .number" font-size "80px" font-weight bold)
 ("#result .roll" font-style italic)
 ("#result" line-height 1)
-("#sides" width "4rem" margin-right "0.5rem")
+("#sides" width "40px" margin-right "5px")

@@ -1,17 +1,21 @@
-((".modification" ".alternatives") ("input" width "6rem" ("&[type=number]" width "3rem"))
+((".modification" ".alternatives") ("input" width "80px" ("&[type=number]" width "50px"))
   (".preview  .area" width "75px" height "75px"))
 
-(".modification" ("> .control" display inline-block ("&:not(:first-child)" margin-left "1rem")))
+(".modification" ("> .control" display inline-block ("&:not(:first-child)" margin-left "10px")))
 (".preview .area" transition "background-color 0.25s ease")
 ((".conversion" ".modification > .preview") (".preview .area" width "503px" height "75px"))
 
-(".alternatives" ("> *" display inline-block ("&:not(:first-child)" margin-left "1rem"))
-  ;((".complement" ".greyscale") display inline-block)
-  (".greyscale" margin-left "1rem") (".hbox > *" ("&:not(:first-child)" margin-left "1rem")))
+(".alternatives"
+  ("> *"
+    vertical-align top
+    display inline-block ("&:not(:first-child)" margin-left "10px"))
+  (".greyscale" margin-left "10px") (".hbox > *" ("&:not(:first-child)" margin-left "10px")))
 
-("#text_display_area" width "15rem" height "35rem")
+("#text_display_area" width "150px" height "350px")
 
-(".conversion" ("label" display "inline-block" ("&:not(:first-child)" margin-left "1rem"))
-  ("input" width "9rem"))
+(".conversion" ("label" display "inline-block" ("&:not(:first-child)" margin-left "10px"))
+  ("input" width "150px"))
 
 (("label .title" ".preview .title") font-weight bold)
+("label, .preview" margin-top "10px")
+("div.area, input" margin-top "5px")

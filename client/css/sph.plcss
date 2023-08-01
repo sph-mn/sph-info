@@ -3,16 +3,16 @@
 ("html" font-size "16px" line-height "20px" font-family "monospace")
 ("h1,h2,h3,h4,h5,h6" font-weight bold)
 ("h1~:not(h1),h2~:not(h2),h3~:not(h3),h4~:not(h4),h5~:not(h5),h6~:not(h6)" margin-left "2ch")
-((".middle" "section > div") ("> *" margin-top "0.25rem") ("> section" margin-top "1rem"))
+((".middle" "section > div") ("> *" margin-top "5px") ("> section" margin-top "20px"))
 (".middle" ("> .mtime" color "#808080" position "fixed" top 0 right 0 padding-top 0))
 ("p, pre, ul, ol" max-width "175ch")
 
-("pre" padding-top "0.25rem"
+("pre" padding-top "5px"
   border-radius "3px"
   font-size "90%"
   display "inline-block"
   color "#000"
-  background-color "#e2e2e2" padding-left "0.5rem" padding-right "0.5rem" ("+ pre" display "table"))
+  background-color "#e2e2e2" padding-left "10px" padding-right "10px" ("+ pre" display "table"))
 
 ("body" background-color "#f6f6f6" color "#222" padding-left "1px")
 
@@ -23,7 +23,7 @@
 
 ("@media screen and (max-device-width: 700px)"
   ("a" font-size "110%"
-    text-decoration "underline" margin-top "0.5rem" margin-bottom "0.5rem" display "inline-block"))
+    text-decoration "underline" margin-top "10px" margin-bottom "10px" display "inline-block"))
 
 ("@media screen and (max-device-width: 1200px)"
   (".middle" padding 0 ("> .mtime" position relative)))
@@ -33,7 +33,7 @@
 
 ("@media screen and (min-width: 2400px)" (".middle" column-count 3))
 
-(".middle" margin-bottom "4rem"
+(".middle" margin-bottom "40px"
   ("img[alt=gpl]" height "32px") ("> object:only-child" margin-left "-2ch")
   ("&.plaintext" white-space pre-wrap background-color inherit)
   ((".library-description" ".library-exports") ("p" white-space pre)))
@@ -46,38 +46,37 @@
 
 ("ul li" margin-left "1ch")
 ("ul li > *:first-child" display inline-block)
-("li > ul" margin-left "2rem")
+("li > ul" margin-left "40px")
 
 ("body.svn" background-color white
   line-height "28px"
-  ("h1" font-size "2rem") ("h2" font-size "1.5rem")
-  ("h3" font-size "1.25rem")
+  ("h1" font-size "20px") ("h2" font-size "25px")
+  ("h3" font-size "16px")
   (".middle" text-align center
     column-count 1
     ("ul" max-width "100%" ("li::before" content none)) (".input" ("[type=submit]" font-weight bold))
-    ("object" margin-bottom "6rem" margin-top "2rem")
-    (".results" margin-bottom "3rem"
-      font-size "1.5rem"
-      padding "1rem"
-      margin-top "2rem"
-      background-color "#eee" color "#000" display "inline-block" padding "1rem 5rem 1rem 5rem")
+    ("object" margin-bottom "60px" margin-top "20px")
+    (".results" margin-bottom "30px"
+      font-size "15px"
+      padding "10px"
+      margin-top "20px"
+      background-color "#eee" color "#000" display "inline-block" padding "10px 50px 10px 50px")
     (".code" display none
       margin auto
       ("pre" margin auto
-        font-size "1rem"
-        padding "2rem" width "80rem" text-align left background-color "#eee" color "#000"))
+        font-size "10px"
+        padding "20px" width "800px" text-align left background-color "#eee" color "#000"))
     (("h1 ~ *" "h2 ~ *" "h3 ~ *" "h4 ~ *") margin-left 0)))
 
 ("body.days" (".middle" column-count 1))
 
 ("body.phrase-generator" (".middle" column-count 1)
-  (".results" padding-top "1rem" padding-bottom "1rem"))
+  (".results" padding-top "10px" padding-bottom "10px"))
 
-(".music-listings .d" color "gray" margin-left "1rem")
+(".music-listings .d" color "gray" margin-left "10px")
 
 ("input,textarea,select" background-color "#fff"
-  font-size "1rem"
-  border "1px solid #048" color "#2b2b2b" padding-left "0.25rem" padding-bottom "0.25rem")
+  font-size "10px" border "1px solid #048" color "#2b2b2b")
 
 ("textarea" width "500px" height "250px")
 ("select,a,button" cursor pointer)
@@ -89,6 +88,6 @@
     (".rest-sig" font-style italic margin-left "2ch")
     (".description" padding-top "5px" margin-left "2ch")))
 
-(".audio-playlist label" display inline-block margin-right "1rem")
+(".audio-playlist label" display inline-block margin-right "10px")
 ("@media print" ("body > .top" display "none"))
 ("code" background-color "#e2e2e2" padding-left "1ch" padding-right "1ch")

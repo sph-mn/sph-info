@@ -11,7 +11,7 @@
 (define noun
   (vector "silos" "services"
     "findability" "activity monitoring"
-    "framework" "mediation"
+    "frameworks" "mediation"
     "orchestration" "bean binding"
     "delivery" "aggregation"
     "transformation" "architecture"

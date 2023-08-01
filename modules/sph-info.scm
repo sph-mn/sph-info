@@ -76,7 +76,7 @@
           (shtml-layout content #:links
             #f #:body-class "time-differences" #:title "time differences" #:css (list "/css/sph.css")))))))
 
-(define (days-shtml data)
+(define (days-times-shtml data)
   (map-slice 3
     (let (now (utc-current))
       (l (label start-string end-string)
@@ -89,21 +89,21 @@
             (day-duration (number->string (+ 1 (inexact->exact (floor (utc->days (- end start))))))))
           (qq
             (div "the " (unquote label)
-              " time " (unquote (if is-past " was " " is in "))
-              (unquote (abs day-difference)) " days"
-              (unquote (if is-past " ago" "")) "."
-              " it " (unquote (if is-past " was " " will be "))
-              (unquote day-duration) " days from "
-              (unquote start-string) " to " (unquote end-string) ".")))))
+              (unquote (if is-past " was " " is in ")) (unquote (abs day-difference))
+              " days" (unquote (if is-past " ago" ""))
+              "." " it "
+              (unquote (if is-past " was " " will be ")) (unquote day-duration)
+              " days from " (unquote start-string) " to " (unquote end-string) ".")))))
     data))
 
 (define* (respond-days request)
   (swa-http-parse-query (swa-http-request-headers request)
     (l (path arguments)
       (let*
-        ( (arguments (string-split (alist-ref arguments "times") #\,))
+        ( (times (string-split (alist-ref arguments "times") #\,))
+          (title (or (alist-ref arguments "title") "days"))
           (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
-          (title "days") (content (qq (section (h1 "") (unquote (days-shtml arguments))))))
+          (content (qq (section (h1 "") (unquote (days-times-shtml times))))))
         (respond-shtml
           (shtml-layout content #:links
             #f #:body-class "days" #:title title #:css (list "/css/sph.css")))))))

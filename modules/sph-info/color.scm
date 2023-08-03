@@ -46,7 +46,6 @@
         ( (div (@ (class conversion))
             (unquote (list->tag div (map map-one (list "hex" "rgb" "hsl"))))
             (div (unquote (shtml-preview))))
-          (br)
           (div (@ (class "modification"))
             (unquote-splicing
               (map
@@ -61,15 +60,16 @@
                             (q ((type number) (value 0) (size 3) (min -100) (max 100))))))
                       (unquote (shtml-preview-value title #f)))))
                 (list "saturation" "lightness" "brightness" "hue")))
-            (br) (unquote (shtml-preview-value "modified_preview" "modified")))
-          (br)
+            (unquote (shtml-preview-value "modified_preview" "modified")))
           (div (@ (class "alternatives"))
             (unquote-splicing
-              (map (l (title) (shtml-preview-value title title)) (list "complement" "greyscale")))
-            (unquote-splicing
-              (let (classes (list "triad" "splitcomplement" "tetrad" "analogous" "monochromatic"))
+              (let
+                (classes
+                  (list "complement" "greyscale"
+                    "triad" "splitcomplement" "tetrad" "analogous" "monochromatic"))
                 (map (l (class title count) (shtml-preview-value class title count)) classes
-                  classes (list 2 2 3 5 5))))))))))
+                  classes (list 1 1 2 2 3 5 5)))))
+          (div (@ (id selection-as-input) (style "display:none")) ""))))))
 
 (define title-color "web color converter and calculator")
 
@@ -78,9 +78,8 @@
     (list
       (q
         ( (div (@ (class "small-font"))
-            "enter a color value into the appropriate field and other values update automatically.")
-          (br)))
-      (shtml-calc-inputs) (q (br)) (q (br)))))
+            "enter a color value into the appropriate field and other values update automatically.")))
+      (shtml-calc-inputs))))
 
 (define (color-respond request)
   (sph-info-request-bind request (swa-env data route routes time-start)

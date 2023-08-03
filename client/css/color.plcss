@@ -2,20 +2,25 @@
   (".preview  .area" width "75px" height "75px"))
 
 (".modification" ("> .control" display inline-block ("&:not(:first-child)" margin-left "10px")))
-(".preview .area" transition "background-color 0.25s ease")
+(".preview .area")
+
+(".preview" (".area" cursor pointer transition "background-color 0.25s ease")
+  ("input" cursor pointer))
+
 ((".conversion" ".modification > .preview") (".preview .area" width "503px" height "75px"))
 
 (".alternatives"
-  ("> *"
-    vertical-align top
-    display inline-block ("&:not(:first-child)" margin-left "10px"))
+  ("> *" vertical-align top display inline-block ("&:not(:first-child)" margin-left "10px"))
   (".greyscale" margin-left "10px") (".hbox > *" ("&:not(:first-child)" margin-left "10px")))
 
 ("#text_display_area" width "150px" height "350px")
 
-(".conversion" ("label" display "inline-block" ("&:not(:first-child)" margin-left "10px"))
-  ("input" width "150px"))
+(".conversion" (".preview" (".area" cursor initial))
+  ("label" display "inline-block" ("&:not(:first-child)" margin-left "10px")) ("input" width "150px"))
 
 (("label .title" ".preview .title") font-weight bold)
-("label, .preview" margin-top "10px")
+("label, .preview" margin-top "5px")
 ("div.area, input" margin-top "5px")
+
+("section > div > *" margin-top "20px")
+("#selection-as-input > *" padding "10px" cursor pointer ("&:hover" font-weight bold))

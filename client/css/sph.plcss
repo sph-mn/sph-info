@@ -64,7 +64,6 @@
     (".code" display none
       margin auto
       ("pre" margin auto
-        font-size "10px"
         padding "20px" width "800px" text-align left background-color "#eee" color "#000"))
     (("h1 ~ *" "h2 ~ *" "h3 ~ *" "h4 ~ *") margin-left 0)))
 
@@ -74,10 +73,7 @@
   (".results" padding-top "10px" padding-bottom "10px"))
 
 (".music-listings .d" color "gray" margin-left "10px")
-
-("input,textarea,select" background-color "#fff"
-  font-size "10px" border "1px solid #048" color "#2b2b2b")
-
+("input,textarea,select" font-size "1rem" padding "5px" background-color "#fff" border "1px solid #048" color "#2b2b2b")
 ("textarea" width "500px" height "250px")
 ("select,a,button" cursor pointer)
 

@@ -1,18 +1,26 @@
 (module.define "sph-info.color"
-  (l () (define (string-space->comma a) (a.replace (make-regexp "\\s+" "g") ","))
+  (l () (declare current-color current-color-modified current-selection)
+    (define selection-as-input
+      (object colors (array)
+        initialize
+        (l (set-color-f) (define container (document.getElementById "selection-as-input"))
+          (set selection-as-input.container container selection-as-input.set-color set-color-f))
+        add
+        (l (color) (if (selection-as-input.colors.includes color) return)
+          (if (not selection-as-input.colors.length)
+            (set selection-as-input.container.style.display "block"))
+          (selection-as-input.colors.push color) (define button (document.createElement "div"))
+          (set button.style.backgroundColor color button.innerHTML color)
+          (button.addEventListener "click" (l () (selection-as-input.set-color color)))
+          (selection-as-input.container.appendChild button))))
+    (define (string-space->comma a) (a.replace (make-regexp "\\s+" "g") ","))
     (define inputs
       (object input-rgb
         (object value->color (l (a) (tinycolor a)) color->value (l (a) (a.toRgbString))) input-hex
         (object value->color (l (a) (tinycolor a)) color->value (l (a) (a.toHexString))) input-hsl
         (object value->color (l (a) (tinycolor a)) color->value (l (a) (a.toHslString)))))
-    (declare current-color current-color-modified)
-    (define (update-single-preview name method) (if (not method) (set method name))
-      (define color ((get (current-color.clone) method)))
-      (define preview (document.querySelector (+ "." name " .preview .area")))
-      (define value (document.getElementById (+ "input_" name "_value")))
-      (set value.value (color.toHexString) preview.style.backgroundColor (color.toHexString)))
     (define (update-multi-preview create-colors name) (define colors (create-colors))
-      (colors.shift)
+      (if (< 1 colors.length) (colors.shift))
       (_.times colors.length
         (l (index) (define color (get colors index))
           (define input-id (+ "input_" name "_value_" index))
@@ -50,11 +58,14 @@
       (define preview-current-color-modified
         (document.getElementById "input_modified_preview_value"))
       (set preview-current-color-modified.value (current-color-modified.toHexString)))
-    (define names-multi-preview
+    (define names-clone-preview (array "complement" "greyscale"))
+    (define names-noclone-preview
       (array "triad" "splitcomplement" "tetrad" "analogous" "monochromatic"))
-    (define (update-alternatives) (update-single-preview "complement")
-      (update-single-preview "greyscale")
-      (_.each names-multi-preview
+    (define (update-alternatives)
+      (_.each names-clone-preview
+        (l (name)
+          (update-multi-preview (l () (array ((get (current-color-modified.clone) name)))) name)))
+      (_.each names-noclone-preview
         (l (name) (update-multi-preview (l () ((get current-color-modified name))) name))))
     (define (update current-input)
       (if (not current-input) (set current-input inputs.input-hex.element))
@@ -65,7 +76,11 @@
     (define (inputs-initialize-select-on-click)
       (define inputs-all
         (document.querySelectorAll ".modification input:not([type=number]), .alternatives input"))
-      (_.each inputs-all (l (input) (input.addEventListener "click" input.select))))
+      (_.each inputs-all
+        (l (input)
+          (input.addEventListener "click"
+            (l (event) (set current-selection input.value)
+              (selection-as-input.add current-selection) (input.select event))))))
     (define (inputs-initialize) (inputs-initialize-select-on-click)
       (_.map inputs
         (l (value key) (define element (document.getElementById key))
@@ -83,4 +98,6 @@
           (if (not (= leading.id key))
             (let (input (get inputs key))
               (set input.element.value (input.color->value current-color)))))))
-    (inputs-initialize)))
+    (inputs-initialize)
+    (selection-as-input.initialize
+      (l (color) (set inputs.input-hex.element.value color) (update inputs.input-hex.element)))))

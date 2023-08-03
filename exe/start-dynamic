@@ -2,7 +2,7 @@
 !#
 
 (add-to-load-path (string-append (getcwd) "/modules"))
-(import (sph) (sph web app) (sph-info))
+(use-modules (sph) (sph web app) (sph-info))
 
 (apply
   (l* (#:optional (config "production"))

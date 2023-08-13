@@ -1,0 +1,6 @@
+#!/bin/sh
+
+target="$PWD/content/other/chinese/lists"
+cd /home/nonroot/ps/hanyu
+head -n 250 data/frequency-pinyin-translation.csv > "$target"/frequency-250-pinyin-translation.txt
+head -n 25000 data/frequency-pinyin-translation.csv > "$target"/frequency-25000-pinyin-translation.txt

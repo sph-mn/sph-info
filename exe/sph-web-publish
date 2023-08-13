@@ -10,7 +10,8 @@
       number-bindings
       (q
         ( ( (sph web publish markdown scm-env) link-files include-files
-            link-files-reverse include-files-reverse include-images include-images-reverse)
+            link-files-reverse include-files-reverse
+            include-images include-images-reverse strikethrough)
           ( (sph-info markdown-scm-env) sph-info-audio-playlist sph-info-audio-playlist-reverse
             sph-info-software-list sph-info-test-io sph-info-software-list-grouped))))))
 

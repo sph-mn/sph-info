@@ -4,15 +4,15 @@
   (rnrs eval) (sph)
   (sph list) (sph-info color)
   (sph-info documents) (sph-info encoder)
-  (sph-info formatter) (sph-info helper)
-  (sph-info other) (sph-info svn)
-  (sph-info syntax) (sph-info table)
-  (sph-info time calculator) (sph time)
-  (sph-info time calendar) (sph-info units)
-  (sph alist) (sph filesystem)
-  (sph-info fun german-names) (sph-info fun marketing-bs)
-  (sph hashtable) (sph string)
-  (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
+  (sph-info formatter) (sph-info chinese)
+  (sph-info helper) (sph-info other)
+  (sph-info svn) (sph-info syntax)
+  (sph-info table) (sph-info time calculator)
+  (sph time) (sph-info time calendar)
+  (sph-info units) (sph alist)
+  (sph filesystem) (sph-info fun german-names)
+  (sph-info fun marketing-bs) (sph hashtable)
+  (sph string) (sph time string) (sph vector) (sph web app) (sph web app client) (sph web app http))
 
 (export swa-app)
 
@@ -113,10 +113,10 @@
    (ensure-directory-structure (file-processor-path-processed swa-env))"
   (client-static-compile swa-env client-static-config)
   (ht-set! (swa-env-data swa-env) (q routes)
-    (append (formatter-routes) (documents-routes)
-      (units-routes) (syntax-routes)
-      encoder-routes (other-routes)
-      table-routes time-calculator-routes time-calendar-routes color-routes)))
+    (append (chinese-routes) (formatter-routes)
+      (documents-routes) (units-routes)
+      (syntax-routes) encoder-routes
+      (other-routes) table-routes time-calculator-routes time-calendar-routes color-routes)))
 
 (define (app-respond request)
   (let*

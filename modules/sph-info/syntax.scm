@@ -1,6 +1,5 @@
 (library (sph-info syntax)
-  (export
-    syntax-routes)
+  (export syntax-routes)
   (import
     (guile)
     (sph)
@@ -34,14 +33,16 @@
         (path-uglifyjs (program-path "uglifyjs")) (path-clang-format (program-path "clang-format")))
       (processor-routes "syntax conversions" "/syntax"
         (list "sxml" "xml"
-          (q (file-to-file text-to-text)) null
+          #f (q (file-to-file text-to-text))
+          null
           (l (request source-path target-path options)
             (call-with-output-file target-path
               (l (port) (sxml->xml (pair (q begin) (file->datums source-path)) port))))
           (l (request file-name options) (string-append file-name ".xml"))
           (l (request input-text client) (sxml->xml (string->datums input-text) client)))
         (list "xml" "sxml"
-          (q (file-to-file text-to-text)) null
+          #f (q (file-to-file text-to-text))
+          null
           (l (request source-path target-path options)
             (call-with-output-file target-path
               (l (port) (write (xml->sxml (file->string source-path)) port))))
@@ -49,7 +50,8 @@
           (l (request input-text client) (write (xml->sxml input-text) client)))
         (and path-clang-format
           (list "sc" "c"
-            (q (file-to-file text-to-text)) null
+            #f (q (file-to-file text-to-text))
+            null
             (l (request source-path target-path options)
               (string->file (sc->c (pair (q begin) (file->datums source-path)) null) target-path))
             (l (request file-name options) (string-append file-name ".c"))
@@ -61,7 +63,8 @@
                 (display (file->string target-path) client)))))
         (and path-uglifyjs
           (list "sescript" "javascript"
-            (q (file-to-file text-to-text)) null
+            #f (q (file-to-file text-to-text))
+            null
             (l (request source-path target-path options)
               (call-with-output-file target-path
                 (l (port) (sescript->ecmascript (file->datums source-path) port null))))

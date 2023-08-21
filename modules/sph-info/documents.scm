@@ -52,7 +52,7 @@
           (produce
             (l (a b)
               (if (equal? a b) #f
-                (list a b
+                (list a b #f
                   (append (q (file-to-file))
                     (if (contains? text-types a)
                       (list (if (contains? text-types b) (q text-to-text) (q text-to-file))) null))

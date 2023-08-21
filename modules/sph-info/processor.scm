@@ -117,7 +117,7 @@
     (select (@ (class formats))
       (unquote
         (map-apply
-          (l (from to io-types . rest)
+          (l (from to description io-types . rest)
             (qq
               (option
                 (@ (value (unquote (string-append from "/" to)))
@@ -125,7 +125,7 @@
                 (unquote (string-append from " to " to)))))
           a)))))
 
-(define (processor-respond-f select title io-types options file-f file-name-f text-f)
+(define (processor-respond-f select title description io-types options file-f file-name-f text-f)
   (let
     (forms
       (list (q div) (q (@ (class "sph-info-processor")))
@@ -145,10 +145,16 @@
         ( (get)
           (respond-shtml
             (let (swa-env (swa-http-request-swa-env request))
-              (shtml-layout (list (qq (h1 (unquote title))) forms) #:title
-                title #:css
-                (client-static swa-env (q css) (q (default processor))) #:js
-                (client-static swa-env (q js) (q (default processor)))))))
+              (shtml-layout
+                (qq
+                  ( (h1 (unquote title))
+                    (unquote-splicing
+                      (if description (qq ((div (@ (class "description")) (unquote description))))
+                        null))
+                    (unquote forms)))
+                #:title title
+                #:css (client-static swa-env (q css) (q (default processor)))
+                #:js (client-static swa-env (q js) (q (default processor)))))))
         ( (post)
           (let (io (alist-ref (swa-http-request-query request) "io"))
             (if io
@@ -174,8 +180,8 @@
    io-types: file file, text text, text file"
   (let* ((config (compact config)) (select (processor-config->format-select config)))
     (map-apply
-      (l (from to . rest)
+      (l (from to description . rest)
         (route-new (string-append prefix "/" from "/" to)
           (string-append "convert from " from " to " to)
-          (apply processor-respond-f select title rest)))
+          (apply processor-respond-f select title description rest)))
       config)))

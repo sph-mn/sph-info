@@ -11,7 +11,7 @@
 
 (define encoder-routes
   (processor-routes "binary/text conversions" "/binary-text"
-    (list "any" "base64"
+    (list "any" "base64" #f
       (q (file-to-file text-to-text)) null
       (l (request source-path target-path options)
         (io-file->file source-path target-path
@@ -19,14 +19,14 @@
       (l (request file-name options) (string-append file-name ".base64"))
       (l (request input-text client)
         (false-if-exception (display (base64-encode (string->utf8 input-text)) client))))
-    (list "base64" "any"
+    (list "base64" "any" #f
       (q (file-to-file text-to-file)) null
       (l (request source-path target-path options)
         (call-with-output-file target-path
           (l (port)
             (false-if-exception (put-bytevector port (base64-decode (file->string source-path)))))))
       (l (request file-name options) file-name) #f)
-    (list "any" "base91"
+    (list "any" "base91" #f
       (q (file-to-file text-to-text)) null
       (l (request source-path target-path options)
         (call-with-output-file target-path
@@ -35,7 +35,7 @@
           #:binary #t))
       (l (request file-name options) (string-append file-name ".base91"))
       (l (request input-text client) (display (base91-encode (string->utf8 input-text)) client)))
-    (list "base91" "any"
+    (list "base91" "any" #f
       (q (file-to-file text-to-file)) null
       (l (request source-path target-path options)
         (call-with-output-file target-path

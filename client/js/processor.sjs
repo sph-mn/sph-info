@@ -27,13 +27,14 @@
       (text-forms.forEach
         (l (form)
           (define input-text (form.querySelector ".input-text")
-            output-text (form.querySelector ".output-text"))
-          (input-text.addEventListener "keyup"
-            (_.debounce
-              (l ()
-                (form-xhr-submit form input-text.value
-                  (l (response-text) (set output-text.value response-text))))
-              text-update-delay))))))
+            output-text (form.querySelector ".output-text")
+            update
+            (l ()
+              (console.log "update")
+              (form-xhr-submit form input-text.value
+                (l (response-text) (set output-text.value response-text)))))
+          (input-text.addEventListener "keyup" (_.debounce update text-update-delay))
+          (input-text.addEventListener "change" update)))))
   ; initialise file-to-file forms
   (let (file-forms (document.querySelectorAll "form.file-to-file"))
     (if file-forms

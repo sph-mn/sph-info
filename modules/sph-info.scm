@@ -56,51 +56,44 @@
   (phrase-generator-responder "buzzword compliant headlines generator" "bs"
     (nullary (make-marketing-bs 5))))
 
-(define* (respond-time-differences request)
-  (swa-http-parse-query (swa-http-request-headers request)
-    (l (path arguments)
-      (let*
-        ( (arguments (string-split (alist-ref arguments "times") #\,))
-          (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
-          (content
-            (map-slice 3
-              (l (label past future)
-                (let ((past (parse-time past)) (future (parse-time future)))
-                  (qq
-                    (div (unquote label) ": "
-                      (unquote
-                        (inexact->exact (floor (exact->inexact (utc->days (- future past))))))
-                      " days (" (unquote (utc->ymd future)) ")"))))
-              arguments)))
-        (respond-shtml
-          (shtml-layout content #:links
-            #f #:body-class "time-differences" #:title "time differences" #:css (list "/css/sph.css")))))))
-
 (define (days-times-shtml data)
-  (map-slice 3
+  (if (null? data) data
     (let (now (utc-current))
-      (l (label start-string end-string)
-        (let*
-          ( (start (utc-from-ymd start-string)) (end (utc-from-ymd end-string))
-            (is-past (> now end))
-            (day-difference
-              (inexact->exact (floor (utc->days (if is-past (- end now) (- start now))))))
-            (day-difference (if is-past (+ 2 day-difference) day-difference))
-            (day-duration (number->string (+ 1 (inexact->exact (floor (utc->days (- end start))))))))
-          (qq
-            (div "the " (unquote label)
-              (unquote (if is-past " was " " is in ")) (unquote (abs day-difference))
-              " days" (unquote (if is-past " ago" ""))
-              "." " it "
-              (unquote (if is-past " was " " will be ")) (unquote day-duration)
-              " days from " (unquote start-string) " to " (unquote end-string) ".")))))
-    data))
+      (reverse
+        (let loop ((data data) (previous-end #f) (previous-label #f))
+          (apply
+            (l (label start-string end-string . data)
+              (let*
+                ( (start (utc-from-ymd start-string)) (end (utc-from-ymd end-string))
+                  (is-past (> now end))
+                  (day-difference
+                    (inexact->exact (floor (utc->days (if is-past (- end now) (- start now))))))
+                  (day-difference (if is-past (+ 2 day-difference) day-difference))
+                  (day-duration
+                    (number->string (+ 1 (inexact->exact (floor (utc->days (- end start))))))))
+                (pair
+                  (qq
+                    (div "the " (unquote label)
+                      (unquote (if is-past " was " " is in ")) (unquote (abs day-difference))
+                      " days" (unquote (if is-past " ago" ""))
+                      (unquote
+                        (if previous-end
+                          (string-append ", "
+                            (number->string
+                              (inexact->exact (floor (utc->days (- start previous-end)))))
+                            " days after the " previous-label ". ")
+                          ". "))
+                      " it " (unquote (if is-past " was " " will be "))
+                      (unquote day-duration) " days from "
+                      (unquote start-string) " to " (unquote end-string) "."))
+                  (if (null? data) data (loop data end label)))))
+            data))))))
 
 (define* (respond-days request)
   (swa-http-parse-query (swa-http-request-headers request)
     (l (path arguments)
       (let*
-        ( (times (string-split (alist-ref arguments "times") #\,))
+        ( (times (string-split (alist-ref arguments "c") #\,))
           (title (or (alist-ref arguments "title") "days"))
           (parse-time (l (a) (if (string-equal? "now" a) (utc-current) (utc-from-ymd a))))
           (content (qq (section (h1 "") (unquote (days-times-shtml times))))))
@@ -125,7 +118,7 @@
       (path (string-append "/" (string-drop-prefix web-base-path full-path))))
     (string-case path ("/svn" (svn-respond request))
       ("/bs" (respond-marketing-bs)) ("/german-names" (respond-german-names))
-      ("/time-differences" (respond-time-differences request)) ("/p/days" (respond-days request))
+      ("/days" (respond-days request))
       ("/utc-day-kiloseconds" (respond (utc-elapsed-day-string (utc-current))))
       (else
         (or

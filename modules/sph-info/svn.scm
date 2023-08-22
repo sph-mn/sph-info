@@ -103,7 +103,7 @@
           ( (query (swa-http-request-query request))
             (words (false-if-exception (html-uri-decode (alist-ref query "words"))))
             (count (false-if-exception (string->number (alist-ref query "count"))))
-            (results (and words (svn-multiple (or count 8) words))))
+            (results (and words (svn-multiple (or count 10) words))))
           (respond-shtml
             (shtml-layout (shtml-ui words results) #:body-class
               "svn" #:css css #:title "variable name generator")))))))

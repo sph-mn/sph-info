@@ -26,7 +26,7 @@
             client)
           (execute-with-pipes
             (l (input output)
-              (begin-thread (display (string-ascii->utf8 input-text) input) (close-port input))
+              (begin-thread (display input-text input) (close-port input))
               (begin-first (port->port output client) (close-port output)))
             path-hanzi-convert options #t #t #f))))))
 

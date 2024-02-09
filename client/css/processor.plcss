@@ -5,4 +5,6 @@
   ("&.file:not(:first-child)" margin-top "0.5rem") (".input-file" margin-right "0.5rem"))
 
 (".middle > *" margin-top "10px")
-(".sph-info-processor" ("> *" margin-top "10px") ("form > textarea + textarea" margin-top "10px"))
+
+(".sph-info-processor" ("> *" margin-top "10px")
+  ("form" ("> textarea + .output-text, .description" padding "10px 0")))

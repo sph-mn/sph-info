@@ -8,7 +8,7 @@
           (alert (+ "background request error " xhr.status)))))
     (xhr.send (new FormData form)))
   (define (init-formats-select container formats path)
-    (define select (container.querySelector "select.formats"))
+    (define select (container.querySelector "select.formats")) (if (not select) return)
     ; select active options
     (for ((define i 0) (< i select.options.length) (set i (+ 1 i)))
       (let (option (get select.options i)) (if (= formats option.value) (set option.selected #t))))
@@ -21,21 +21,21 @@
   (define path-array (window.location.pathname.split "/")
     formats (chain join (_.last path-array 2) "/") path (chain join (_.initial path-array 2) "/"))
   (init-formats-select container formats path)
-  ; initialise text-to-text forms
-  (let (text-forms (container.querySelectorAll "form.text-to-text"))
-    (if text-forms
-      (text-forms.forEach
-        (l (form)
-          (define input-text (form.querySelector ".input-text")
-            output-text (form.querySelector ".output-text")
-            update
-            (l ()
-              (console.log "update")
-              (form-xhr-submit form input-text.value
-                (l (response-text) (set output-text.value response-text)))))
-          (input-text.addEventListener "keyup" (_.debounce update text-update-delay))
-          (input-text.addEventListener "change" update)))))
-  ; initialise file-to-file forms
+  ; initialize text-to-text forms
+  (let (text-forms (container.querySelectorAll "form.text-to-text, form.text-to-html"))
+    (text-forms.forEach
+      (l (form)
+        (define input-text (form.querySelector ".input-text")
+          output-text (form.querySelector ".output-text")
+          update
+          (l ()
+            (form-xhr-submit form input-text.value
+              (l (response-text)
+                (if (= "DIV" output-text.tagName) (set output-text.innerHTML response-text)
+                  (set output-text.value response-text))))))
+        (input-text.addEventListener "keyup" (_.debounce update text-update-delay))
+        (input-text.addEventListener "change" update))))
+  ; initialize file-to-file forms
   (let (file-forms (document.querySelectorAll "form.file-to-file"))
     (if file-forms
       (file-forms.forEach

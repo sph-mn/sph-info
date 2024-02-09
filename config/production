@@ -1,3 +1,4 @@
 mode production
 server
   parallelism #t
+  socket-group "http"

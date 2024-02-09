@@ -3,5 +3,4 @@ processed-path "webroot/dynamic/temp/"
 web-base-path "/dynamic/"
 server
   socket-name "sph-info"
-  ;socket-group "http"
   exception-key #t

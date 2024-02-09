@@ -89,7 +89,7 @@
                   (if (null? data) data (loop data end label)))))
             data))))))
 
-(define* (respond-days request)
+(define (respond-days request)
   (swa-http-parse-query (swa-http-request-headers request)
     (l (path arguments)
       (let*

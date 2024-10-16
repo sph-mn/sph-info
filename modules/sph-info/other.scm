@@ -53,7 +53,7 @@
           (label (div "modulator amplitude")
             (input (@ (type number) (step 0.1) (value 400) (id "mamp"))))
           (label (div "modulation index") (input (@ (type number) (step 0.1) (value 4) (id "mi")))))
-        (br) (pre (@ (id result)))))))
+        (br) (pre (@ (id result)) "")))))
 
 (define ip-route
   (route-new "/ip" "what is my ip?"

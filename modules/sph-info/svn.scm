@@ -33,7 +33,13 @@
             "from the cloud, for the cloud, at the cloud, in the cloud. cloud, cloud, cloud"
             "\"when i use a word, it means just what I choose it to mean - neither more nor less\""
             "as used by programmers with 30 years of industry experience"
-            "makes programs easier to maintain because guessing is more fun"))
+            "makes programs easier to maintain because guessing is more fun"
+            "variable names that spark joy" "where creativity meets chaos"
+            "guaranteed to confuse future you" "elevate your code to cryptic art"
+            "your compiler won't know what hit it" "because clarity is overrated"
+            "make debugging an adventure" "the only limit is your confusion"
+            "variable names your code reviewer will remember forever"
+            "for those who love a good mystery in their code"))
         (result-titles
           (list "get them before they are trademarked" "didn't the intern just use this one?"
             "variety is good" "why not use several"))
@@ -44,8 +50,10 @@
             "synchronization" "submit button"
             "user name" "account id" "event handler" "error message" "get device name" "settings"))
         (button-text
-          (list "get rich" "calculate"
-            "let the results appear" "do the magic" "choose gate 3" "ask 100 people"))
+          (list "spin the wheel of fate" "summon the genius"
+            "cha-ching!" "unlock the secrets"
+            "conjure variable names" "get rich"
+            "calculate" "let the results appear" "do the magic" "doDataFunction()" "ask 100 people"))
         (function-name-prefix
           (list "do_" "do"
             "make_" "make"
@@ -95,7 +103,7 @@
                     "")
                   (form (@ (action "svn") (class input) (method get))
                     (label (div "enter the words that should go into the name and press enter")
-                      (input (@ (name words) (type text) (value (unquote words)) (size 40)))
+                      (input (@ (name words) (type text) (value (unquote words))))
                       (input (@ (type submit) (value (unquote (next-button-text)))))))
                   (unquote results-shtml)))))))
       (l (request)

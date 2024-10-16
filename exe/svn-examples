@@ -1,0 +1,6 @@
+#!/usr/bin/guile
+!#
+
+(add-to-load-path (string-append (getcwd) "/modules"))
+(use-modules (sph) (sph-info fun shitty-variable-name-generator))
+(for-each (lambda (a) (display-line a)) (svn-multiple 100 "do data function"))

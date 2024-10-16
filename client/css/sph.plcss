@@ -5,11 +5,11 @@
 ("h1~:not(h1),h2~:not(h2),h3~:not(h3),h4~:not(h4),h5~:not(h5),h6~:not(h6)" margin-left "2ch")
 ((".middle" "section > div") ("> *" margin-top "5px") ("> section" margin-top "20px"))
 (".middle" ("> .mtime" color "#808080" position "fixed" top 0 right 0 padding-top 0))
-("p, pre, ul, ol" max-width "175ch")
+("p, pre, ul, ol" max-width "125ch")
 
 ("pre" padding "5px 10px"
   border-radius "3px"
-  font-size "90%"
+  font-size "75%"
   display "inline-block" color "#000" background-color "#e2e2e2" ("+ pre" display "table"))
 
 ("body" background-color "#f6f6f6" color "#222" padding-left "1px")
@@ -19,7 +19,7 @@
   ("&:hover" color "#37b" text-decoration underline) ("&.external" font-style italic)
   ("&.thumbnail" margin-right "1ch"))
 
-("@media screen and (max-device-width: 700px)"
+("@media screen and (max-device-width: 700px)" ("pre" white-space "pre-line")
   ("a" font-size "110%"
     text-decoration "underline" margin-top "10px" margin-bottom "10px" display "inline-block"))
 
@@ -48,14 +48,14 @@
 
 ("body.svn" background-color white
   line-height "28px"
-  ("h1" font-size "28px") ("h2" font-size "20px" font-weight normal margin-top "5px")
-  ("h3" font-size "16px")
+  ("h1" font-size "1.75rem") ("h2" font-size "1.5rem" font-weight normal margin-top "5px")
+  ("h3" font-size "1rem")
   (".middle" text-align center
     column-count 1
     ("ul" max-width "100%" ("li::before" content none)) (".input" ("[type=submit]" font-weight bold))
     ("object" margin-bottom "40px" margin-top "20px")
     (".results" margin-bottom "20px"
-      font-size "22px"
+      font-size "1.375rem"
       padding "10px"
       margin-top "30px"
       background-color "#eee" color "#000" display "inline-block" padding "10px 50px 10px 50px")

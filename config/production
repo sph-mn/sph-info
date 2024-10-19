@@ -1,4 +1,5 @@
 mode production
 server
   parallelism #t
+  ; this setting likely requires root permissions
   socket-group "http"

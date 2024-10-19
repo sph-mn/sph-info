@@ -19,7 +19,7 @@
   ("&:hover" color "#37b" text-decoration underline) ("&.external" font-style italic)
   ("&.thumbnail" margin-right "1ch"))
 
-("@media screen and (max-device-width: 700px)" ("pre" white-space "pre-line")
+("@media screen and (max-device-width: 700px)" ("pre" white-space "pre-wrap")
   ("a" font-size "110%"
     text-decoration "underline" margin-top "10px" margin-bottom "10px" display "inline-block"))
 
@@ -53,7 +53,7 @@
   (".middle" text-align center
     column-count 1
     ("ul" max-width "100%" ("li::before" content none)) (".input" ("[type=submit]" font-weight bold))
-    ("object" margin-bottom "40px" margin-top "20px")
+    ("img" margin-bottom "40px" margin-top "20px" ("&.flip-x" transform "scaleX(-1)") ("&.flip-y" transform "scaleY(-1)"))
     (".results" margin-bottom "20px"
       font-size "1.375rem"
       padding "10px"

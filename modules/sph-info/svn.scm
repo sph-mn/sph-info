@@ -8,6 +8,7 @@
     (sph alist)
     (sph list)
     (sph list other)
+    (sph other)
     (sph string)
     (sph web app)
     (sph web app client)
@@ -50,10 +51,10 @@
             "synchronization" "submit button"
             "user name" "account id" "event handler" "error message" "get device name" "settings"))
         (button-text
-          (list "spin the wheel of fate" "summon the genius"
-            "cha-ching!" "unlock the secrets"
-            "conjure variable names" "get rich"
-            "calculate" "let the results appear" "do the magic" "doDataFunction()" "ask 100 people"))
+          (list "spin the wheel of fate" "cha-ching!"
+            "unlock the secrets" "conjure variable names"
+            "get rich" "calculate"
+            "let the results appear" "do the magic" "doDataFunction()" "ask 100 people"))
         (function-name-prefix
           (list "do_" "do"
             "make_" "make"
@@ -93,9 +94,12 @@
               (qq
                 (div (@ (class "svn")) (h1 "shitty variable name generator")
                   (h2 (unquote (next-slogan)))
-                  (object
-                    (@ (data (unquote trollface-image)) (width 122.5)
+                  (img
+                    (@ (src (unquote trollface-image)) (width 122.5)
                       (height 100)
+                      (class
+                        (unquote
+                          (or (and (random-boolean 5) "flip-x") (and (random-boolean 5) "flip-y"))))
                       (title
                         (unquote
                           (list-ref-random

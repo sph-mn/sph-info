@@ -25,8 +25,7 @@
               " characters")
             client)
           (execute-with-pipes
-            (l (input output)
-              (begin-thread (display input-text input) (close-port input))
+            (l (input output) (begin-thread (display input-text input) (close-port input))
               (begin-first (port->port output client) (close-port output)))
             path-hanzi-convert options #t #t #f))))))
 
@@ -34,7 +33,7 @@
   (let*
     ( (hanzi-unicode-ranges
         (q
-          ( (13312 . 19903) (19968 . 40959)  (131072 . 173791)
+          ( (13312 . 19903) (19968 . 40959) (131072 . 173791)
             (173824 . 177983) (177984 . 178207)
             (178208 . 183983) (183984 . 191471) (196608 . 201551) (201552 . 205743) (191472 . 192095))))
       (hanzi-unicode-ranges-start (first (first hanzi-unicode-ranges)))
@@ -86,7 +85,16 @@
                   (floor (exact->inexact (* 100 (- 1 (/ unique-chars-length chars-length)))))))
               "%"))))
       (pair "unique characters" unique-chars)
-      (pair "reading difficulty" (if (= 0 chars-length) 0 (reading-difficulty unique-chars))))))
+      (pair
+        (qq
+          (span
+            (@ (style "text-decoration: dotted underline;position:relative")
+              (onpointerover "this.lastChild.style.display='inline'")
+              (onpointerout "this.lastChild.style.display='none'"))
+            reading difficulty
+            (span (@ (style "display:none"))
+              "max(1, 10 * (unique_chars_length / all_possible_chars_length + median(last_10(unique_chars_frequency_indices)) / all_possible_chars_length))")))
+        (if (= 0 chars-length) 0 (reading-difficulty unique-chars))))))
 
 (define (shtml-dl a)
   (pair (q dl)

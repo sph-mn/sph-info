@@ -36,12 +36,17 @@
               (list (list (q type) (or (first-or-false (file->mime-types a)) "")))))))
       paths)))
 
+(define (sph-info-audio-playlist-shtml content)
+  (qq
+    (div (@ (class "audio-playlist")) (unquote-splicing content)
+      (script
+        "if(!window._audio_playlist_initialized){window._audio_playlist_initialized=true;const audios=document.querySelectorAll(\"audio\");function stopOtherAudios(current){audios.forEach(a=>{if(a!==current){a.pause();a.currentTime=0;}});}audios.forEach((a,i)=>{a.addEventListener(\"play\",()=>stopOtherAudios(a));a.addEventListener(\"ended\",()=>{const n=audios[i+1];if(n)n.play();});});}"))))
+
 (define (sph-info-audio-playlist directory . paths) "accepts file paths like link-files"
-  (pairs (q div) (q (@ (class "audio-playlist"))) (sph-info-audio-playlist-content directory paths)))
+  (sph-info-audio-playlist-shtml (sph-info-audio-playlist-content directory paths)))
 
 (define (sph-info-audio-playlist-reverse directory . paths)
-  (pairs (q div) (q (@ (class "audio-playlist")))
-    (reverse (sph-info-audio-playlist-content directory paths))))
+  (sph-info-audio-playlist-shtml (reverse (sph-info-audio-playlist-content directory paths))))
 
 (define (test-io module-name test-name)
   "display a formatted textual representation of input and output for one test from a (sph test) test module.

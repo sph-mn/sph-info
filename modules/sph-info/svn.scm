@@ -7,7 +7,7 @@
     (sph-info helper)
     (sph alist)
     (sph list)
-    (sph list other)
+    
     (sph other)
     (sph string)
     (sph web app)

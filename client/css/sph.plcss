@@ -26,7 +26,7 @@
 ("@media screen and (max-device-width: 1200px)"
   (".middle" padding 0 ("> .mtime" position relative)))
 
-("@media screen and (min-width: 1600px)"
+("@media screen and (min-width: 2200px)"
   (".middle" column-count 2 ("> section > div > section" break-inside avoid)))
 
 ("@media screen and (min-width: 2400px)" (".middle" column-count 3))

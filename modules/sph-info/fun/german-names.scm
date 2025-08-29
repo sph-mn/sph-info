@@ -1,7 +1,7 @@
 (define-module (sph-info fun german-names))
 
 (use-modules (sph) (sph alist)
-  (sph-info fun phrase-generator) (sph hashtable) (sph lang config) (sph list) (sph list other))
+  (sph-info fun phrase-generator) (sph hashtable) (sph lang config) (sph list) )
 
 (export display-german-names make-german-names sph-info-fun-german-names-description)
 

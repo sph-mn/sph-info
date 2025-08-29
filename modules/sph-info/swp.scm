@@ -139,7 +139,7 @@
             (sph lang itpn) (sph lang parser outline)
             (sph lang scheme) (sph lang scm-format base)
             (sph lang scm-format format) (sph lang scm-format transform)
-            (sph list) (sph list other)
+            (sph list) 
             (sph json) (sph log)
             (sph math) (sph module)
             (sph module binding-info) (sph number)

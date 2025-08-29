@@ -4,7 +4,7 @@
   (sph) (sph filesystem)
   (sph hashtable) (sph io)
   (sph list) (sph alist)
-  (sph list other) (sph number) (sph other) (sph process) (sph string) (sph vector))
+   (sph number) (sph other) (sph process) (sph string) (sph vector))
 
 (export display-marketing-bs make-marketing-bs)
 

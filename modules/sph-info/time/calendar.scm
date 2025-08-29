@@ -2,7 +2,7 @@
 
 (use-modules (sph) (sph-info helper)
   (sph alist) (sph hashtable)
-  (sph list) (sph list other)
+  (sph list) 
   (sph string) (sph time)
   (sph time gregorian) (sph time stream)
   (sph time string) (sph vector)

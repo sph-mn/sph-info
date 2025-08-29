@@ -1,7 +1,7 @@
 (define-module (sph-info fun phrase-generator))
 
 (use-modules (srfi srfi-1) (sph)
-  (sph alist) (sph hashtable) (sph lang config) (sph list) (sph list other))
+  (sph alist) (sph hashtable) (sph lang config) (sph list) )
 
 (export base-constructors load-config sph-info-fun-phrase-generator-description two-words-getter)
 

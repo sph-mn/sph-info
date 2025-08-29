@@ -5,7 +5,7 @@
   (sph time string) (sph time)
   (ice-9 i18n) (sph lang scheme)
   (sph libmagic) (sph list)
-  (sph list other) (sph module)
+   (sph module)
   (sph string) (sph tree)
   (sph vector) (sph web publish helper) (sph web publish shtml) (sph web shtml))
 

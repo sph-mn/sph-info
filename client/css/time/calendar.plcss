@@ -1,4 +1,4 @@
-("div.middle" max-width "1000px" ("section > div" text-align center))
+("div.middle" max-width "none" ("section > div" text-align center))
 
 (".month" vertical-align top
   margin-bottom "10px"

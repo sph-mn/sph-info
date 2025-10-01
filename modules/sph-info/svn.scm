@@ -7,7 +7,7 @@
     (sph-info helper)
     (sph alist)
     (sph list)
-    
+
     (sph other)
     (sph string)
     (sph web app)
@@ -60,10 +60,10 @@
             "make_" "make"
             "doData" "process"
             "calc_" "reduce_" "flubulate_" "__" "" "" "" "" "" "" "" "" "" "" "" "" ""))
-        (next-slogan (list-ref-randomise-cycle slogans))
-        (next-result-title (list-ref-randomise-cycle result-titles))
-        (next-button-text (list-ref-randomise-cycle button-text))
-        (example-function-name-prefix (list-ref-randomise-cycle function-name-prefix))
+        (next-slogan (list-ref-randomize-cycle slogans))
+        (next-result-title (list-ref-randomize-cycle result-titles))
+        (next-button-text (list-ref-randomize-cycle button-text))
+        (example-function-name-prefix (list-ref-randomize-cycle function-name-prefix))
         (example-code-string
           (string-join
             (list "let svn2 = svn5;" "for (let svn3 = 0; svn3 < svn4.length; ++svn3) {"
@@ -89,7 +89,7 @@
                   (if (null? results) ""
                     (let
                       (examples
-                        (map svn (randomise (pair (list-ref-random results) (take* 6 examples)))))
+                        (map svn (randomize (pair (list-ref-random results) (take* 6 examples)))))
                       (qq (div (@ (class code)) (pre (unquote (example-code examples)))))))))
               (qq
                 (div (@ (class "svn")) (h1 "shitty variable name generator")

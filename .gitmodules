@@ -1,3 +1,0 @@
-[submodule "submodules/sph-info-content"]
-	path = submodules/sph-info-content
-	url = ssh://sph-server/srv/git/private/sph-info-content
